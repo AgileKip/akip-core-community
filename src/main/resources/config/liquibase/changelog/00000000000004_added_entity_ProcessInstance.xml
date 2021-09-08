@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity ProcessInstance.
+    -->
+    <changeSet id="00000000000004" author="akip">
+        <createTable tableName="process_instance">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="business_key" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="camunda_deployment_id" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="camunda_process_definition_id" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="camunda_process_instance_id" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="camunda_process_variables" type="${clobType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="start_date" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="end_date" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="process_definition_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+
+</databaseChangeLog>
