@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
@@ -37,7 +38,7 @@ public class ProcessDeploymentController {
         log.debug("REST request to deploy ProcessDeployment : {}", processDeploymentDTO);
         ProcessDeploymentDTO result = processDeploymentService.deploy(processDeploymentDTO);
         return ResponseEntity
-            .noContent()
+            .created(new URI("/api/process-deployment/" + result.getId()))
             .build();
     }
 
