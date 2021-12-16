@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.HeaderUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,6 +18,8 @@ import java.net.URISyntaxException;
 @RestController
 @RequestMapping("/api")
 public class ProcessDeploymentController {
+
+
 
     private final Logger log = LoggerFactory.getLogger(ProcessDeploymentController.class);
 
@@ -37,9 +40,15 @@ public class ProcessDeploymentController {
     public ResponseEntity<Void> deploy(@RequestBody ProcessDeploymentDTO processDeploymentDTO) throws URISyntaxException {
         log.debug("REST request to deploy ProcessDeployment : {}", processDeploymentDTO);
         ProcessDeploymentDTO result = processDeploymentService.deploy(processDeploymentDTO);
+
         return ResponseEntity
-            .created(new URI("/api/process-deployment/" + result.getId()))
-            .build();
+                .created(new URI("/api/process-deployment/" + result.getId()))
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildDeployedMessage(result), result.getCamundaProcessDefinitionId()))
+                .build();
+    }
+
+    private String buildDeployedMessage(ProcessDeploymentDTO processDeployment) {
+        return "Process deployed successfully: " + processDeployment.getCamundaProcessDefinitionId();
     }
 
     /**

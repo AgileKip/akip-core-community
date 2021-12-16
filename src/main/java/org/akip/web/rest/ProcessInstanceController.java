@@ -3,6 +3,7 @@ package org.akip.web.rest;
 
 import org.akip.service.ProcessInstanceService;
 import org.akip.service.TaskInstanceService;
+import org.akip.service.dto.ProcessDeploymentDTO;
 import org.akip.service.dto.ProcessInstanceBpmnModelDTO;
 import org.akip.service.dto.ProcessInstanceDTO;
 import org.akip.service.dto.TaskInstanceDTO;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.HeaderUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -45,8 +47,13 @@ public class ProcessInstanceController {
         log.debug("REST request to init a ProcessDefinition : {}", processInstanceDTO.getProcessDefinition());
         ProcessInstanceDTO result = processInstanceService.create(processInstanceDTO);
         return ResponseEntity
-            .created(new URI("/api/process-definitions/" + result.getId()))
-            .body(result);
+                .created(new URI("/api/process-definitions/" + result.getId()))
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildInitMessage(result), result.getCamundaProcessDefinitionId()))
+                .body(result);
+    }
+
+    private String buildInitMessage(ProcessInstanceDTO processInstance) {
+        return "Process initialized successfully: " + processInstance.getCamundaProcessInstanceId();
     }
 
     /**
