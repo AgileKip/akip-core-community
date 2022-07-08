@@ -116,7 +116,6 @@ public class ProcessInstanceService {
 
         Map<String, Object> params = new HashMap<>();
         params.put(CamundaConstants.PROCESS_INSTANCE, processEntity);
-        params.put(CamundaConstants.PROCESS_INSTANCE_INITIALS, processEntity);
 
         org.camunda.bpm.engine.runtime.ProcessInstance camundaProcessInstance = runtimeService
             .createProcessInstanceById(processDeployment.getCamundaProcessDefinitionId())

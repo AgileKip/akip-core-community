@@ -13,6 +13,7 @@ import org.mapstruct.Named;
  */
 @Mapper(componentModel = "spring", uses = {})
 public interface ProcessDefinitionMapper extends EntityMapper<ProcessDefinitionDTO, ProcessDefinition> {
+
     @Named("name")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")

@@ -5,6 +5,7 @@ import org.akip.domain.enumeration.StatusProcessInstance;
 import javax.persistence.Lob;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -24,6 +25,10 @@ public class ProcessInstanceDTO implements Serializable {
 
     @Lob
     private String camundaProcessVariables;
+
+    private Map<String, String> props;
+
+    private Map<String, String> data;
 
     private LocalDateTime startDate;
 
@@ -79,6 +84,23 @@ public class ProcessInstanceDTO implements Serializable {
 
     public void setCamundaProcessVariables(String camundaProcessVariables) {
         this.camundaProcessVariables = camundaProcessVariables;
+    }
+
+
+    public Map<String, String> getProps() {
+        return props;
+    }
+
+    public void setProps(Map<String, String> props) {
+        this.props = props;
+    }
+
+    public Map<String, String> getData() {
+        return data;
+    }
+
+    public void setData(Map<String, String> data) {
+        this.data = data;
     }
 
     public LocalDateTime getStartDate() {

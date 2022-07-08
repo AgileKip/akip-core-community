@@ -8,6 +8,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -43,6 +44,16 @@ public class ProcessInstance implements Serializable {
     @Column(name = "camunda_process_variables")
     private String camundaProcessVariables;
 
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "props")
+    private String props;
+
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "data")
+    private String data;
+
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
@@ -52,6 +63,12 @@ public class ProcessInstance implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusProcessInstance status;
+
+    @Column(name = "access_token_number")
+    private String accessTokenNumber;
+
+    @Column(name = "access_token_expiration_date")
+    private LocalDate accessTokenExpirationDate;
 
     @ManyToOne
     private ProcessDefinition processDefinition;
@@ -135,6 +152,32 @@ public class ProcessInstance implements Serializable {
         this.camundaProcessVariables = camundaProcessVariables;
     }
 
+    public String getProps() {
+        return props;
+    }
+
+    public ProcessInstance props(String props) {
+        this.props = props;
+        return this;
+    }
+
+    public void setProps(String props) {
+        this.props = props;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public ProcessInstance data(String data) {
+        this.data = data;
+        return this;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     public LocalDateTime getStartDate() {
         return this.startDate;
     }
@@ -172,6 +215,32 @@ public class ProcessInstance implements Serializable {
 
     public void setStatus(StatusProcessInstance status) {
         this.status = status;
+    }
+
+    public String getAccessTokenNumber() {
+        return accessTokenNumber;
+    }
+
+    public ProcessInstance accessTokenNumber(String accessTokenNumber) {
+        this.accessTokenNumber = accessTokenNumber;
+        return this;
+    }
+
+    public void setAccessTokenNumber(String accessTokenNumber) {
+        this.accessTokenNumber = accessTokenNumber;
+    }
+
+    public LocalDate getAccessTokenExpirationDate() {
+        return accessTokenExpirationDate;
+    }
+
+    public ProcessInstance accessTokenExpirationDate(LocalDate accessTokenExpirationDate) {
+        this.accessTokenExpirationDate = accessTokenExpirationDate;
+        return this;
+    }
+
+    public void setAccessTokenExpirationDate(LocalDate accessTokenExpirationDate) {
+        this.accessTokenExpirationDate = accessTokenExpirationDate;
     }
 
     public ProcessDefinition getProcessDefinition() {

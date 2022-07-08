@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
  */
 @Mapper(componentModel = "spring", uses = {})
 public interface ProcessDeploymentMapper extends EntityMapper<ProcessDeploymentDTO, ProcessDeployment> {
+
     @Mapping(target = "specificationFile", ignore = true)
     @Mapping(target = "specificationFileContentType", ignore = true)
     ProcessDeploymentDTO toDto(ProcessDeployment processDeployment);

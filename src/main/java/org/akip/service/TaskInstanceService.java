@@ -1,12 +1,18 @@
 package org.akip.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.camunda.CamundaConstants;
 import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
+import org.akip.exception.BadRequestErrorException;
+import org.akip.exception.ClaimNotAllowedException;
+import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.TaskInstanceRepository;
 import org.akip.security.SecurityUtils;
+import org.akip.service.dto.IProcessEntity;
 import org.akip.service.dto.ProcessInstanceDTO;
 import org.akip.service.dto.TaskInstanceDTO;
+import org.akip.service.mapper.ProcessInstanceMapper;
 import org.akip.service.mapper.TaskInstanceMapper;
 import org.camunda.bpm.engine.TaskService;
 import org.slf4j.Logger;
@@ -15,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,6 +34,10 @@ public class TaskInstanceService {
 
     private final Logger log = LoggerFactory.getLogger(TaskInstanceService.class);
 
+    private final ProcessInstanceRepository processInstanceRepository;
+
+    private final ProcessInstanceMapper processInstanceMapper;
+
     private final TaskInstanceRepository taskInstanceRepository;
 
     private final TaskInstanceMapper taskInstanceMapper;
@@ -35,12 +46,16 @@ public class TaskInstanceService {
 
     private final EntityManager entityManager;
 
+    private static final String ANONYMOUS_USER = "anonymousUser";
+
     public TaskInstanceService(
-        TaskInstanceRepository taskInstanceRepository,
-        TaskInstanceMapper taskInstanceMapper,
-        TaskService taskService,
-        EntityManager entityManager
+            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, TaskInstanceRepository taskInstanceRepository,
+            TaskInstanceMapper taskInstanceMapper,
+            TaskService taskService,
+            EntityManager entityManager
     ) {
+        this.processInstanceRepository = processInstanceRepository;
+        this.processInstanceMapper = processInstanceMapper;
         this.taskInstanceRepository = taskInstanceRepository;
         this.taskInstanceMapper = taskInstanceMapper;
         this.taskService = taskService;
@@ -88,28 +103,69 @@ public class TaskInstanceService {
         Optional<TaskInstance> optionalTaskInstance = taskInstanceRepository.findById(id);
         if (optionalTaskInstance.isPresent()) {
             TaskInstance taskInstance = optionalTaskInstance.get();
+            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getCandidateGroups()));
+
             taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
             taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
+
+            //Reset starTine on the first claiming or when changing assignee
+            if (taskInstance.getStartTime() == null || (taskInstance.getAssignee() != null && !taskInstance.getAssignee().equals(SecurityUtils.getCurrentUserLogin().get()))) {
+                taskInstance.setStartTime(Instant.now());
+            }
+
             taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().get());
             taskInstanceRepository.save(taskInstance);
         }
         return optionalTaskInstance.map(taskInstanceMapper::toDto);
     }
 
-    public void complete(TaskInstanceDTO taskInstanceDTO) {
-        ProcessInstanceDTO processInstanceDTO = taskInstanceDTO.getProcessInstance();
-        //TODO... updating with data from request...
-        //processInstanceService.save(processInstance);
-        complete(taskInstanceDTO, processInstanceDTO);
+    /***
+     * Check whether the current user can claim this task according to the candidate group list
+     * @param candidateGroups candidateGroups
+     */
+    private void checkCurrentUserPermission(List<String> candidateGroups) {
+        if (candidateGroups.isEmpty()) {
+            return;
+        }
+
+        if (candidateGroups.contains(ANONYMOUS_USER)) {
+            return;
+        }
+
+        List<String> authoritiesCurrentUser = SecurityUtils.getAuthorities();
+        for (String authority : authoritiesCurrentUser) {
+            if (candidateGroups.contains(authority)) {
+                return;
+            }
+        }
+
+        throw new ClaimNotAllowedException(String.join(", ", candidateGroups));
     }
 
-    public void complete(TaskInstanceDTO taskInstance, Object processInstance) {
+    public void complete(TaskInstanceDTO taskInstanceDTO) {
+        complete(taskInstanceDTO, taskInstanceDTO.getProcessInstance());
+    }
+
+    public void complete(TaskInstanceDTO taskInstance, ProcessInstanceDTO processInstance) {
         log.debug("Concluding taskIntanceId: {}, camundaTaskId: {}", taskInstance.getId(), taskInstance.getTaskId());
+        updateProcessInstanceData(processInstance);
         Map<String, Object> params = new HashMap<>();
         params.put(CamundaConstants.PROCESS_INSTANCE, processInstance);
-        params.put(CamundaConstants.PROCESS_INSTANCE_INITIALS, processInstance);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().get());
         taskService.complete(taskInstance.getTaskId(), params);
+        //TODO... add a hook. Motivation: migrate the method below to a hook
+        //noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
+    }
+
+    public void complete(TaskInstanceDTO taskInstance, IProcessEntity processEntity) {
+        log.debug("Concluding taskIntanceId: {}, camundaTaskId: {}", taskInstance.getId(), taskInstance.getTaskId());
+        updateProcessInstanceData(processEntity.getProcessInstance());
+        Map<String, Object> params = new HashMap<>();
+        params.put(CamundaConstants.PROCESS_ENTITY, processEntity);
+        taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().orElseThrow());
+        taskService.complete(taskInstance.getTaskId(), params);
+        //TODO... add a hook. Motivation: migrate the method below to a hook
+        //noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }
 
     public List<TaskInstanceDTO> findByProcessDefinition(String idOrBpmnProcessDefinitionId) {
@@ -169,5 +225,16 @@ public class TaskInstanceService {
             .stream()
             .map(taskInstanceMapper::toDto)
             .collect(Collectors.toList());
+    }
+
+    private void updateProcessInstanceData(ProcessInstanceDTO processInstanceDTO) {
+        try {
+            processInstanceRepository.updateDataById(
+                    processInstanceMapper.mapToString(processInstanceDTO.getData()),
+                    processInstanceDTO.getId()
+            );
+        } catch (JsonProcessingException e) {
+            throw new BadRequestErrorException(e.toString());
+        }
     }
 }

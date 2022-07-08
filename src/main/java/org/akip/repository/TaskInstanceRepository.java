@@ -20,6 +20,8 @@ public interface TaskInstanceRepository extends JpaRepository<TaskInstance, Long
     @Query("from TaskInstance where processDefinition.id = ?1 or processDefinition.bpmnProcessDefinitionId = ?1")
     List<TaskInstance> findByProcessDefinitionIdOrBpmnProcessDefinitionId(String idOrBpmnProcessDefinitionId);
 
+    List<TaskInstance> findByTaskDefinitionKeyAndProcessInstanceIdAndProcessInstanceAccessTokenNumberOrderByIdDesc(String taskDefinitionKey, Long processInstanceId, String accessTokenNumber);
+
     List<TaskInstance> findByProcessInstanceId(Long processInstanceId);
 
     List<TaskInstance> findByAssigneeAndStatusIn(String assignee, List<StatusTaskInstance> statusTaskInstances);

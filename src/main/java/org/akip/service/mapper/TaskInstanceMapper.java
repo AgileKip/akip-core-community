@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  */
 @Mapper(componentModel = "spring", uses = { ProcessDefinitionMapper.class, ProcessInstanceMapper.class })
 public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskInstance> {
+
     final String delimiter = ",";
 
     @Mapping(target = "processDefinition", source = "processDefinition", qualifiedByName = "name")
