@@ -6,19 +6,12 @@
     <!--
         Added the constraints for entity TaskInstance.
     -->
-    <changeSet id="00000000000007" author="akip">
+    <changeSet id="00000000000009" author="akip">
 
         <addForeignKeyConstraint baseColumnNames="process_definition_id"
                                  baseTableName="task_instance"
                                  constraintName="fk_task_instance__process_definition_id"
                                  referencedColumnNames="id"
                                  referencedTableName="process_definition"/>
-
-<!--        <addForeignKeyConstraint baseColumnNames="process_instance_id"-->
-<!--                                 baseTableName="task_instance"-->
-<!--                                 constraintName="fk_task_inst_proc_inst_id"-->
-<!--                                 referencedColumnNames="id"-->
-<!--                                 referencedTableName="process_instance"/>-->
-
     </changeSet>
 </databaseChangeLog>

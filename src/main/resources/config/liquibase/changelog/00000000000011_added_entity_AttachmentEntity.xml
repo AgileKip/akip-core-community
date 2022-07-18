@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity AttachmentEntity.
+    -->
+    <changeSet id="00000000000001.1" author="akip">
+        <createTable tableName="attachment_entity">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="entity_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="entity_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="attachment_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000011.2" author="akip">
+        <addForeignKeyConstraint baseColumnNames="attachment_id"
+                                 baseTableName="attachment_entity"
+                                 constraintName="fk_attach_entity_attach_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="attachment"/>
+    </changeSet>
+
+</databaseChangeLog>

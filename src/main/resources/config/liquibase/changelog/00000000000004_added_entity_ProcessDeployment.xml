@@ -9,7 +9,7 @@
     <!--
         Added the entity ProcessDeployment.
     -->
-    <changeSet id="00000000000002" author="akip">
+    <changeSet id="00000000000004" author="akip">
         <createTable tableName="process_deployment">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -32,9 +32,6 @@
             <column name="camunda_process_definition_id" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="process_definition_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
             <column name="deploy_date" type="${datetimeType}">
                 <constraints nullable="true" />
             </column>
@@ -44,8 +41,12 @@
             <column name="inactivation_date" type="${datetimeType}">
                 <constraints nullable="true" />
             </column>
-            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+            <column name="props" type="${clobType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="process_definition_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
         </createTable>
     </changeSet>
-    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 </databaseChangeLog>

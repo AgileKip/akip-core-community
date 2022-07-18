@@ -38,6 +38,8 @@ public class ProcessInstanceDTO implements Serializable {
 
     private ProcessDefinitionDTO processDefinition;
 
+    private TenantDTO tenant;
+
     public Long getId() {
         return id;
     }
@@ -133,6 +135,14 @@ public class ProcessInstanceDTO implements Serializable {
 
     public void setProcessDefinition(ProcessDefinitionDTO processDefinition) {
         this.processDefinition = processDefinition;
+    }
+
+    public TenantDTO getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(TenantDTO tenant) {
+        this.tenant = tenant;
     }
 
     @Override

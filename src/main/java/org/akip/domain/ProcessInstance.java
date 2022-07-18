@@ -29,6 +29,9 @@ public class ProcessInstance implements Serializable {
     @Column(name = "business_key")
     private String businessKey;
 
+    @Column(name = "username")
+    private String username;
+
     @Column(name = "camunda_deployment_id")
     private String camundaDeploymentId;
 
@@ -73,6 +76,10 @@ public class ProcessInstance implements Serializable {
     @ManyToOne
     private ProcessDefinition processDefinition;
 
+    @ManyToOne
+    private Tenant tenant;
+
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -98,6 +105,19 @@ public class ProcessInstance implements Serializable {
 
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public ProcessInstance username(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getCamundaDeploymentId() {
@@ -254,6 +274,19 @@ public class ProcessInstance implements Serializable {
 
     public void setProcessDefinition(ProcessDefinition processDefinition) {
         this.processDefinition = processDefinition;
+    }
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public ProcessInstance tenant(Tenant tenant) {
+        this.setTenant(tenant);
+        return this;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -81,17 +81,18 @@ public class ProcessDefinitionController {
         return processDeploymentService.findByProcessDefinition(idOrBpmnProcessDefinitionId);
     }
 
-    /**
-     * {@code GET  /process-definitions/:idOrBpmnProcessDefinitionId/instances} : get the "idOrBpmnProcessDefinitionId" processDefinition.
-     *
-     * @param idOrBpmnProcessDefinitionId the id of the processDefinitionDTO owner of the ProcessInstances.
-     * @return the list of processInstanceDTO, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}/instances")
-    public List<ProcessInstanceDTO> getProcessInstances(@PathVariable String idOrBpmnProcessDefinitionId) {
-        log.debug("REST request to get ProcessInstances of the ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
-        return processInstanceService.findByProcessDefinition(idOrBpmnProcessDefinitionId);
-    }
+    //TODO: replace for the search framework
+//    /**
+//     * {@code GET  /process-definitions/:idOrBpmnProcessDefinitionId/instances} : get the "idOrBpmnProcessDefinitionId" processDefinition.
+//     *
+//     * @param idOrBpmnProcessDefinitionId the id of the processDefinitionDTO owner of the ProcessInstances.
+//     * @return the list of processInstanceDTO, or with status {@code 404 (Not Found)}.
+//     */
+//    @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}/instances")
+//    public List<ProcessInstanceDTO> getProcessInstances(@PathVariable String idOrBpmnProcessDefinitionId) {
+//        log.debug("REST request to get ProcessInstances of the ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
+//        return processInstanceService.findByProcessDefinition(idOrBpmnProcessDefinitionId);
+//    }
 
     /**
      * {@code GET  /process-definition/:idOrBpmnProcessDefinitionId/tasks} : get the "id" processInstance.

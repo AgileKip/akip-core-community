@@ -4,6 +4,7 @@ import org.akip.domain.enumeration.StatusProcessDeployment;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -31,7 +32,11 @@ public class ProcessDeploymentDTO implements Serializable {
 
     private LocalDateTime inactivationDate;
 
+    private Map<String, String> props;
+
     private ProcessDefinitionDTO processDefinition;
+
+    private TenantDTO tenant;
 
     public Long getId() {
         return id;

@@ -21,10 +21,14 @@ public interface ProcessDeploymentRepository extends JpaRepository<ProcessDeploy
 
     Optional<ProcessDeployment> findByCamundaProcessDefinitionId(String camundaProcessDefinitionId);
 
-    @Query(
-        "from ProcessDeployment where processDefinition.id = ?1 and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE"
-    )
+    @Query("from ProcessDeployment where processDefinition.id = ?1 and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE")
     Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusIsActive(Long processDefinitionId);
+
+    @Query("from ProcessDeployment where processDefinition.id = ?1 and tenant is null and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE")
+    Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(Long processDefinitionId);
+
+    @Query("from ProcessDeployment where processDefinition.id = ?1 and tenant = ?2 and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE")
+    Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusIsActiveAndTenantId(Long processDefinitionId, Long tenantId);
 
     @Modifying
     @Query("update ProcessDeployment set status = ?1 where id = ?2")

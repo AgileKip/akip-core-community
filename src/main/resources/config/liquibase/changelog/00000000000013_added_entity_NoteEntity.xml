@@ -7,31 +7,30 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Added the entity ProcessDefinition.
+        Added the entity NoteEntity.
     -->
-    <changeSet id="00000000000001" author="akip">
-        <createTable tableName="process_definition">
+    <changeSet id="000000000000013.1" author="akip">
+        <createTable tableName="note_entity">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
+            <column name="entity_name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="description" type="${clobType}">
+            <column name="entity_id" type="bigint">
                 <constraints nullable="true" />
             </column>
-            <column name="status" type="varchar(255)">
+            <column name="note_id" type="bigint">
                 <constraints nullable="true" />
             </column>
-            <column name="bpmn_process_definition_id" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="can_be_manually_started" type="bit">
-                <constraints nullable="true" />
-            </column>
-            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
     </changeSet>
 
-    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+    <changeSet id="00000000000013. 2" author="akip">
+        <addForeignKeyConstraint baseColumnNames="note_id"
+                                 baseTableName="note_entity"
+                                 constraintName="fk_note_entity_note_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="note"/>
+    </changeSet>
 </databaseChangeLog>

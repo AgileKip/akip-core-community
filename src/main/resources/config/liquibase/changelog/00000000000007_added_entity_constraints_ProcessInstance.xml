@@ -6,13 +6,12 @@
     <!--
         Added the constraints for entity ProcessInstance.
     -->
-    <changeSet id="00000000000005" author="akip">
+    <changeSet id="00000000000007" author="akip">
         
         <addForeignKeyConstraint baseColumnNames="process_definition_id"
                                  baseTableName="process_instance"
                                  constraintName="fk_pro_inst_proc_def_id"
                                  referencedColumnNames="id"
                                  referencedTableName="process_definition"/>
-
     </changeSet>
 </databaseChangeLog>
