@@ -47,6 +47,9 @@
             <column name="process_definition_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="tenant_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>
