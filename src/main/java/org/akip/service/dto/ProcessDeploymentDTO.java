@@ -118,12 +118,28 @@ public class ProcessDeploymentDTO implements Serializable {
         this.inactivationDate = inactivationDate;
     }
 
+    public Map<String, String> getProps() {
+        return props;
+    }
+
+    public void setProps(Map<String, String> props) {
+        this.props = props;
+    }
+
     public ProcessDefinitionDTO getProcessDefinition() {
         return processDefinition;
     }
 
     public void setProcessDefinition(ProcessDefinitionDTO processDefinition) {
         this.processDefinition = processDefinition;
+    }
+
+    public TenantDTO getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(TenantDTO tenant) {
+        this.tenant = tenant;
     }
 
     @Override
