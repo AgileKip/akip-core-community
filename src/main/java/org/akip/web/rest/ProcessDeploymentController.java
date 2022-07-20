@@ -19,8 +19,6 @@ import java.net.URISyntaxException;
 @RequestMapping("/api")
 public class ProcessDeploymentController {
 
-
-
     private final Logger log = LoggerFactory.getLogger(ProcessDeploymentController.class);
 
     private final ProcessDeploymentService processDeploymentService;

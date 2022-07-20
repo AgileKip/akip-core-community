@@ -6,7 +6,6 @@ import org.akip.service.TenantService;
 import org.akip.service.dto.TenantDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -19,7 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * REST controller for managing {@link Tenant}.
+ * REST controller for managing {@link org.akip.domain.Tenant}.
  */
 @RestController
 @RequestMapping("/api")
@@ -28,9 +27,9 @@ public class TenantResource {
     private final Logger log = LoggerFactory.getLogger(TenantResource.class);
 
     private static final String ENTITY_NAME = "tenant";
-
-    @Value("${jhipster.clientApp.name}")
-    private String applicationName;
+    private static final String MESSAGE_TENANT_CREATED = "Tenant Successfully Created";
+    private static final String MESSAGE_TENANT_UPDATED = "Tenant Successfully Updated";
+    private static final String MESSAGE_TENANT_REMOVED = "Tenant Successfully Removed";
 
     private final TenantService tenantService;
 
@@ -57,7 +56,7 @@ public class TenantResource {
         TenantDTO result = tenantService.save(tenantDTO);
         return ResponseEntity
             .created(new URI("/api/tenants/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_TENANT_CREATED, result.getId().toString()))
             .body(result);
     }
 
@@ -91,7 +90,7 @@ public class TenantResource {
         TenantDTO result = tenantService.save(tenantDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, tenantDTO.getId().toString()))
+            .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_TENANT_UPDATED, tenantDTO.getId().toString()))
             .body(result);
     }
 
@@ -131,7 +130,7 @@ public class TenantResource {
         tenantService.delete(id);
         return ResponseEntity
             .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_TENANT_REMOVED, id.toString()))
             .build();
     }
 }
