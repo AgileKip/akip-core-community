@@ -1,8 +1,10 @@
 package org.akip.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.ProcessDeployment;
 import org.akip.domain.enumeration.StatusProcessDeployment;
+import org.akip.exception.BadRequestErrorException;
 import org.akip.repository.ProcessDeploymentRepository;
 import org.akip.service.dto.ProcessDefinitionDTO;
 import org.akip.service.dto.ProcessDeploymentBpmnModelDTO;
@@ -15,6 +17,7 @@ import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaExecutionListener;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaTaskListener;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
@@ -25,9 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -61,16 +62,22 @@ public class ProcessDeploymentService {
 
     public ProcessDeploymentDTO deploy(ProcessDeploymentDTO processDeploymentDTO) {
         BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(
-            new ByteArrayInputStream(processDeploymentDTO.getSpecificationFile())
+                new ByteArrayInputStream(processDeploymentDTO.getSpecificationFile())
         );
         ProcessDefinition processDefinition = processDefinitionService.createOrUpdateProcessDefinition(bpmnModelInstance);
 
-        org.camunda.bpm.engine.repository.Deployment camundaDeployment = deployInCamunda(processDefinition, bpmnModelInstance);
+        org.camunda.bpm.engine.repository.Deployment camundaDeployment = deployInCamunda(
+                processDeploymentDTO,
+                processDefinition,
+                bpmnModelInstance
+        );
 
         org.camunda.bpm.engine.repository.ProcessDefinition camundaProcessDefinition = repositoryService
-            .createProcessDefinitionQuery()
-            .deploymentId(camundaDeployment.getId())
-            .singleResult();
+                .createProcessDefinitionQuery()
+                .deploymentId(camundaDeployment.getId())
+                .singleResult();
+
+        processDeploymentDTO.setProps(extractProperties(bpmnModelInstance));
 
         ProcessDeployment processDeployment = processDeploymentMapper.toEntity(processDeploymentDTO);
         processDeployment.setProcessDefinition(processDefinition);
@@ -128,24 +135,76 @@ public class ProcessDeploymentService {
     }
 
     private org.camunda.bpm.engine.repository.Deployment deployInCamunda(
-        ProcessDefinition processDefinition,
-        BpmnModelInstance bpmnModelInstance
+            ProcessDeploymentDTO processDeploymentDTO,
+            ProcessDefinition processDefinition,
+            BpmnModelInstance bpmnModelInstance
     ) {
         configureListeners(bpmnModelInstance);
+        if (processDeploymentDTO.getTenant() == null) {
+            return repositoryService
+                    .createDeployment()
+                    .addModelInstance(processDefinition.getBpmnProcessDefinitionId() + ".bpmn", bpmnModelInstance)
+                    .name(processDefinition.getBpmnProcessDefinitionId())
+                    .deploy();
+        }
+
         return repositoryService
-            .createDeployment()
-            .addModelInstance(processDefinition.getBpmnProcessDefinitionId() + ".bpmn", bpmnModelInstance)
-            .name(processDefinition.getBpmnProcessDefinitionId())
-            .deploy();
+                .createDeployment()
+                .addModelInstance(processDefinition.getBpmnProcessDefinitionId() + ".bpmn", bpmnModelInstance)
+                .name(processDefinition.getBpmnProcessDefinitionId())
+                .tenantId(processDeploymentDTO.getTenant().getIdentifier())
+                .deploy();
     }
 
     private void inactivatePreviousProcessDeployments(ProcessDeployment processDeployment) {
-        Optional<ProcessDeployment> previousProcessDeployment = processDeploymentRepository.findByProcessDefinitionIdAndStatusIsActive(
-            processDeployment.getProcessDefinition().getId()
+        List<ProcessDeployment> previousProcessDeployments = getActiveProcessDeployment(processDeployment);
+        previousProcessDeployments.forEach(
+                previousProcessDeployment -> {
+                    inactivate(previousProcessDeployment.getId());
+                }
         );
-        if (previousProcessDeployment.isPresent()) {
-            inactivate(previousProcessDeployment.get().getId());
+    }
+
+    private List<ProcessDeployment> getActiveProcessDeployment(ProcessDeployment processDeployment) {
+        if (processDeployment.getTenant() == null) {
+            return processDeploymentRepository.findByProcessDefinitionIdAndStatusAndTenantIsNull(
+                    processDeployment.getProcessDefinition().getId(),
+                    StatusProcessDeployment.ACTIVE
+            );
         }
+
+        return processDeploymentRepository.findByProcessDefinitionIdAndStatusAndTenantId(
+                processDeployment.getProcessDefinition().getId(),
+                StatusProcessDeployment.ACTIVE,
+                processDeployment.getTenant().getId()
+        );
+    }
+
+    private Map<String, String> extractProperties(BpmnModelInstance modelInstance) {
+        ModelElementType processType = modelInstance.getModel().getType(Process.class);
+        Process process = (Process) modelInstance.getModelElementsByType(processType).iterator().next();
+
+        if (
+                process.getExtensionElements() == null ||
+                        process.getExtensionElements().getElementsQuery().filterByType(CamundaProperties.class).count() == 0
+        ) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, String> properties = new HashMap<>();
+        CamundaProperties camundaProperties = process
+                .getExtensionElements()
+                .getElementsQuery()
+                .filterByType(CamundaProperties.class)
+                .singleResult();
+        camundaProperties
+                .getCamundaProperties()
+                .forEach(
+                        camundaProperty -> {
+                            properties.put(camundaProperty.getCamundaName(), camundaProperty.getCamundaValue());
+                        }
+                );
+        return properties;
     }
 
     private void configureListeners(BpmnModelInstance modelInstance) {
@@ -220,5 +279,14 @@ public class ProcessDeploymentService {
                     }
                 }
             );
+    }
+
+    public void saveProperties(Long id, Map<String, String> properties) {
+        try {
+            String propertiesAsString = processDeploymentMapper.mapToString(properties);
+            processDeploymentRepository.updatePropertiesById(propertiesAsString, id);
+        } catch (JsonProcessingException e) {
+            throw new BadRequestErrorException(e.getMessage());
+        }
     }
 }

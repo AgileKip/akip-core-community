@@ -13,5 +13,11 @@
                                  constraintName="fk_pro_inst_proc_def_id"
                                  referencedColumnNames="id"
                                  referencedTableName="process_definition"/>
+
+        <addForeignKeyConstraint baseColumnNames="tenant_id"
+                                 baseTableName="process_instance"
+                                 constraintName="fk_pro_inst_tenant_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tenant"/>
     </changeSet>
 </databaseChangeLog>

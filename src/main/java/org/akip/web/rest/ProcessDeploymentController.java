@@ -11,6 +11,7 @@ import tech.jhipster.web.util.HeaderUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 /**
  * REST controller for managing {@link org.akip.domain.ProcessDeployment}.
@@ -18,6 +19,8 @@ import java.net.URISyntaxException;
 @RestController
 @RequestMapping("/api")
 public class ProcessDeploymentController {
+
+    private static final String MESSAGE_PROPERTIES_SAVED = "Properties Successfully Saved";
 
     private final Logger log = LoggerFactory.getLogger(ProcessDeploymentController.class);
 
@@ -101,5 +104,15 @@ public class ProcessDeploymentController {
         return ResponseEntity
             .noContent()
             .build();
+    }
+
+    @PutMapping("/process-deployment/{id}/properties")
+    public ResponseEntity<Void> saveProperties(@PathVariable Long id, @RequestBody Map<String, String> properties) {
+        log.debug("REST request to save ProcessDeployment properties: {}", id);
+        processDeploymentService.saveProperties(id, properties);
+        return ResponseEntity
+                .noContent()
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_PROPERTIES_SAVED, id.toString()))
+                .build();
     }
 }
