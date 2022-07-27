@@ -14,6 +14,7 @@
     <property name="datetimeType" value="datetime(6)" dbms="mysql, mariadb"/>
     <property name="datetimeType" value="datetime" dbms="oracle, mssql, postgresql, h2"/>
 
+    <include file="config/liquibase/changelog/00000000000000_added_akip_hibernate_sequence.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000001_added_entity_Tenant.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000002_added_entity_TenantUser.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000003_added_entity_ProcessDefinition.xml" relativeToChangelogFile="false"/>

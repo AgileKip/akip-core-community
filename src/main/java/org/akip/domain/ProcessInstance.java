@@ -23,7 +23,7 @@ public class ProcessInstance implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator", sequenceName = "akip_hibernate_sequence")
     private Long id;
 
     @Column(name = "business_key")

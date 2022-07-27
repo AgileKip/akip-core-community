@@ -7,12 +7,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * An AttachmentEntity.
+ * A NoteEntity.
  */
 @Entity
-@Table(name = "attachment_entity")
+@Table(name = "note_entity")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class AttachmentEntity implements Serializable {
+public class NoteEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,7 @@ public class AttachmentEntity implements Serializable {
     private String entityName;
 
     @ManyToOne
-    private Attachment attachment;
+    private Note note;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
 
@@ -56,14 +56,13 @@ public class AttachmentEntity implements Serializable {
         this.entityName = entityName;
     }
 
-    public Attachment getAttachment() {
-        return attachment;
+    public Note getNote() {
+        return note;
     }
 
-    public void setAttachment(Attachment attachment) {
-        this.attachment = attachment;
+    public void setNote(Note note) {
+        this.note = note;
     }
-
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -72,10 +71,10 @@ public class AttachmentEntity implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof AttachmentEntity)) {
+        if (!(o instanceof NoteEntity)) {
             return false;
         }
-        return id != null && id.equals(((AttachmentEntity) o).id);
+        return id != null && id.equals(((NoteEntity) o).id);
     }
 
     @Override
@@ -85,7 +84,7 @@ public class AttachmentEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "AttachmentEntity {" +
+        return "NoteEntity {" +
             "id=" + getId() +
             ", entityId=" + getEntityId() +
             ", entityName='" + getEntityName() + "'" +
