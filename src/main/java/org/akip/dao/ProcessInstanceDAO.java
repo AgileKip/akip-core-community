@@ -1,96 +1,185 @@
-package org.akip.dao
+package org.akip.dao;
 
-import com.owse.searchFramework.AbstractDAO
-import com.owse.searchFramework.DatetimeFilterDef
-import com.owse.searchFramework.EntityFilterDef
-import com.owse.searchFramework.EnumListFilterDef
-import com.owse.searchFramework.Filter
-import com.owse.searchFramework.FilterDef
-import com.owse.searchFramework.HQLField
-import com.owse.searchFramework.ResultColumn
-import com.owse.searchFramework.StringFilterDef
-import org.akip.domain.ProcessInstance
-import org.akip.domain.enumeration.StatusTaskInstance
-import org.akip.service.ProcessDefinitionService
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Service
+import com.owse.searchFramework.AbstractDAO;
+import com.owse.searchFramework.DatetimeFilterDef;
+import com.owse.searchFramework.EntityFilterDef;
+import com.owse.searchFramework.EnumListFilterDef;
+import com.owse.searchFramework.FilterDef;
+import com.owse.searchFramework.HQLField;
+import com.owse.searchFramework.ResultColumn;
+import com.owse.searchFramework.StringFilterDef;
+import org.akip.domain.ProcessInstance;
+import org.akip.domain.enumeration.StatusTaskInstance;
+import org.akip.service.ProcessDefinitionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service("processInstance")
 class ProcessInstanceDAO extends AbstractDAO<ProcessInstanceSearchDTO> {
 
-    private final Logger log = LoggerFactory.getLogger(ProcessInstanceDAO.class)
+    private final Logger log = LoggerFactory.getLogger(ProcessInstanceDAO.class);
 
-    private final ProcessDefinitionService processDefinitionService
+    private final ProcessDefinitionService processDefinitionService;
 
     ProcessInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService) {
-        super(entityManager, ProcessInstance.class, ProcessInstanceSearchDTO.class)
-        this.processDefinitionService = processDefinitionService
+        super(entityManager, ProcessInstance.class, ProcessInstanceSearchDTO.class);
+        this.processDefinitionService = processDefinitionService;
     }
 
     @Override
-    void configureCustomHQLFields() {
-        hqlFields.tenant = new HQLField('entity.tenant.id', 'entity.tenant.name')
-        hqlFields.processDefinition = new HQLField('entity.processDefinition.id', 'entity.processDefinition.name')
+    public void configureCustomHQLFields() {
+        getHqlFields().put("tenant", new HQLField("entity.tenant.id", "entity.tenant.name"));
+        getHqlFields().put("processDefinition", new HQLField("entity.processDefinition.id", "entity.processDefinition.name"));
     }
 
     @Override
-    List<String> getConstructorFields() {
-        List<String> fields = []
-        fields << 'entity.id'
-        fields << 'entity.businessKey'
-        fields << 'entity.username'
-        fields << 'entity.status'
-        fields << 'entity.startDate'
-        fields << 'entity.endDate'
-        fields << 'entity.processDefinition.name'
-        fields << 'entity.tenant.name'
-        fields << 'entity.camundaDeploymentId'
-        return fields
+    public List<String> getConstructorFields() {
+        List<String> fields = new ArrayList<>();
+        fields.add("entity.id");
+        fields.add("entity.businessKey");
+        fields.add("entity.username");
+        fields.add("entity.status");
+        fields.add("entity.startDate");
+        fields.add("entity.endDate");
+        fields.add("entity.processDefinition.name");
+        fields.add("entity.tenant.name");
+        fields.add("entity.camundaDeploymentId");
+        return fields;
     }
 
     @Override
-    List<FilterDef> getFiltersDef() {
-        List<Filter> filters = []
-        filters << new EntityFilterDef(id:'processDefinition', options: processDefinitionService.findAll(), fieldInSelect: 'name', removable: false)
-        //filters << new EntityFilterDef(id: 'tenant', options: securityUtils.getTenantsCurrentUser(), fieldInSelect: 'name', removable: false)
-        filters << new EnumListFilterDef(id:'status', enumType: StatusTaskInstance.class, options: StatusTaskInstance.values(), removable: false)
-        filters << new StringFilterDef(id:'username')
-        filters << new StringFilterDef(id:'businessKey')
-        filters << new DatetimeFilterDef(id:'createTime')
+    public List<FilterDef> getFiltersDef() {
+        List<FilterDef> filters = new ArrayList<>();
 
-        return filters
+        EntityFilterDef processDefinitionFilter = new EntityFilterDef();
+        processDefinitionFilter.setId("processDefinition");
+        processDefinitionFilter.setOptions(processDefinitionService.findAll());
+        processDefinitionFilter.setFieldInSelect("name");
+        processDefinitionFilter.setRemovable(false);
+        filters.add(processDefinitionFilter);
+
+        EnumListFilterDef statusFilterDef = new EnumListFilterDef();
+        statusFilterDef.setId("status");
+        statusFilterDef.setEnumType(StatusTaskInstance.class);
+        statusFilterDef.setOptions(Arrays.asList(StatusTaskInstance.values()));
+        statusFilterDef.setRemovable(false);
+        filters.add(statusFilterDef);
+
+        StringFilterDef usernameFilterDef = new StringFilterDef();
+        usernameFilterDef.setId("username");
+        filters.add(usernameFilterDef);
+
+        StringFilterDef businessKeyFilterDef = new StringFilterDef();
+        businessKeyFilterDef.setId("businessKey");
+        filters.add(businessKeyFilterDef);
+
+        DatetimeFilterDef createTimeFilterDef = new DatetimeFilterDef();
+        createTimeFilterDef.setId("createTime");
+        filters.add(createTimeFilterDef);
+
+        //filters.add(new EntityFilterDef(id: "tenant", options: securityUtils.getTenantsCurrentUser(), fieldInSelect: "name", removable: false)
+
+        return filters;
     }
 
     @Override
-    List<ResultColumn> getResultColumns() {
-        List<ResultColumn> resultColumns = []
-        resultColumns << new ResultColumn(id:'id', title: 'Id', dtoField: 'id', visible: true, type: 'Long')
-        resultColumns << new ResultColumn(id:'businessKey', title: 'Business Key', dtoField: 'businessKey', visible: true, type: 'String')
-        resultColumns << new ResultColumn(id:'username', title: 'Status', dtoField: 'username', visible: true, type: 'String')
-        resultColumns << new ResultColumn(id:'status', title: 'Status', dtoField: 'status', visible: true, type: 'Custom', subType: 'akip-show-process-instance-status')
-        resultColumns << new ResultColumn(id:'startDate', title: 'Start Date', dtoField: 'startDate', visible: true, type: 'Datetime')
-        resultColumns << new ResultColumn(id:'endDate', title: 'End Date', dtoField: 'endDate', visible: true, type: 'Datetime')
-        resultColumns << new ResultColumn(id:'processDefinition', title: 'Process', dtoField: 'processDefinitionName', visible: true, type: 'String')
-        resultColumns << new ResultColumn(id:'tenant', title: 'Tenant', dtoField: 'tenantName', visible: true, type: 'String')
-        resultColumns << new ResultColumn(id:'camundaDeploymentId', title: 'Deployment Id', dtoField: 'camundaDeploymentId', visible: true, type: 'String')
-        return resultColumns
+    public List<ResultColumn> getResultColumns() {
+        List<ResultColumn> resultColumns = new ArrayList<>();
+
+        ResultColumn resultColumnId = new ResultColumn();
+        resultColumnId.setId("id");
+        resultColumnId.setTitle("Id");
+        resultColumnId.setDtoField("id");
+        resultColumnId.setVisible(true);
+        resultColumnId.setType("Long");
+        resultColumns.add(resultColumnId);
+
+        ResultColumn resultColumnTitle = new ResultColumn();
+        resultColumnTitle.setId("businessKey");
+        resultColumnTitle.setTitle("Business Key");
+        resultColumnTitle.setDtoField("businessKey");
+        resultColumnTitle.setVisible(true);
+        resultColumnTitle.setType("String");
+        resultColumns.add(resultColumnTitle);
+
+        ResultColumn resultColumnUsername = new ResultColumn();
+        resultColumnUsername.setId("username");
+        resultColumnUsername.setTitle("Owner");
+        resultColumnUsername.setDtoField("username");
+        resultColumnUsername.setVisible(true);
+        resultColumnUsername.setType("String");
+        resultColumns.add(resultColumnUsername);
+
+        ResultColumn resultColumnStatus = new ResultColumn();
+        resultColumnStatus.setId("status");
+        resultColumnStatus.setTitle("Status");
+        resultColumnStatus.setDtoField("status");
+        resultColumnStatus.setVisible(true);
+        resultColumnStatus.setType("Custom");
+        resultColumnStatus.setSubType("akip-show-process-instance-status");
+        resultColumns.add(resultColumnStatus);
+
+        ResultColumn resultColumnStartDate = new ResultColumn();
+        resultColumnStartDate.setId("startDate");
+        resultColumnStartDate.setTitle("Start Date");
+        resultColumnStartDate.setDtoField("startDate");
+        resultColumnStartDate.setVisible(true);
+        resultColumnStartDate.setType("Datetime");
+        resultColumns.add(resultColumnStartDate);
+
+        ResultColumn resultColumnEndDate = new ResultColumn();
+        resultColumnEndDate.setId("endDate");
+        resultColumnEndDate.setTitle("End Date");
+        resultColumnEndDate.setDtoField("endDate");
+        resultColumnEndDate.setVisible(true);
+        resultColumnEndDate.setType("Datetime");
+        resultColumns.add(resultColumnEndDate);
+
+        ResultColumn resultColumnProcess = new ResultColumn();
+        resultColumnProcess.setId("processDefinition");
+        resultColumnProcess.setTitle("Process");
+        resultColumnProcess.setDtoField("processDefinition");
+        resultColumnProcess.setVisible(true);
+        resultColumnProcess.setType("String");
+        resultColumns.add(resultColumnProcess);
+
+        ResultColumn resultColumnTenant = new ResultColumn();
+        resultColumnTenant.setId("tenant");
+        resultColumnTenant.setTitle("Tenant");
+        resultColumnTenant.setDtoField("tenant");
+        resultColumnTenant.setVisible(true);
+        resultColumnTenant.setType("String");
+        resultColumns.add(resultColumnTenant);
+
+        ResultColumn resultColumnCamundaDeploymentId = new ResultColumn();
+        resultColumnCamundaDeploymentId.setId("camundaDeploymentId");
+        resultColumnCamundaDeploymentId.setTitle("Deployment Id");
+        resultColumnCamundaDeploymentId.setDtoField("camundaDeploymentId");
+        resultColumnCamundaDeploymentId.setVisible(false);
+        resultColumnCamundaDeploymentId.setType("String");
+        resultColumns.add(resultColumnCamundaDeploymentId);
+
+        return resultColumns;
     }
 
     @Override
-    String getDefaultSortByField() {
-        return "name"
+    public String getDefaultSortByField() {
+        return "businessKey";
     }
 
     @Override
-    Logger getLog() {
-        return log
+    public Logger getLog() {
+        return log;
     }
 
     @Override
-    List<String> getParamsId() {
+    public List<String> getParamsId() {
         return null;
     }
 
