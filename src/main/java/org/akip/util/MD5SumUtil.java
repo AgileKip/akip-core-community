@@ -1,10 +1,11 @@
-package com.agilekip.service.util;
+package org.akip.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MD5SumUtil {
 
