@@ -1,15 +1,9 @@
 package org.akip.dao;
 
-import com.owse.searchFramework.AbstractDAO;
-import com.owse.searchFramework.DatetimeFilterDef;
-import com.owse.searchFramework.EntityFilterDef;
-import com.owse.searchFramework.EnumListFilterDef;
-import com.owse.searchFramework.FilterDef;
-import com.owse.searchFramework.HQLField;
-import com.owse.searchFramework.ResultColumn;
-import com.owse.searchFramework.StringFilterDef;
+import com.owse.searchFramework.*;
+import com.owse.searchFramework.enumeration.FilterType;
 import org.akip.domain.ProcessInstance;
-import org.akip.domain.enumeration.StatusTaskInstance;
+import org.akip.domain.enumeration.StatusProcessInstance;
 import org.akip.service.ProcessDefinitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +30,10 @@ class ProcessInstanceDAO extends AbstractDAO<ProcessInstanceSearchDTO> {
     public void configureCustomHQLFields() {
         getHqlFields().put("tenant", new HQLField("entity.tenant.id", "entity.tenant.name"));
         getHqlFields().put("processDefinition", new HQLField("entity.processDefinition.id", "entity.processDefinition.name"));
+
+        getJoinDefs().add(new JoinDef()
+                .join("left outer join entity.tenant as tenant")
+                .activeByDefault(true));
     }
 
     @Override
@@ -61,26 +59,29 @@ class ProcessInstanceDAO extends AbstractDAO<ProcessInstanceSearchDTO> {
         processDefinitionFilter.setId("processDefinition");
         processDefinitionFilter.setOptions(processDefinitionService.findAll());
         processDefinitionFilter.setFieldInSelect("name");
-        processDefinitionFilter.setRemovable(false);
+        processDefinitionFilter.setFilterType(FilterType.DEFAULT);
         filters.add(processDefinitionFilter);
 
         EnumListFilterDef statusFilterDef = new EnumListFilterDef();
         statusFilterDef.setId("status");
-        statusFilterDef.setEnumType(StatusTaskInstance.class);
-        statusFilterDef.setOptions(Arrays.asList(StatusTaskInstance.values()));
-        statusFilterDef.setRemovable(false);
+        statusFilterDef.setEnumType(StatusProcessInstance.class);
+        statusFilterDef.setOptions(Arrays.asList(StatusProcessInstance.values()));
+        statusFilterDef.setFilterType(FilterType.DEFAULT);
         filters.add(statusFilterDef);
-
-        StringFilterDef usernameFilterDef = new StringFilterDef();
-        usernameFilterDef.setId("username");
-        filters.add(usernameFilterDef);
 
         StringFilterDef businessKeyFilterDef = new StringFilterDef();
         businessKeyFilterDef.setId("businessKey");
+        businessKeyFilterDef.setFilterType(FilterType.DEFAULT);
         filters.add(businessKeyFilterDef);
 
+        StringFilterDef usernameFilterDef = new StringFilterDef();
+        usernameFilterDef.setId("username");
+        usernameFilterDef.setFilterType(FilterType.ADVANCED);
+        filters.add(usernameFilterDef);
+
         DatetimeFilterDef createTimeFilterDef = new DatetimeFilterDef();
-        createTimeFilterDef.setId("createTime");
+        createTimeFilterDef.setId("startDate");
+        createTimeFilterDef.setFilterType(FilterType.ADVANCED);
         filters.add(createTimeFilterDef);
 
         //filters.add(new EntityFilterDef(id: "tenant", options: securityUtils.getTenantsCurrentUser(), fieldInSelect: "name", removable: false)
@@ -144,7 +145,7 @@ class ProcessInstanceDAO extends AbstractDAO<ProcessInstanceSearchDTO> {
         ResultColumn resultColumnProcess = new ResultColumn();
         resultColumnProcess.setId("processDefinition");
         resultColumnProcess.setTitle("Process");
-        resultColumnProcess.setDtoField("processDefinition");
+        resultColumnProcess.setDtoField("processDefinitionName");
         resultColumnProcess.setVisible(true);
         resultColumnProcess.setType("String");
         resultColumns.add(resultColumnProcess);
@@ -152,7 +153,7 @@ class ProcessInstanceDAO extends AbstractDAO<ProcessInstanceSearchDTO> {
         ResultColumn resultColumnTenant = new ResultColumn();
         resultColumnTenant.setId("tenant");
         resultColumnTenant.setTitle("Tenant");
-        resultColumnTenant.setDtoField("tenant");
+        resultColumnTenant.setDtoField("tenantName");
         resultColumnTenant.setVisible(true);
         resultColumnTenant.setType("String");
         resultColumns.add(resultColumnTenant);
