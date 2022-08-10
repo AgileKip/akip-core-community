@@ -2,6 +2,7 @@ package org.akip.camunda;
 
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.enumeration.StatusTaskInstance;
+import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.service.TaskInstanceService;
 import org.akip.service.dto.ProcessInstanceDTO;
@@ -44,6 +45,7 @@ public class CamundaTaskCreateListener implements TaskListener {
         taskInstanceDTO.setTaskId(delegateTask.getId());
         taskInstanceDTO.setName(delegateTask.getName());
         taskInstanceDTO.setStatus(StatusTaskInstance.NEW);
+        taskInstanceDTO.setType(TypeTaskInstance.USER_TASK);
         taskInstanceDTO.setDescription(delegateTask.getDescription());
         taskInstanceDTO.setCreateDate(Instant.now());
         taskInstanceDTO.setCreateTime(Instant.now());

@@ -55,18 +55,6 @@ public class ProcessInstanceController {
         return "Process initialized successfully: " + processInstance.getCamundaProcessInstanceId();
     }
 
-    // TODO: replace for a search framework based service
-//    /**
-//     * {@code GET  /process-instances} : get all the processInstances.
-//     *
-//     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of processInstances in body.
-//     */
-//    @GetMapping("/process-instances")
-//    public List<ProcessInstanceDTO> getAllProcessInstances() {
-//        log.debug("REST request to get all ProcessInstances");
-//        return processInstanceService.findAll();
-//    }
-
     /**
      * {@code GET  /process-instances/:id/tasks} : get the "id" processInstance.
      *

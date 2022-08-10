@@ -24,16 +24,6 @@ public class TaskInstanceController {
         this.taskInstanceService = taskInstanceService;
     }
 
-    /**
-     * {@code GET  /task-instances} : get all the taskInstances.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of taskInstances in body.
-     */
-    @GetMapping("/task-instances")
-    public List<TaskInstanceDTO> getAllTaskInstances() {
-        log.debug("REST request to get all TaskInstances");
-        return taskInstanceService.findAll();
-    }
 
     /**
      * {@code GET  /my-candidate-tasks} : get my candidate taskInstances.

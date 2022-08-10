@@ -19,29 +19,41 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@Service("taskInstance")
-class TaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
+@Service("myTaskInstance")
+class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
 
-    private final Logger log = LoggerFactory.getLogger(TaskInstanceDAO.class);
+    private final Logger log = LoggerFactory.getLogger(MyTaskInstanceDAO.class);
 
     private final ProcessDefinitionService processDefinitionService;
 
-    TaskInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService) {
+    MyTaskInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService) {
         super(entityManager, TaskInstance.class, TaskInstanceSearchDTO.class);
         this.processDefinitionService = processDefinitionService;
     }
 
     @Override
     public PageableSearchResult<TaskInstanceSearchDTO> search(PageableSearchRequest searchRequest) {
+        TenantFilter tenantsCurrentUserFilter = new TenantFilter();
+        tenantsCurrentUserFilter.setId("tenantObject");
+        tenantsCurrentUserFilter.setValues(Collections.emptyList());
+
+        AuthorityFilter authoritiesCurrentUserFilter = new AuthorityFilter();
+        authoritiesCurrentUserFilter.setId("authority");
+        authoritiesCurrentUserFilter.setValues(SecurityUtils.getAuthorities());
+
         EnumFilter userTaskFilter = new EnumFilter();
         userTaskFilter.setId("type");
         userTaskFilter.setEnumType(TypeTaskInstance.class);
         userTaskFilter.setValue(TypeTaskInstance.USER_TASK.toString());
 
+        searchRequest.getFilters().add(tenantsCurrentUserFilter);
+        searchRequest.getFilters().add(authoritiesCurrentUserFilter);
         searchRequest.getFilters().add(userTaskFilter);
 
         PageableSearchResult<TaskInstanceSearchDTO> result = super.search(searchRequest);
 
+        result.getFilters().remove(tenantsCurrentUserFilter);
+        result.getFilters().remove(authoritiesCurrentUserFilter);
         result.getFilters().remove(userTaskFilter);
 
         return result;
@@ -49,7 +61,7 @@ class TaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
 
     @Override
     public void configureCustomHQLFields() {
-        getHqlFields().put("candidateGroup", new HQLField("entity.candidateGroups"));
+        getHqlFields().put("authority", new HQLField("entity.candidateGroups"));
         getHqlFields().put("processDefinition", new HQLField("entity.processDefinition.id", "entity.processDefinition.name"));
         getHqlFields().put("processInstance", new HQLField("processInstance.businessKey"));
         getHqlFields().put("tenant", new HQLField("tenant.name"));
@@ -111,11 +123,6 @@ class TaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         nameFilterDef.setId("name");
         nameFilterDef.setFilterType(FilterType.DEFAULT);
         filters.add(nameFilterDef);
-
-        StringFilterDef candidateGroupFilterDef = new StringFilterDef();
-        candidateGroupFilterDef.setId("candidateGroup");
-        candidateGroupFilterDef.setFilterType(FilterType.ADVANCED);
-        filters.add(candidateGroupFilterDef);
 
         DatetimeFilterDef createDateFilterDef = new DatetimeFilterDef();
         createDateFilterDef.setId("createDate");

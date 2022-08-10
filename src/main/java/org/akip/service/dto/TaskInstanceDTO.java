@@ -1,6 +1,7 @@
 package org.akip.service.dto;
 
 import org.akip.domain.enumeration.StatusTaskInstance;
+import org.akip.domain.enumeration.TypeTaskInstance;
 
 import javax.persistence.Lob;
 import java.io.Serializable;
@@ -21,6 +22,8 @@ public class TaskInstanceDTO implements Serializable {
     private String name;
 
     private StatusTaskInstance status;
+
+    private TypeTaskInstance type;
 
     @Lob
     private String description;
@@ -83,6 +86,14 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setStatus(StatusTaskInstance status) {
         this.status = status;
+    }
+
+    public TypeTaskInstance getType() {
+        return type;
+    }
+
+    public void setType(TypeTaskInstance type) {
+        this.type = type;
     }
 
     public String getDescription() {
