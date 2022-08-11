@@ -7,6 +7,7 @@ import org.akip.dao.filter.TenantFilter;
 import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
+import org.akip.repository.TenantMemberRepository;
 import org.akip.security.SecurityUtils;
 import org.akip.service.ProcessDefinitionService;
 import org.slf4j.Logger;
@@ -26,16 +27,19 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
 
     private final ProcessDefinitionService processDefinitionService;
 
-    MyTaskInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService) {
+    private final TenantMemberRepository tenantMemberRepository;
+
+    MyTaskInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService, TenantMemberRepository tenantMemberRepository) {
         super(entityManager, TaskInstance.class, TaskInstanceSearchDTO.class);
         this.processDefinitionService = processDefinitionService;
+        this.tenantMemberRepository = tenantMemberRepository;
     }
 
     @Override
     public PageableSearchResult<TaskInstanceSearchDTO> search(PageableSearchRequest searchRequest) {
         TenantFilter tenantsCurrentUserFilter = new TenantFilter();
         tenantsCurrentUserFilter.setId("tenantObject");
-        tenantsCurrentUserFilter.setValues(Collections.emptyList());
+        tenantsCurrentUserFilter.setValues(tenantMemberRepository.findTenantByTenantMemberUsername(SecurityUtils.getCurrentUserLogin().get()));
 
         AuthorityFilter authoritiesCurrentUserFilter = new AuthorityFilter();
         authoritiesCurrentUserFilter.setId("authority");
@@ -64,6 +68,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         getHqlFields().put("authority", new HQLField("entity.candidateGroups"));
         getHqlFields().put("processDefinition", new HQLField("entity.processDefinition.id", "entity.processDefinition.name"));
         getHqlFields().put("processInstance", new HQLField("processInstance.businessKey"));
+        getHqlFields().put("tenantObject", new HQLField("tenant.id","tenant.name"));
         getHqlFields().put("tenant", new HQLField("tenant.name"));
         getHqlFields().put("camundaDeploymentId", new HQLField("processInstance.camundaDeploymentId"));
 

@@ -12,7 +12,7 @@ public class TenantFilter extends ListFilter {
 	@Override
 	public String buildCriteria(String searchField) {
 		StringBuilder hql = new StringBuilder();
-		hql.append(" ( ${searchField} is null ");
+		hql.append(" ( " + searchField + " is null ");
 		for (Object value:getValues()) {
 			Tenant tenant = (Tenant) value;
 			hql.append(" or " + searchField + ".id = " + tenant.getId());
@@ -28,5 +28,10 @@ public class TenantFilter extends ListFilter {
 	@Override
 	public String getType() {
 		return type;
+	}
+
+	@Override
+	public boolean isActive() {
+		return true;
 	}
 }
