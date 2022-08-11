@@ -10,7 +10,7 @@
         Added the entity TenantUser.
     -->
     <changeSet id="00000000000002.1" author="akip">
-        <createTable tableName="tenant_user">
+        <createTable tableName="tenant_member">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -25,8 +25,8 @@
 
     <changeSet id="00000000000002.2" author="akip">
         <addForeignKeyConstraint baseColumnNames="tenant_id"
-                                 baseTableName="tenant_user"
-                                 constraintName="tentant_user_tenant_id"
+                                 baseTableName="tenant_member"
+                                 constraintName="tentant_member_tenant_id"
                                  referencedColumnNames="id"
                                  referencedTableName="tenant"/>
     </changeSet>
