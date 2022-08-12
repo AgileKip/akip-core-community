@@ -40,9 +40,9 @@ public class TenantMemberController {
     }
 
     @PostMapping("/tenant/{tenantId}/member")
-    public ResponseEntity<TenantMemberDTO> createTenantMember(@PathVariable Long tenantId, @RequestBody String username) throws URISyntaxException {
-        log.debug("REST request to save TentantMember : {}{}", tenantId, username);
-        TenantMemberDTO result = tenantMemberService.save(tenantId, username);
+    public ResponseEntity<TenantMemberDTO> createTenantMember(@PathVariable Long tenantId, @RequestBody TenantMemberDTO tenantMember) throws URISyntaxException {
+        log.debug("REST request to save TentantMember : {}{}", tenantId, tenantMember.getUsername());
+        TenantMemberDTO result = tenantMemberService.save(tenantId, tenantMember);
         return ResponseEntity
             .created(new URI("/api/tentant-users/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

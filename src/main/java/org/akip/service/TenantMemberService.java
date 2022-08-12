@@ -43,12 +43,9 @@ public class TenantMemberService {
     }
 
 
-    public TenantMemberDTO save(Long tenantId, String username) {
-        log.debug("Request to save TentantMember : {}{}", tenantId, username);
-        TenantMemberDTO tenantMemberDTO = new TenantMemberDTO();
-        tenantMemberDTO.setUsername(username);
-        tenantMemberDTO.setTenant(new TenantDTO());
-        tenantMemberDTO.getTenant().setId(tenantId);
+    public TenantMemberDTO save(Long tenantId, TenantMemberDTO tenantMemberDTO) {
+        log.debug("Request to save TentantMember : {}{}", tenantId, tenantMemberDTO.getUsername());
+        tenantMemberDTO.setTenant(new TenantDTO(tenantId));
         TenantMember tenantMember = tenantMemberMapper.toEntity(tenantMemberDTO);
         tenantMember = tenantMemberRepository.save(tenantMember);
         return tenantMemberMapper.toDto(tenantMember);
