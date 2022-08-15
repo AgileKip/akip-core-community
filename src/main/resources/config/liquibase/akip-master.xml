@@ -29,4 +29,9 @@
     <include file="config/liquibase/changelog/00000000000005_added_entity_constraints_ProcessDeployment.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000007_added_entity_constraints_ProcessInstance.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000009_added_entity_constraints_TaskInstance.xml" relativeToChangelogFile="false"/>
+
+    <include file="config/liquibase/changelog/00000000001001_added_entity_DashboardConfig.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000001002_added_entity_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000001003_added_entity_constraints_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>
+
 </databaseChangeLog>

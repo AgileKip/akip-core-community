@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,8 @@ public interface ProcessInstanceRepository extends JpaRepository<ProcessInstance
     Optional<ProcessInstance> findByCamundaProcessInstanceId(String camundaProcessInstanceId);
 
     List<ProcessInstance> findByProcessDefinitionId(Long processDefinitionId);
+
+    List<ProcessInstance> findByProcessDefinitionIdAndStartDateBetween(Long processDefinitionId, LocalDateTime from, LocalDateTime to);
 
     @Modifying
     @Query("update ProcessInstance set data = ?1 where id = ?2")
