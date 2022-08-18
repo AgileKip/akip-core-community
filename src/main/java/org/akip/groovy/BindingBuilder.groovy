@@ -1,7 +1,10 @@
 package org.akip.groovy
 
+import org.akip.camunda.CamundaConstants;
+
 import org.springframework.beans.factory.BeanFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.env.Environment
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
@@ -10,6 +13,9 @@ import javax.persistence.EntityManager
 
 @Component
 class BindingBuilder {
+
+    @Value('${akip.projectBasePackage}')
+    private String projectBasePackage;
 
     @Autowired
     BeanFactory beanFactory
@@ -61,7 +67,7 @@ class BindingBuilder {
     }
 
     Binding buildBinding(String processEntityName, Long processEntityId) {
-        def processEntity = Class.forName("${TravelPlanEnterpriseApp.class.packageName}.service.dto.${processEntityName}DTO")
+        def processEntity = Class.forName("${projectBasePackage}.service.dto.${processEntityName}DTO")
                 .getDeclaredConstructor()
                 .newInstance()
         processEntity.id = processEntityId

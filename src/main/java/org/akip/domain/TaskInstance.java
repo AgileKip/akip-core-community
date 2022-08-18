@@ -78,6 +78,12 @@ public class TaskInstance implements Serializable {
     @Column(name = "candidateGroups")
     private String candidateGroups;
 
+    @Column(name = "connector_name")
+    private String connectorName;
+
+    @Column(name = "connector_config_name")
+    private String connectorConfigName;
+
     @ManyToOne
     private ProcessDefinition processDefinition;
 
@@ -318,6 +324,32 @@ public class TaskInstance implements Serializable {
 
     public void setCandidateGroups(String candidateGroups) {
         this.candidateGroups = candidateGroups;
+    }
+
+    public String getConnectorName() {
+        return connectorName;
+    }
+
+    public TaskInstance connectorName(String connectorName) {
+        this.connectorName = connectorName;
+        return this;
+    }
+
+    public void setConnectorName(String connectorName) {
+        this.connectorName = connectorName;
+    }
+
+    public String getConnectorConfigName() {
+        return connectorConfigName;
+    }
+
+    public TaskInstance connectorConfigName(String connectorConfigName) {
+        this.connectorConfigName = connectorConfigName;
+        return this;
+    }
+
+    public void setConnectorConfigName(String connectorConfigName) {
+        this.connectorConfigName = connectorConfigName;
     }
 
     public ProcessDefinition getProcessDefinition() {

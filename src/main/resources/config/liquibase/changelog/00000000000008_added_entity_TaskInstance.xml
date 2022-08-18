@@ -65,6 +65,12 @@
             <column name="candidate_groups" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="connector_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="connector_config_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="process_definition_id" type="bigint">
                 <constraints nullable="true" />
             </column>

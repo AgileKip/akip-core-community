@@ -52,6 +52,10 @@ public class TaskInstanceDTO implements Serializable {
 
     private List<String> candidateGroups = new ArrayList<>();
 
+    private String connectorName;
+
+    private String connectorConfigName;
+
     private ProcessDefinitionDTO processDefinition;
 
     private ProcessInstanceDTO processInstance;
@@ -198,6 +202,22 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setCandidateGroups(List<String> candidateGroups) {
         this.candidateGroups = candidateGroups;
+    }
+
+    public String getConnectorName() {
+        return connectorName;
+    }
+
+    public void setConnectorName(String connectorName) {
+        this.connectorName = connectorName;
+    }
+
+    public String getConnectorConfigName() {
+        return connectorConfigName;
+    }
+
+    public void setConnectorConfigName(String connectorConfigName) {
+        this.connectorConfigName = connectorConfigName;
     }
 
     public ProcessDefinitionDTO getProcessDefinition() {

@@ -51,7 +51,7 @@ public class TenantResource {
     public ResponseEntity<TenantDTO> createTenant(@RequestBody TenantDTO tenantDTO) throws URISyntaxException {
         log.debug("REST request to save Tenant : {}", tenantDTO);
         if (tenantDTO.getId() != null) {
-            throw new BadRequestErrorException("A nsew tenant cannot already have an ID", ENTITY_NAME, "idexists");
+            throw new BadRequestErrorException("A new tenant cannot already have an ID", ENTITY_NAME, "idexists");
         }
         TenantDTO result = tenantService.save(tenantDTO);
         return ResponseEntity
