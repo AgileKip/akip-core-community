@@ -13,6 +13,7 @@ public class ProcessInstanceSearchDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String processDefinitionName;
+    private String processDefinitionBpmnProcessDefinitionId;
     private String tenantName;
     private String camundaDeploymentId;
 
@@ -23,6 +24,7 @@ public class ProcessInstanceSearchDTO {
                                     LocalDateTime startDate,
                                     LocalDateTime endDate,
                                     String processDefinitionName,
+                                    String processDefinitionBpmnProcessDefinitionId,
                                     String tenantName,
                                     String camundaDeploymentId) {
         this.id = id;
@@ -32,6 +34,7 @@ public class ProcessInstanceSearchDTO {
         this.startDate = startDate;
         this.endDate = endDate;
         this.processDefinitionName = processDefinitionName;
+        this.processDefinitionBpmnProcessDefinitionId = processDefinitionBpmnProcessDefinitionId;
         this.tenantName = tenantName;
         this.camundaDeploymentId = camundaDeploymentId;
     }
@@ -90,6 +93,14 @@ public class ProcessInstanceSearchDTO {
 
     public void setProcessDefinitionName(String processDefinitionName) {
         this.processDefinitionName = processDefinitionName;
+    }
+
+    public String getProcessDefinitionBpmnProcessDefinitionId() {
+        return processDefinitionBpmnProcessDefinitionId;
+    }
+
+    public void setProcessDefinitionBpmnProcessDefinitionId(String processDefinitionBpmnProcessDefinitionId) {
+        this.processDefinitionBpmnProcessDefinitionId = processDefinitionBpmnProcessDefinitionId;
     }
 
     public String getTenantName() {

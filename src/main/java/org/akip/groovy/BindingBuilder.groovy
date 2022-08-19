@@ -80,8 +80,12 @@ class BindingBuilder {
            return processInstance
         }
 
-        return getObjectMapperComponent(processInstance)
-            .toDto(getObjectRepositoryComponent(processInstance).findById(processInstance.id).get())
+        return getObjectServiceComponent(processInstance)
+                .findOne(processInstance.id)
+                .get()
+
+//        return getObjectMapperComponent(processInstance)
+//            .toDto(getObjectRepositoryComponent(processInstance).findById(processInstance.id).get())
     }
 
     JpaRepository<?,?> getObjectRepositoryComponent(def processInstance) {
@@ -96,5 +100,15 @@ class BindingBuilder {
                 .replace('dto', 'mapper')
                 .replace('DTO', 'Mapper')
         return beanFactory.getBean(Class.forName(mapperBeanName))
+    }
+
+    // Originally I used the methods above (that use beanFactory.getBean(Class.forName(xpto)))
+    // but I don't know why it suddenly starts to throw the exception 'No qualify bean of type...'
+    // I replaced for the 'getBean' that receives the simple bean name and it works again.
+    def getObjectServiceComponent(def processInstance) {
+        def serviceBeanName = processInstance.class.simpleName.uncapitalize()
+                //.replace('.dto', '')
+                .replace('DTO', 'Service')
+        return beanFactory.getBean(serviceBeanName)
     }
 }

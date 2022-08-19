@@ -39,22 +39,23 @@ public class AkipEmailConnectorConfigController {
 
     private final AkipEmailConnectorConfigRepository akipEmailConnectorConfigRepository;
 
-    public AkipEmailConnectorConfigController(AkipEmailConnectorExecutor akipEmailConnectorExecutor, AkipEmailConnectorConfigService akipEmailConnectorConfigService, AkipEmailConnectorConfigRepository akipEmailConnectorConfigRepository) {
+    public AkipEmailConnectorConfigController(AkipEmailConnectorExecutor akipEmailConnectorExecutor,
+                                              AkipEmailConnectorConfigService akipEmailConnectorConfigService,
+                                              AkipEmailConnectorConfigRepository akipEmailConnectorConfigRepository) {
         this.akipEmailConnectorExecutor = akipEmailConnectorExecutor;
         this.akipEmailConnectorConfigService = akipEmailConnectorConfigService;
         this.akipEmailConnectorConfigRepository = akipEmailConnectorConfigRepository;
     }
 
     @GetMapping("/akip-email-connector-configs/{id}")
-    public ResponseEntity<AkipEmailConnectorConfigDTO> getAkipEmailConnectorConfig(@PathVariable Long id) {
+    public ResponseEntity<AkipEmailConnectorConfigDTO> get(@PathVariable Long id) {
         log.debug("REST request to get AkipEmailConnectorConfig : {}", id);
         Optional<AkipEmailConnectorConfigDTO> emailActionConfigDTO = akipEmailConnectorConfigService.findOne(id);
         return ResponseUtil.wrapOrNotFound(emailActionConfigDTO);
     }
 
     @PostMapping("/akip-email-connector-configs")
-    public ResponseEntity<AkipEmailConnectorConfigDTO> createAkipEmailConnectorConfig(@RequestBody AkipEmailConnectorConfigDTO akipEmailConnectorConfig)
-            throws URISyntaxException {
+    public ResponseEntity<AkipEmailConnectorConfigDTO> create(@RequestBody AkipEmailConnectorConfigDTO akipEmailConnectorConfig) throws URISyntaxException {
         log.debug("REST request to save AkipEmailConnectorConfig : {}", akipEmailConnectorConfig);
         if (akipEmailConnectorConfig.getId() != null) {
             throw new BadRequestErrorException("A new akipEmailConnectorConfig cannot already have an ID", ENTITY_NAME, "idexists");
@@ -67,7 +68,7 @@ public class AkipEmailConnectorConfigController {
     }
 
     @PutMapping("/akip-email-connector-configs/{id}")
-    public ResponseEntity<AkipEmailConnectorConfigDTO> updateAkipEmailConnectorConfig(
+    public ResponseEntity<AkipEmailConnectorConfigDTO> update(
             @PathVariable(value = "id", required = false) final Long id,
             @RequestBody AkipEmailConnectorConfigDTO akipEmailConnectorConfig
     ) throws URISyntaxException {
@@ -91,7 +92,7 @@ public class AkipEmailConnectorConfigController {
     }
 
     @DeleteMapping("/akip-email-connector-configs/{id}")
-    public ResponseEntity<Void> deleteAkipEmailConnectorConfig(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete AkipEmailConnectorConfig : {}", id);
         akipEmailConnectorConfigService.delete(id);
         return ResponseEntity
@@ -101,13 +102,12 @@ public class AkipEmailConnectorConfigController {
     }
 
     @PostMapping("/akip-email-connector-configs/test")
-    public AkipEmailConnectorMessageDTO testAkipEmailConnectorConfig(@RequestBody AkipEmailConnectorConfigTestRequestDTO emailConnectorTestRequest)
-            throws URISyntaxException {
+    public AkipEmailConnectorMessageDTO test(@RequestBody AkipEmailConnectorConfigTestRequestDTO emailConnectorTestRequest) throws URISyntaxException {
         log.debug("REST request to test AkipEmailConnectorConfig : {}", emailConnectorTestRequest);
         try {
             return akipEmailConnectorExecutor.buildMessage(emailConnectorTestRequest);
         } catch (Exception e) {
-            throw new BadRequestErrorException(e.toString(), e.toString(), e.toString());
+            throw new BadRequestErrorException(e.toString());
         }
     }
 }

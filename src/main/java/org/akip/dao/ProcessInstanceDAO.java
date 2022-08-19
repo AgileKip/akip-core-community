@@ -46,6 +46,7 @@ class ProcessInstanceDAO extends AbstractDAO<ProcessInstanceSearchDTO> {
         fields.add("entity.startDate");
         fields.add("entity.endDate");
         fields.add("entity.processDefinition.name");
+        fields.add("entity.processDefinition.bpmnProcessDefinitionId");
         fields.add("entity.tenant.name");
         fields.add("entity.camundaDeploymentId");
         return fields;

@@ -108,7 +108,9 @@ public class ProcessInstanceService {
                 .execute();
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
-        return processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
+        ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
+        runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
+        return processInstanceSaved;
     }
 
     private ProcessInstanceDTO createWithoutTenant(ProcessInstanceDTO processInstanceDTO) {
@@ -139,7 +141,9 @@ public class ProcessInstanceService {
                 .execute();
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
-        return processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
+        ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
+        runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
+        return processInstanceSaved;
     }
 
     public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity) {
