@@ -7,6 +7,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 /**
  * A TaskInstance.
@@ -83,6 +84,11 @@ public class TaskInstance implements Serializable {
 
     @Column(name = "connector_config_name")
     private String connectorConfigName;
+
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "form_fields")
+    private String formFields;
 
     @ManyToOne
     private ProcessDefinition processDefinition;
@@ -350,6 +356,19 @@ public class TaskInstance implements Serializable {
 
     public void setConnectorConfigName(String connectorConfigName) {
         this.connectorConfigName = connectorConfigName;
+    }
+
+    public String getFormFields() {
+        return formFields;
+    }
+
+    public TaskInstance formFields(String formFields) {
+        this.formFields = formFields;
+        return this;
+    }
+
+    public void setFormFields(String formFields) {
+        this.formFields = formFields;
     }
 
     public ProcessDefinition getProcessDefinition() {

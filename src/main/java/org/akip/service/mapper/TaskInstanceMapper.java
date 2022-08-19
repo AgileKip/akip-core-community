@@ -1,5 +1,10 @@
 package org.akip.service.mapper;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.akip.camunda.form.CamundaFormFieldDef;
 import org.akip.domain.TaskInstance;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +23,8 @@ import java.util.stream.Collectors;
  */
 @Mapper(componentModel = "spring", uses = { ProcessDefinitionMapper.class, ProcessInstanceMapper.class })
 public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskInstance> {
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     final String delimiter = ",";
 
@@ -52,5 +59,21 @@ public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskIn
             return null;
         }
         return delimiter + list.stream().collect(Collectors.joining(delimiter)) + delimiter;
+    }
+
+    default String listFormFieldToString(List<CamundaFormFieldDef> formFields) throws JsonProcessingException {
+        if (formFields == null) {
+            return null;
+        }
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return objectMapper.writeValueAsString(formFields);
+    }
+
+    default List<CamundaFormFieldDef> stringToListFormField(String s) throws JsonProcessingException {
+        if (s == null) {
+            return Collections.emptyList();
+        }
+
+        return objectMapper.readValue(s, new TypeReference<List<CamundaFormFieldDef>>() {});
     }
 }

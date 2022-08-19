@@ -116,7 +116,7 @@ public class TaskInstanceService {
             taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().get());
             taskInstanceRepository.save(taskInstance);
         }
-        return optionalTaskInstance.map(taskInstanceMapper::toDto);
+        return optionalTaskInstance.map(taskInstanceMapper::toDTOLoadTaskContext);
     }
 
     /***

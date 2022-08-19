@@ -71,6 +71,9 @@
             <column name="connector_config_name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="form_fields" type="${clobType}">
+                <constraints nullable="true" />
+            </column>
             <column name="process_definition_id" type="bigint">
                 <constraints nullable="true" />
             </column>
