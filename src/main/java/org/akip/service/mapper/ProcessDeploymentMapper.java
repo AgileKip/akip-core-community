@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Mapper for the entity {@link ProcessDeployment} and its DTO {@link ProcessDeploymentDTO}.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {ProcessDefinitionMapper.class})
 public interface ProcessDeploymentMapper extends EntityMapper<ProcessDeploymentDTO, ProcessDeployment> {
 
     ObjectMapper objectMapper = new ObjectMapper();

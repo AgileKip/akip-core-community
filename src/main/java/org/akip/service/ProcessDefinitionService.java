@@ -1,5 +1,7 @@
 package org.akip.service;
 
+import org.akip.camunda.form.CamundaFormFieldDef;
+import org.akip.camunda.form.CamundaFormFieldValidationConstraintDef;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.akip.repository.ProcessDefinitionRepository;
@@ -8,12 +10,15 @@ import org.akip.service.mapper.ProcessDefinitionMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.bpm.model.bpmn.instance.StartEvent;
+import org.camunda.bpm.model.bpmn.instance.camunda.*;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -47,10 +52,10 @@ public class ProcessDefinitionService {
         Optional<ProcessDefinition> optionalProcessDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(process.getId());
 
         if (optionalProcessDefinition.isPresent()) {
-            return updateProcessDefinition(process);
+            return updateProcessDefinition(process, bpmnModelInstance);
         }
 
-        return createProcessDefinition(process);
+        return createProcessDefinition(process, bpmnModelInstance);
     }
 
     private Process extracAndValidProcessFromModel(BpmnModelInstance modelInstance) {
@@ -68,8 +73,15 @@ public class ProcessDefinitionService {
         return process;
     }
 
-    private ProcessDefinition createProcessDefinition(Process process) {
-        ProcessDefinition processDefinition = new ProcessDefinition();
+    private StartEvent extracStartEventFromModel(BpmnModelInstance modelInstance) {
+        ModelElementType startEventType = modelInstance.getModel().getType(StartEvent.class);
+        StartEvent startEvent = (StartEvent) modelInstance.getModelElementsByType(startEventType).iterator().next();
+
+        return startEvent;
+    }
+
+    private ProcessDefinition createProcessDefinition(Process process, BpmnModelInstance bpmnModelInstance) {
+        ProcessDefinitionDTO processDefinition = new ProcessDefinitionDTO();
         processDefinition.setBpmnProcessDefinitionId(process.getId());
         processDefinition.setName(process.getName());
         processDefinition.setCanBeManuallyStarted(process.isCamundaStartableInTasklist());
@@ -78,11 +90,13 @@ public class ProcessDefinitionService {
             processDefinition.setDescription(process.getDocumentations().iterator().next().getRawTextContent());
         }
 
-        return processDefinitionRepository.save(processDefinition);
+        processDefinition.setStartFormFields(extractFormFields(bpmnModelInstance));
+
+        return processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
     }
 
-    private ProcessDefinition updateProcessDefinition(Process process) {
-        ProcessDefinition processDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(process.getId()).orElseThrow();
+    private ProcessDefinition updateProcessDefinition(Process process, BpmnModelInstance bpmnModelInstance) {
+        ProcessDefinitionDTO processDefinition = processDefinitionMapper.toDto(processDefinitionRepository.findByBpmnProcessDefinitionId(process.getId()).orElseThrow());
         processDefinition.setName(process.getName());
         processDefinition.setCanBeManuallyStarted(process.isCamundaStartableInTasklist());
         processDefinition.setStatus(StatusProcessDefinition.ACTIVE);
@@ -90,7 +104,9 @@ public class ProcessDefinitionService {
             processDefinition.setDescription(process.getDocumentations().iterator().next().getRawTextContent());
         }
 
-        return processDefinitionRepository.save(processDefinition);
+        processDefinition.setStartFormFields(extractFormFields(bpmnModelInstance));
+
+        return processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
     }
 
     /**
@@ -132,4 +148,58 @@ public class ProcessDefinitionService {
         log.debug("Request to delete ProcessDefinition : {}", id);
         processDefinitionRepository.deleteById(id);
     }
+
+    public List<CamundaFormFieldDef> extractFormFields(BpmnModelInstance bpmnModelInstance) {
+        StartEvent startEvent = extracStartEventFromModel(bpmnModelInstance);
+        if (startEvent.getExtensionElements() == null
+        ||
+                startEvent.getExtensionElements()
+                .getElementsQuery()
+                .filterByType(CamundaFormData.class)
+                .list()
+                .isEmpty()) {
+            return Collections.emptyList();
+        }
+        return startEvent
+                .getExtensionElements()
+                .getElementsQuery()
+                .filterByType(CamundaFormData.class)
+                .singleResult()
+                .getCamundaFormFields()
+                .stream()
+                .map(this::toCamundaFormFieldDef)
+                .collect(Collectors.toList());
+    }
+
+    private CamundaFormFieldDef toCamundaFormFieldDef(CamundaFormField formField) {
+        CamundaFormFieldDef camundaFormFieldDef = new CamundaFormFieldDef();
+        camundaFormFieldDef.setId(formField.getCamundaId());
+        camundaFormFieldDef.setLabel(formField.getCamundaLabel());
+        camundaFormFieldDef.setType(formField.getCamundaType());
+        if (formField.getCamundaDefaultValue() != null) {
+            camundaFormFieldDef.setDefaultValue(formField.getCamundaDefaultValue());
+        }
+        if (formField.getCamundaValidation() != null) {
+            camundaFormFieldDef.setValidationConstraints(
+                    formField.getCamundaValidation().getCamundaConstraints().stream().map(this::toCamundaFormFieldValidationConstraintDef).collect(Collectors.toList())
+            );
+        }
+
+        if (formField.getCamundaProperties() != null) {
+            camundaFormFieldDef.setProperties(
+                    formField.getCamundaProperties().getCamundaProperties().stream().collect(Collectors.toMap(CamundaProperty::getCamundaId, CamundaProperty::getCamundaValue))
+            );
+        }
+        return camundaFormFieldDef;
+    }
+
+    private CamundaFormFieldValidationConstraintDef toCamundaFormFieldValidationConstraintDef(
+            CamundaConstraint camundaConstraint
+    ) {
+        CamundaFormFieldValidationConstraintDef camundaFormFieldValidationConstraintDef = new CamundaFormFieldValidationConstraintDef();
+        camundaFormFieldValidationConstraintDef.setName(camundaConstraint.getCamundaName());
+        camundaFormFieldValidationConstraintDef.setConfiguration(camundaConstraint.getCamundaConfig());
+        return camundaFormFieldValidationConstraintDef;
+    }
+
 }

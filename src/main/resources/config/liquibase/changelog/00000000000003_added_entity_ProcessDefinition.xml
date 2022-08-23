@@ -29,6 +29,9 @@
             <column name="can_be_manually_started" type="bit">
                 <constraints nullable="true" />
             </column>
+            <column name="start_form_fields" type="${clobType}">
+                <constraints nullable="true" />
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>

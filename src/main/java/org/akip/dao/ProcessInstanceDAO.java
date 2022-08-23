@@ -124,7 +124,6 @@ class ProcessInstanceDAO extends AbstractDAO<ProcessInstanceSearchDTO> {
         resultColumnStatus.setDtoField("status");
         resultColumnStatus.setVisible(true);
         resultColumnStatus.setType("Custom");
-        resultColumnStatus.setSubType("akip-show-process-instance-status");
         resultColumns.add(resultColumnStatus);
 
         ResultColumn resultColumnStartDate = new ResultColumn();

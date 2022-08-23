@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity {@link TaskInstance} and its DTO {@link TaskInstanceDTO}.
  */
-@Mapper(componentModel = "spring", uses = { ProcessDefinitionMapper.class, ProcessInstanceMapper.class })
+@Mapper(componentModel = "spring", uses = { ProcessDefinitionMapper.class, ProcessInstanceMapper.class, CamundaFormFieldDefMapper.class })
 public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskInstance> {
 
     ObjectMapper objectMapper = new ObjectMapper();
@@ -59,21 +59,5 @@ public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskIn
             return null;
         }
         return delimiter + list.stream().collect(Collectors.joining(delimiter)) + delimiter;
-    }
-
-    default String listFormFieldToString(List<CamundaFormFieldDef> formFields) throws JsonProcessingException {
-        if (formFields == null) {
-            return null;
-        }
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        return objectMapper.writeValueAsString(formFields);
-    }
-
-    default List<CamundaFormFieldDef> stringToListFormField(String s) throws JsonProcessingException {
-        if (s == null) {
-            return Collections.emptyList();
-        }
-
-        return objectMapper.readValue(s, new TypeReference<List<CamundaFormFieldDef>>() {});
     }
 }

@@ -41,6 +41,11 @@ public class ProcessDefinition implements Serializable {
     @Column(name = "can_be_manually_started")
     private Boolean canBeManuallyStarted;
 
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "start_form_fields")
+    private String startFormFields;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -95,7 +100,13 @@ public class ProcessDefinition implements Serializable {
         this.canBeManuallyStarted = canBeManuallyStarted;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public String getStartFormFields() {
+        return startFormFields;
+    }
+
+    public void setStartFormFields(String startFormFields) {
+        this.startFormFields = startFormFields;
+    }
 
     @Override
     public boolean equals(Object o) {
