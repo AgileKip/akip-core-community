@@ -153,6 +153,19 @@
 
   </dependencies>
 
+  <distributionManagement>
+    <repository>
+      <id>kip4you-nexus-maven-release</id>
+      <name>Nexus Release KIP4You</name>
+      <url>http://192.168.3.3:8787/repository/kip4you-maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>kip4you-nexus-maven-snapshot</id>
+      <name>Nexus Snapshot KIP4You</name>
+      <url>http://192.168.3.3:8787/repository/kip4you-maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
