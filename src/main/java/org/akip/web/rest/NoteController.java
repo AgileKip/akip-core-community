@@ -47,26 +47,26 @@ public class NoteController {
     }
 
     @GetMapping("/notes/{noteId}")
-    public ResponseEntity<NoteDTO> get(@PathVariable Long noteId) {
+    public ResponseEntity<NoteDTO> get(@PathVariable("noteId") Long noteId) {
         log.debug("REST request to get note: {}", noteId);
         NoteDTO note = noteService.get(noteId);
         return ResponseEntity.ok().body(note);
     }
 
     @DeleteMapping("/notes/{noteId}")
-    public ResponseEntity<Void> delete(@PathVariable Long noteId) {
+    public ResponseEntity<Void> delete(@PathVariable("noteId") Long noteId) {
         log.debug("REST request to get note: {}", noteId);
         noteService.delete(noteId);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, noteId.toString())).build();
     }
 
     @GetMapping("/{entityName}/{entityId}/notes")
-    public List<NoteDTO> getNotesByEntityNameAndEntityId(@PathVariable String entityName, @PathVariable Long entityId) { log.debug("REST request to getNotesByEntityNameAndEntitiesIds: entityName={}, entitiesIds={}", entityName, entityId);
+    public List<NoteDTO> getNotesByEntityNameAndEntityId(@PathVariable("entityName") String entityName, @PathVariable("entityId") Long entityId) { log.debug("REST request to getNotesByEntityNameAndEntitiesIds: entityName={}, entitiesIds={}", entityName, entityId);
         return noteService.findByEntityNameAndEntityId(entityName, entityId);
     }
 
     @GetMapping("/{entityName}/{entityId}/{noteTypes}/notes")
-    public List<NoteDTO> getNotesByEntityNameAndEntityIdAndTypes(@PathVariable String entityName, @PathVariable Long entityId, @PathVariable List<String> noteTypes) {
+    public List<NoteDTO> getNotesByEntityNameAndEntityIdAndTypes(@PathVariable("entityName") String entityName, @PathVariable("entityId") Long entityId, @PathVariable("noteTypes") List<String> noteTypes) {
         log.debug("REST request to getNotesByEntityIdAndEntityNameAndTypes: entityName={}, entityId={}, types={}", entityName, entityId, noteTypes);
         return noteService.findByEntityNameAndEntityIdAndTypes(entityName, entityId, noteTypes);
     }

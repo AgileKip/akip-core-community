@@ -34,13 +34,13 @@ public class TenantMemberController {
     }
 
     @GetMapping("/tenant/{tenantId}/members")
-    public List<TenantMemberDTO> retrieveTenantMembers(@PathVariable Long tenantId) throws URISyntaxException {
+    public List<TenantMemberDTO> retrieveTenantMembers(@PathVariable("tenantId") Long tenantId) throws URISyntaxException {
         log.debug("REST request to save TentantMember : {}{}", tenantId);
         return tenantMemberService.getTenantMembers(tenantId);
     }
 
     @PostMapping("/tenant/{tenantId}/member")
-    public ResponseEntity<TenantMemberDTO> createTenantMember(@PathVariable Long tenantId, @RequestBody TenantMemberDTO tenantMember) throws URISyntaxException {
+    public ResponseEntity<TenantMemberDTO> createTenantMember(@PathVariable("tenantId") Long tenantId, @RequestBody TenantMemberDTO tenantMember) throws URISyntaxException {
         log.debug("REST request to save TentantMember : {}{}", tenantId, tenantMember.getUsername());
         TenantMemberDTO result = tenantMemberService.save(tenantId, tenantMember);
         return ResponseEntity
@@ -50,7 +50,7 @@ public class TenantMemberController {
     }
 
     @DeleteMapping("/tenant/{tenantId}/member/{tenantMemberId}")
-    public ResponseEntity<Void> deleteTentantUser(@PathVariable Long tenantId, @PathVariable Long tenantMemberId) {
+    public ResponseEntity<Void> deleteTentantUser(@PathVariable("tenantId") Long tenantId, @PathVariable("tenantMemberId") Long tenantMemberId) {
         log.debug("REST request to delete TenantMember : {}{}", tenantId, tenantMemberId);
         tenantMemberService.delete(tenantId, tenantMemberId);
         return ResponseEntity
