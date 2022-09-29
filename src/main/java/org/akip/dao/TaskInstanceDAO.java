@@ -2,12 +2,9 @@ package org.akip.dao;
 
 import com.owse.searchFramework.*;
 import com.owse.searchFramework.enumeration.FilterType;
-import org.akip.dao.filter.AuthorityFilter;
-import org.akip.dao.filter.TenantFilter;
 import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
-import org.akip.security.SecurityUtils;
 import org.akip.service.ProcessDefinitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Service("taskInstance")
@@ -70,6 +66,7 @@ class TaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         fields.add("entity.id");
         fields.add("entity.taskId");
         fields.add("entity.name");
+        fields.add("entity.processDefinition.kipApp.baseUrl");
         fields.add("entity.status");
         fields.add("entity.createDate");
         fields.add("entity.startTime");

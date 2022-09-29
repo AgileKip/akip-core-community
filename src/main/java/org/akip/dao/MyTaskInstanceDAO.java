@@ -41,9 +41,13 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         tenantsCurrentUserFilter.setId("tenantObject");
         tenantsCurrentUserFilter.setValues(tenantMemberRepository.findTenantByTenantMemberUsername(SecurityUtils.getCurrentUserLogin().get()));
 
-        AuthorityFilter authoritiesCurrentUserFilter = new AuthorityFilter();
-        authoritiesCurrentUserFilter.setId("authority");
-        authoritiesCurrentUserFilter.setValues(SecurityUtils.getAuthorities());
+        AuthorityFilter candidateUsersFilters = new AuthorityFilter();
+        candidateUsersFilters.setId("candidateUsers");
+        candidateUsersFilters.setValues(Collections.singletonList(SecurityUtils.getCurrentUserLogin().get()));
+
+        AuthorityFilter candidateGroupsFilters = new AuthorityFilter();
+        candidateGroupsFilters.setId("candidateGroups");
+        candidateGroupsFilters.setValues(SecurityUtils.getAuthorities());
 
         EnumFilter userTaskFilter = new EnumFilter();
         userTaskFilter.setId("type");
@@ -51,13 +55,13 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         userTaskFilter.setValue(TypeTaskInstance.USER_TASK.toString());
 
         searchRequest.getFilters().add(tenantsCurrentUserFilter);
-        searchRequest.getFilters().add(authoritiesCurrentUserFilter);
+        searchRequest.getFilters().add(candidateGroupsFilters);
         searchRequest.getFilters().add(userTaskFilter);
 
         PageableSearchResult<TaskInstanceSearchDTO> result = super.search(searchRequest);
 
         result.getFilters().remove(tenantsCurrentUserFilter);
-        result.getFilters().remove(authoritiesCurrentUserFilter);
+        result.getFilters().remove(candidateGroupsFilters);
         result.getFilters().remove(userTaskFilter);
 
         return result;
@@ -65,7 +69,8 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
 
     @Override
     public void configureCustomHQLFields() {
-        getHqlFields().put("authority", new HQLField("entity.candidateGroups"));
+        getHqlFields().put("candidateUsers", new HQLField("entity.candidateUsers"));
+        getHqlFields().put("candidateGroups", new HQLField("entity.candidateGroups"));
         getHqlFields().put("processDefinition", new HQLField("entity.processDefinition.id", "entity.processDefinition.name"));
         getHqlFields().put("processInstance", new HQLField("processInstance.businessKey"));
         getHqlFields().put("tenantObject", new HQLField("tenant.id","tenant.name"));
@@ -87,6 +92,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         fields.add("entity.id");
         fields.add("entity.taskId");
         fields.add("entity.name");
+        fields.add("entity.processDefinition.kipApp.baseUrl");
         fields.add("entity.status");
         fields.add("entity.createDate");
         fields.add("entity.startTime");

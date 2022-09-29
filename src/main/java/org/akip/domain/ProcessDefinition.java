@@ -46,6 +46,9 @@ public class ProcessDefinition implements Serializable {
     @Column(name = "start_form_fields")
     private String startFormFields;
 
+    @ManyToOne
+    private KipApp kipApp;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -106,6 +109,14 @@ public class ProcessDefinition implements Serializable {
 
     public void setStartFormFields(String startFormFields) {
         this.startFormFields = startFormFields;
+    }
+
+    public KipApp getKipApp() {
+        return kipApp;
+    }
+
+    public void setKipApp(KipApp kipApp) {
+        this.kipApp = kipApp;
     }
 
     @Override

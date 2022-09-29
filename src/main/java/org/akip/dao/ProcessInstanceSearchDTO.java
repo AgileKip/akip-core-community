@@ -16,6 +16,7 @@ public class ProcessInstanceSearchDTO {
     private String processDefinitionBpmnProcessDefinitionId;
     private String tenantName;
     private String camundaDeploymentId;
+    private String kipAppBaseUrl;
 
     public ProcessInstanceSearchDTO(Long id,
                                     String businessKey,
@@ -26,7 +27,8 @@ public class ProcessInstanceSearchDTO {
                                     String processDefinitionName,
                                     String processDefinitionBpmnProcessDefinitionId,
                                     String tenantName,
-                                    String camundaDeploymentId) {
+                                    String camundaDeploymentId,
+                                    String kipAppBaseUrl) {
         this.id = id;
         this.businessKey = businessKey;
         this.username = username;
@@ -37,6 +39,7 @@ public class ProcessInstanceSearchDTO {
         this.processDefinitionBpmnProcessDefinitionId = processDefinitionBpmnProcessDefinitionId;
         this.tenantName = tenantName;
         this.camundaDeploymentId = camundaDeploymentId;
+        this.kipAppBaseUrl = kipAppBaseUrl;
     }
 
     public Long getId() {
@@ -117,5 +120,13 @@ public class ProcessInstanceSearchDTO {
 
     public void setCamundaDeploymentId(String camundaDeploymentId) {
         this.camundaDeploymentId = camundaDeploymentId;
+    }
+
+    public String getKipAppBaseUrl() {
+        return kipAppBaseUrl;
+    }
+
+    public void setKipAppBaseUrl(String kipAppBaseUrl) {
+        this.kipAppBaseUrl = kipAppBaseUrl;
     }
 }

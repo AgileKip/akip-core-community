@@ -28,6 +28,8 @@ public class ProcessDefinitionDTO implements Serializable {
 
     private List<CamundaFormFieldDef> startFormFields;
 
+    private KipAppDTO kipApp;
+
     public Long getId() {
         return id;
     }
@@ -82,6 +84,14 @@ public class ProcessDefinitionDTO implements Serializable {
 
     public void setStartFormFields(List<CamundaFormFieldDef> startFormFields) {
         this.startFormFields = startFormFields;
+    }
+
+    public KipAppDTO getKipApp() {
+        return kipApp;
+    }
+
+    public void setKipApp(KipAppDTO kipApp) {
+        this.kipApp = kipApp;
     }
 
     @Override

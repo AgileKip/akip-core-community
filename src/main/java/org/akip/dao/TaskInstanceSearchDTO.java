@@ -12,6 +12,7 @@ public class TaskInstanceSearchDTO {
     private Long id;
     private String taskId;
     private String name;
+    private String kipAppBaseUrl;
     private StatusTaskInstance status;
     private Instant createDate;
     private Instant startTime;
@@ -32,6 +33,7 @@ public class TaskInstanceSearchDTO {
     public TaskInstanceSearchDTO(Long id,
                                  String taskId,
                                  String name,
+                                 String kipAppBaseUrl,
                                  StatusTaskInstance status,
                                  Instant createDate,
                                  Instant startTime,
@@ -52,6 +54,7 @@ public class TaskInstanceSearchDTO {
         this.id = id;
         this.taskId = taskId;
         this.name = name;
+        this.kipAppBaseUrl = kipAppBaseUrl;
         this.status = status;
         this.createDate = createDate;
         this.startTime = startTime;
@@ -92,6 +95,14 @@ public class TaskInstanceSearchDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getKipAppBaseUrl() {
+        return kipAppBaseUrl;
+    }
+
+    public void setKipAppBaseUrl(String kipAppBaseUrl) {
+        this.kipAppBaseUrl = kipAppBaseUrl;
     }
 
     public StatusTaskInstance getStatus() {

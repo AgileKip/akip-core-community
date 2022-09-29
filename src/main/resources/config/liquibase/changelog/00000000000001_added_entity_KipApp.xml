@@ -3,38 +3,46 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Added the entity ProcessDefinition.
+        Added the entity KipApp.
     -->
-    <changeSet id="00000000000003" author="akip">
-        <createTable tableName="process_definition">
+    <changeSet id="20220915000001-1" author="jhipster">
+        <createTable tableName="kipapp">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="identifier" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="description" type="${clobType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="base_url" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="status" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="bpmn_process_definition_id" type="varchar(255)">
+            <column name="version" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="can_be_manually_started" type="bit">
+            <column name="build_date" type="${datetimeType}">
                 <constraints nullable="true" />
             </column>
-            <column name="start_form_fields" type="${clobType}">
+            <column name="deploy_date" type="${datetimeType}">
                 <constraints nullable="true" />
             </column>
-            <column name="kip_app_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
+        <dropDefaultValue tableName="kipapp" columnName="build_date" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="kipapp" columnName="deploy_date" columnDataType="${datetimeType}"/>
     </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 </databaseChangeLog>

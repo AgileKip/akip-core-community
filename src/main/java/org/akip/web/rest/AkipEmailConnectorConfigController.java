@@ -48,7 +48,7 @@ public class AkipEmailConnectorConfigController {
     }
 
     @GetMapping("/akip-email-connector-configs/{id}")
-    public ResponseEntity<AkipEmailConnectorConfigDTO> get(@PathVariable Long id) {
+    public ResponseEntity<AkipEmailConnectorConfigDTO> get(@PathVariable("id") Long id) {
         log.debug("REST request to get AkipEmailConnectorConfig : {}", id);
         Optional<AkipEmailConnectorConfigDTO> emailActionConfigDTO = akipEmailConnectorConfigService.findOne(id);
         return ResponseUtil.wrapOrNotFound(emailActionConfigDTO);
@@ -92,7 +92,7 @@ public class AkipEmailConnectorConfigController {
     }
 
     @DeleteMapping("/akip-email-connector-configs/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         log.debug("REST request to delete AkipEmailConnectorConfig : {}", id);
         akipEmailConnectorConfigService.delete(id);
         return ResponseEntity
