@@ -72,17 +72,17 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         getHqlFields().put("candidateUsers", new HQLField("entity.candidateUsers"));
         getHqlFields().put("candidateGroups", new HQLField("entity.candidateGroups"));
         getHqlFields().put("processDefinition", new HQLField("entity.processDefinition.id", "entity.processDefinition.name"));
-        getHqlFields().put("processInstance", new HQLField("processInstance.businessKey"));
+        getHqlFields().put("processInstance", new HQLField("entity.processInstance.businessKey"));
         getHqlFields().put("tenantObject", new HQLField("tenant.id","tenant.name"));
         getHqlFields().put("tenant", new HQLField("tenant.name"));
         getHqlFields().put("camundaDeploymentId", new HQLField("processInstance.camundaDeploymentId"));
 
         getJoinDefs().add(new JoinDef()
-                .join("left outer join entity.processInstance as processInstance")
+                .join("left outer join entity.processInstance.tenant as tenant")
                 .activeByDefault(true));
 
         getJoinDefs().add(new JoinDef()
-                .join("left outer join processInstance.tenant as tenant")
+                .join("left outer join entity.processDefinition.kipApp as kipApp")
                 .activeByDefault(true));
     }
 
@@ -92,7 +92,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         fields.add("entity.id");
         fields.add("entity.taskId");
         fields.add("entity.name");
-        fields.add("entity.processDefinition.kipApp.baseUrl");
+        fields.add("kipApp.baseUrl");
         fields.add("entity.status");
         fields.add("entity.createDate");
         fields.add("entity.startTime");
@@ -106,9 +106,9 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         fields.add("entity.candidateGroups");
         fields.add("entity.processDefinition.name");
         fields.add("entity.processDefinition.bpmnProcessDefinitionId");
-        fields.add("processInstance.businessKey");
+        fields.add("entity.processInstance.businessKey");
         fields.add("tenant.name");
-        fields.add("processInstance.camundaDeploymentId");
+        fields.add("entity.processInstance.camundaDeploymentId");
         return fields;
     }
 

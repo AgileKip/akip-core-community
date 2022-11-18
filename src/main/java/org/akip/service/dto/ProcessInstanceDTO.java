@@ -4,6 +4,7 @@ import org.akip.domain.enumeration.StatusProcessInstance;
 
 import javax.persistence.Lob;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
@@ -35,6 +36,10 @@ public class ProcessInstanceDTO implements Serializable {
     private LocalDateTime endDate;
 
     private StatusProcessInstance status;
+
+    private String accessTokenNumber;
+
+    private LocalDate accessTokenExpirationDate;
 
     private ProcessDefinitionDTO processDefinition;
 
@@ -88,7 +93,6 @@ public class ProcessInstanceDTO implements Serializable {
         this.camundaProcessVariables = camundaProcessVariables;
     }
 
-
     public Map<String, String> getProps() {
         return props;
     }
@@ -127,6 +131,22 @@ public class ProcessInstanceDTO implements Serializable {
 
     public void setStatus(StatusProcessInstance status) {
         this.status = status;
+    }
+
+    public String getAccessTokenNumber() {
+        return accessTokenNumber;
+    }
+
+    public void setAccessTokenNumber(String accessTokenNumber) {
+        this.accessTokenNumber = accessTokenNumber;
+    }
+
+    public LocalDate getAccessTokenExpirationDate() {
+        return accessTokenExpirationDate;
+    }
+
+    public void setAccessTokenExpirationDate(LocalDate accessTokenExpirationDate) {
+        this.accessTokenExpirationDate = accessTokenExpirationDate;
     }
 
     public ProcessDefinitionDTO getProcessDefinition() {

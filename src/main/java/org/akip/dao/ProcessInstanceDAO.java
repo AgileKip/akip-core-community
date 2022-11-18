@@ -34,6 +34,10 @@ class ProcessInstanceDAO extends AbstractDAO<ProcessInstanceSearchDTO> {
         getJoinDefs().add(new JoinDef()
                 .join("left outer join entity.tenant as tenant")
                 .activeByDefault(true));
+
+        getJoinDefs().add(new JoinDef()
+                .join("left outer join entity.processDefinition.kipApp as kipApp")
+                .activeByDefault(true));
     }
 
     @Override
@@ -47,9 +51,9 @@ class ProcessInstanceDAO extends AbstractDAO<ProcessInstanceSearchDTO> {
         fields.add("entity.endDate");
         fields.add("entity.processDefinition.name");
         fields.add("entity.processDefinition.bpmnProcessDefinitionId");
-        fields.add("entity.tenant.name");
+        fields.add("tenant.name");
         fields.add("entity.camundaDeploymentId");
-        fields.add("entity.processDefinition.kipApp.baseUrl");
+        fields.add("kipApp.baseUrl");
         return fields;
     }
 
