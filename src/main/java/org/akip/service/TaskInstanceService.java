@@ -112,8 +112,9 @@ public class TaskInstanceService {
             if (taskInstance.getStartTime() == null || (taskInstance.getAssignee() != null && !taskInstance.getAssignee().equals(SecurityUtils.getCurrentUserLogin().get()))) {
                 taskInstance.setStartTime(Instant.now());
             }
-
-            taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().get());
+            String currentUser = SecurityUtils.getCurrentUserLogin().get();
+            taskService.setAssignee(taskInstance.getTaskId(), currentUser);
+            taskService.claim(taskInstance.getTaskId(), currentUser);
             taskInstanceRepository.save(taskInstance);
         }
         return optionalTaskInstance.map(taskInstanceMapper::toDTOLoadTaskContext);
