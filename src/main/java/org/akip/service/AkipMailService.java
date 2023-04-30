@@ -12,6 +12,7 @@ import tech.jhipster.config.JHipsterProperties;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * Service for sending emails.
@@ -56,7 +57,7 @@ public class AkipMailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, StandardCharsets.UTF_8.name());
-            message.setTo(to);
+            message.setTo(to.split(","));
             message.setFrom(jHipsterProperties.getMail().getFrom());
             message.setSubject(subject);
             message.setText(content, isHtml);
