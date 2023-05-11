@@ -14,11 +14,29 @@
     <property name="datetimeType" value="datetime(6)" dbms="mysql, mariadb"/>
     <property name="datetimeType" value="datetime" dbms="oracle, mssql, postgresql, h2"/>
 
-    <include file="config/liquibase/changelog/00000000000001_added_entity_ProcessDefinition.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/00000000000002_added_entity_ProcessDeployment.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/00000000000004_added_entity_ProcessInstance.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/00000000000006_added_entity_TaskInstance.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/00000000000003_added_entity_constraints_ProcessDeployment.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/00000000000005_added_entity_constraints_ProcessInstance.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/00000000000007_added_entity_constraints_TaskInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000000_added_akip_hibernate_sequence.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000001_added_entity_KipApp.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000001_added_entity_Tenant.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000002_added_entity_TenantMember.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000003_added_entity_ProcessDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000004_added_entity_ProcessDeployment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000006_added_entity_ProcessInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000008_added_entity_TaskInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000010_added_entity_Attachment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000011_added_entity_AttachmentEntity.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000012_added_entity_Note.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000013_added_entity_NoteEntity.xml" relativeToChangelogFile="false"/>
+
+    <include file="config/liquibase/changelog/00000000000004_added_entity_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000005_added_entity_constraints_ProcessDeployment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000007_added_entity_constraints_ProcessInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000009_added_entity_constraints_TaskInstance.xml" relativeToChangelogFile="false"/>
+
+    <include file="config/liquibase/changelog/00000000001001_added_entity_DashboardConfig.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000001002_added_entity_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000001003_added_entity_constraints_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>
+
+    <include file="config/liquibase/changelog/00000000002001_added_entity_AkipEmailConnectorConfig.xml" relativeToChangelogFile="false"/>
+
+
 </databaseChangeLog>

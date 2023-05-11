@@ -1,11 +1,13 @@
 package org.akip.domain;
 
 import org.akip.domain.enumeration.StatusTaskInstance;
+import org.akip.domain.enumeration.TypeTaskInstance;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 /**
  * A TaskInstance.
@@ -19,7 +21,7 @@ public class TaskInstance implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator", sequenceName = "akip_hibernate_sequence")
     private Long id;
 
     @Column(name = "task_id")
@@ -31,6 +33,10 @@ public class TaskInstance implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusTaskInstance status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private TypeTaskInstance type;
 
     @Lob
     @Type(type = "org.hibernate.type.TextType")
@@ -72,6 +78,17 @@ public class TaskInstance implements Serializable {
 
     @Column(name = "candidateGroups")
     private String candidateGroups;
+
+    @Column(name = "connector_name")
+    private String connectorName;
+
+    @Column(name = "connector_config_name")
+    private String connectorConfigName;
+
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "form_fields")
+    private String formFields;
 
     @ManyToOne
     private ProcessDefinition processDefinition;
@@ -131,6 +148,19 @@ public class TaskInstance implements Serializable {
 
     public void setStatus(StatusTaskInstance status) {
         this.status = status;
+    }
+
+    public TypeTaskInstance getType() {
+        return type;
+    }
+
+    public TaskInstance type(TypeTaskInstance type) {
+        this.type = type;
+        return this;
+    }
+
+    public void setType(TypeTaskInstance type) {
+        this.type = type;
     }
 
     public String getDescription() {
@@ -300,6 +330,45 @@ public class TaskInstance implements Serializable {
 
     public void setCandidateGroups(String candidateGroups) {
         this.candidateGroups = candidateGroups;
+    }
+
+    public String getConnectorName() {
+        return connectorName;
+    }
+
+    public TaskInstance connectorName(String connectorName) {
+        this.connectorName = connectorName;
+        return this;
+    }
+
+    public void setConnectorName(String connectorName) {
+        this.connectorName = connectorName;
+    }
+
+    public String getConnectorConfigName() {
+        return connectorConfigName;
+    }
+
+    public TaskInstance connectorConfigName(String connectorConfigName) {
+        this.connectorConfigName = connectorConfigName;
+        return this;
+    }
+
+    public void setConnectorConfigName(String connectorConfigName) {
+        this.connectorConfigName = connectorConfigName;
+    }
+
+    public String getFormFields() {
+        return formFields;
+    }
+
+    public TaskInstance formFields(String formFields) {
+        this.formFields = formFields;
+        return this;
+    }
+
+    public void setFormFields(String formFields) {
+        this.formFields = formFields;
     }
 
     public ProcessDefinition getProcessDefinition() {

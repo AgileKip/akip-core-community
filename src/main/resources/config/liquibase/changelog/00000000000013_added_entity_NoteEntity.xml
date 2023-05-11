@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity NoteEntity.
+    -->
+    <changeSet id="000000000000013.1" author="akip">
+        <createTable tableName="note_entity">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="entity_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="entity_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="note_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000013. 2" author="akip">
+        <addForeignKeyConstraint baseColumnNames="note_id"
+                                 baseTableName="note_entity"
+                                 constraintName="fk_note_entity_note_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="note"/>
+    </changeSet>
+</databaseChangeLog>

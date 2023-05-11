@@ -1,6 +1,8 @@
 package org.akip.service.dto;
 
+import org.akip.camunda.form.CamundaFormFieldDef;
 import org.akip.domain.enumeration.StatusTaskInstance;
+import org.akip.domain.enumeration.TypeTaskInstance;
 
 import javax.persistence.Lob;
 import java.io.Serializable;
@@ -21,6 +23,8 @@ public class TaskInstanceDTO implements Serializable {
     private String name;
 
     private StatusTaskInstance status;
+
+    private TypeTaskInstance type;
 
     @Lob
     private String description;
@@ -48,6 +52,12 @@ public class TaskInstanceDTO implements Serializable {
     private Integer priority;
 
     private List<String> candidateGroups = new ArrayList<>();
+
+    private String connectorName;
+
+    private String connectorConfigName;
+
+    private List<CamundaFormFieldDef> formFields;
 
     private ProcessDefinitionDTO processDefinition;
 
@@ -83,6 +93,14 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setStatus(StatusTaskInstance status) {
         this.status = status;
+    }
+
+    public TypeTaskInstance getType() {
+        return type;
+    }
+
+    public void setType(TypeTaskInstance type) {
+        this.type = type;
     }
 
     public String getDescription() {
@@ -187,6 +205,30 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setCandidateGroups(List<String> candidateGroups) {
         this.candidateGroups = candidateGroups;
+    }
+
+    public String getConnectorName() {
+        return connectorName;
+    }
+
+    public void setConnectorName(String connectorName) {
+        this.connectorName = connectorName;
+    }
+
+    public String getConnectorConfigName() {
+        return connectorConfigName;
+    }
+
+    public void setConnectorConfigName(String connectorConfigName) {
+        this.connectorConfigName = connectorConfigName;
+    }
+
+    public List<CamundaFormFieldDef> getFormFields() {
+        return formFields;
+    }
+
+    public void setFormFields(List<CamundaFormFieldDef> formFields) {
+        this.formFields = formFields;
     }
 
     public ProcessDefinitionDTO getProcessDefinition() {

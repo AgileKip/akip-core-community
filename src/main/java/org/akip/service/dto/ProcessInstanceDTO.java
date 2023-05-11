@@ -4,7 +4,9 @@ import org.akip.domain.enumeration.StatusProcessInstance;
 
 import javax.persistence.Lob;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -25,13 +27,23 @@ public class ProcessInstanceDTO implements Serializable {
     @Lob
     private String camundaProcessVariables;
 
+    private Map<String, String> props;
+
+    private Map<String, String> data;
+
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
 
     private StatusProcessInstance status;
 
+    private String accessTokenNumber;
+
+    private LocalDate accessTokenExpirationDate;
+
     private ProcessDefinitionDTO processDefinition;
+
+    private TenantDTO tenant;
 
     public Long getId() {
         return id;
@@ -81,6 +93,22 @@ public class ProcessInstanceDTO implements Serializable {
         this.camundaProcessVariables = camundaProcessVariables;
     }
 
+    public Map<String, String> getProps() {
+        return props;
+    }
+
+    public void setProps(Map<String, String> props) {
+        this.props = props;
+    }
+
+    public Map<String, String> getData() {
+        return data;
+    }
+
+    public void setData(Map<String, String> data) {
+        this.data = data;
+    }
+
     public LocalDateTime getStartDate() {
         return startDate;
     }
@@ -105,12 +133,36 @@ public class ProcessInstanceDTO implements Serializable {
         this.status = status;
     }
 
+    public String getAccessTokenNumber() {
+        return accessTokenNumber;
+    }
+
+    public void setAccessTokenNumber(String accessTokenNumber) {
+        this.accessTokenNumber = accessTokenNumber;
+    }
+
+    public LocalDate getAccessTokenExpirationDate() {
+        return accessTokenExpirationDate;
+    }
+
+    public void setAccessTokenExpirationDate(LocalDate accessTokenExpirationDate) {
+        this.accessTokenExpirationDate = accessTokenExpirationDate;
+    }
+
     public ProcessDefinitionDTO getProcessDefinition() {
         return processDefinition;
     }
 
     public void setProcessDefinition(ProcessDefinitionDTO processDefinition) {
         this.processDefinition = processDefinition;
+    }
+
+    public TenantDTO getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(TenantDTO tenant) {
+        this.tenant = tenant;
     }
 
     @Override

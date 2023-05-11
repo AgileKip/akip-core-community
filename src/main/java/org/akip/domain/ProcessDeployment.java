@@ -21,7 +21,7 @@ public class ProcessDeployment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator", sequenceName = "akip_hibernate_sequence")
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -55,8 +55,17 @@ public class ProcessDeployment implements Serializable {
     @Column(name = "inactivation_date")
     private LocalDateTime inactivationDate;
 
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "props")
+    private String props;
+
     @ManyToOne
     private ProcessDefinition processDefinition;
+
+    @ManyToOne
+    private Tenant tenant;
+
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -139,12 +148,28 @@ public class ProcessDeployment implements Serializable {
         this.inactivationDate = inactivationDate;
     }
 
+    public String getProps() {
+        return props;
+    }
+
+    public void setProps(String props) {
+        this.props = props;
+    }
+
     public ProcessDefinition getProcessDefinition() {
         return processDefinition;
     }
 
     public void setProcessDefinition(ProcessDefinition processDefinition) {
         this.processDefinition = processDefinition;
+    }
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

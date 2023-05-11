@@ -24,16 +24,6 @@ public class TaskInstanceController {
         this.taskInstanceService = taskInstanceService;
     }
 
-    /**
-     * {@code GET  /task-instances} : get all the taskInstances.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of taskInstances in body.
-     */
-    @GetMapping("/task-instances")
-    public List<TaskInstanceDTO> getAllTaskInstances() {
-        log.debug("REST request to get all TaskInstances");
-        return taskInstanceService.findAll();
-    }
 
     /**
      * {@code GET  /my-candidate-tasks} : get my candidate taskInstances.
@@ -64,13 +54,13 @@ public class TaskInstanceController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the taskInstanceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/task-instances/{id}")
-    public TaskInstanceDTO getTaskInstance(@PathVariable Long id) {
+    public TaskInstanceDTO getTaskInstance(@PathVariable("id") Long id) {
         log.debug("REST request to get TaskInstance : {}", id);
         return taskInstanceService.findOne(id).orElseThrow();
     }
 
     @GetMapping("/task-instances/{id}/claim")
-    public TaskInstanceDTO claimTaskInstance(@PathVariable Long id) {
+    public TaskInstanceDTO claimTaskInstance(@PathVariable("id") Long id) {
         log.debug("REST request to get TaskInstance : {}", id);
         return taskInstanceService.claim(id).orElseThrow();
     }

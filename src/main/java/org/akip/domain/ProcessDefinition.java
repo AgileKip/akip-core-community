@@ -20,7 +20,7 @@ public class ProcessDefinition implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator", sequenceName = "akip_hibernate_sequence")
     private Long id;
 
     @Column(name = "name")
@@ -40,6 +40,14 @@ public class ProcessDefinition implements Serializable {
 
     @Column(name = "can_be_manually_started")
     private Boolean canBeManuallyStarted;
+
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "start_form_fields")
+    private String startFormFields;
+
+    @ManyToOne
+    private KipApp kipApp;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -95,7 +103,21 @@ public class ProcessDefinition implements Serializable {
         this.canBeManuallyStarted = canBeManuallyStarted;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public String getStartFormFields() {
+        return startFormFields;
+    }
+
+    public void setStartFormFields(String startFormFields) {
+        this.startFormFields = startFormFields;
+    }
+
+    public KipApp getKipApp() {
+        return kipApp;
+    }
+
+    public void setKipApp(KipApp kipApp) {
+        this.kipApp = kipApp;
+    }
 
     @Override
     public boolean equals(Object o) {

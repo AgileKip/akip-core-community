@@ -11,6 +11,7 @@ import tech.jhipster.web.util.HeaderUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 /**
  * REST controller for managing {@link org.akip.domain.ProcessDeployment}.
@@ -19,7 +20,7 @@ import java.net.URISyntaxException;
 @RequestMapping("/api")
 public class ProcessDeploymentController {
 
-
+    private static final String MESSAGE_PROPERTIES_SAVED = "Properties Successfully Saved";
 
     private final Logger log = LoggerFactory.getLogger(ProcessDeploymentController.class);
 
@@ -58,7 +59,7 @@ public class ProcessDeploymentController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/process-deployment/{id}")
-    public ProcessDeploymentDTO getProcessDeployment(@PathVariable Long id) {
+    public ProcessDeploymentDTO getProcessDeployment(@PathVariable("id") Long id) {
         log.debug("REST request to get ProcessDeployment : {}", id);
         return processDeploymentService.findOne(id).orElseThrow();
     }
@@ -70,7 +71,7 @@ public class ProcessDeploymentController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/process-deployment/{id}/bpmnModel")
-    public ProcessDeploymentBpmnModelDTO getProcessDeploymentBpmnModel(@PathVariable Long id) {
+    public ProcessDeploymentBpmnModelDTO getProcessDeploymentBpmnModel(@PathVariable("id") Long id) {
         log.debug("REST request to get ProcessDeployment : {}", id);
         return processDeploymentService.findBpmnModel(id).orElseThrow();
     }
@@ -82,7 +83,7 @@ public class ProcessDeploymentController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/process-deployment/{id}/active")
-    public ResponseEntity<Void> activeProcessDeployment(@PathVariable Long id) {
+    public ResponseEntity<Void> activeProcessDeployment(@PathVariable("id") Long id) {
         log.debug("REST request to inactive ProcessDeployment : {}", id);
         processDeploymentService.activate(id);
         return ResponseEntity
@@ -97,11 +98,21 @@ public class ProcessDeploymentController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/process-deployment/{id}/inactive")
-    public ResponseEntity<Void> inactiveProcessDeployment(@PathVariable Long id) {
+    public ResponseEntity<Void> inactiveProcessDeployment(@PathVariable("id") Long id) {
         log.debug("REST request to inactive ProcessDeployment : {}", id);
         processDeploymentService.inactivate(id);
         return ResponseEntity
             .noContent()
             .build();
+    }
+
+    @PutMapping("/process-deployment/{id}/properties")
+    public ResponseEntity<Void> saveProperties(@PathVariable("id") Long id, @RequestBody Map<String, String> properties) {
+        log.debug("REST request to save ProcessDeployment properties: {}", id);
+        processDeploymentService.saveProperties(id, properties);
+        return ResponseEntity
+                .noContent()
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_PROPERTIES_SAVED, id.toString()))
+                .build();
     }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <!--
+        Added the constraints for entity DashboardGroupConfig.
+    -->
+    <changeSet id="00000000001003" author="akip">
+        <addForeignKeyConstraint baseColumnNames="dashboard_config_id"
+                                 baseTableName="dashboard_group_config"
+                                 constraintName="fk_das_group_c_das_conf_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="dashboard_config"/>
+    </changeSet>
+</databaseChangeLog>
