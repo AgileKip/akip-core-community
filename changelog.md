@@ -1,5 +1,9 @@
 # Changelog
 
+* 0.1.3
+  * Fixing bug with candidate group that did not support expression
+
+
 * 0.1.2
     * Fixing bug in the claim feature for guest users (anonymous tasks)
     * Fixing a bug in the AkipEmailConnector for multiple email recipients

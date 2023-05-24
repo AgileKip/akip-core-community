@@ -2,7 +2,7 @@ package org.akip.dao;
 
 import com.owse.searchFramework.*;
 import com.owse.searchFramework.enumeration.FilterType;
-import org.akip.dao.filter.AuthorityFilter;
+import org.akip.dao.filter.AssigneeAndCandidateGroupFilter;
 import org.akip.dao.filter.TenantFilter;
 import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Service("myTaskInstance")
@@ -41,13 +40,10 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         tenantsCurrentUserFilter.setId("tenantObject");
         tenantsCurrentUserFilter.setValues(tenantMemberRepository.findTenantByTenantMemberUsername(SecurityUtils.getCurrentUserLogin().get()));
 
-        AuthorityFilter candidateUsersFilters = new AuthorityFilter();
-        candidateUsersFilters.setId("candidateUsers");
-        candidateUsersFilters.setValues(Collections.singletonList(SecurityUtils.getCurrentUserLogin().get()));
-
-        AuthorityFilter candidateGroupsFilters = new AuthorityFilter();
-        candidateGroupsFilters.setId("candidateGroups");
-        candidateGroupsFilters.setValues(SecurityUtils.getAuthorities());
+        AssigneeAndCandidateGroupFilter assigneeAndCandidateGroupFilter = new AssigneeAndCandidateGroupFilter();
+        assigneeAndCandidateGroupFilter.setId("assigneeAndCandidateGroupFilter");
+        assigneeAndCandidateGroupFilter.setAssignee(SecurityUtils.getCurrentUserLogin().get());
+        assigneeAndCandidateGroupFilter.setValues(SecurityUtils.getAuthorities());
 
         EnumFilter userTaskFilter = new EnumFilter();
         userTaskFilter.setId("type");
@@ -55,13 +51,13 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         userTaskFilter.setValue(TypeTaskInstance.USER_TASK.toString());
 
         searchRequest.getFilters().add(tenantsCurrentUserFilter);
-        searchRequest.getFilters().add(candidateGroupsFilters);
+        searchRequest.getFilters().add(assigneeAndCandidateGroupFilter);
         searchRequest.getFilters().add(userTaskFilter);
 
         PageableSearchResult<TaskInstanceSearchDTO> result = super.search(searchRequest);
 
         result.getFilters().remove(tenantsCurrentUserFilter);
-        result.getFilters().remove(candidateGroupsFilters);
+        result.getFilters().remove(assigneeAndCandidateGroupFilter);
         result.getFilters().remove(userTaskFilter);
 
         return result;

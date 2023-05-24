@@ -63,14 +63,10 @@ public class CamundaTaskCreateListener implements TaskListener {
         //taskInstanceDTO.setSuspended(delegateTask.getCaseExecution().isSuspended());
         taskInstanceDTO.setPriority(delegateTask.getPriority());
 
-        ((TaskEntity) delegateTask).getTaskDefinition()
-            .getCandidateGroupIdExpressions()
-            .stream()
-            .forEach(
-                expression -> {
-                    taskInstanceDTO.getCandidateGroups().add(expression.getExpressionText());
-                }
-            );
+        delegateTask.getCandidates()
+                .stream()
+                .filter(identityLink -> identityLink.getGroupId() != null)
+                .forEach(identityLink -> taskInstanceDTO.getCandidateGroups().add(identityLink.getGroupId()));
 
         ProcessInstanceDTO processInstance = new ProcessInstanceDTO();
         processInstance.setId(1L);
