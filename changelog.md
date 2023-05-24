@@ -1,5 +1,8 @@
 # Changelog
 
+* 0.1.4
+  * Including support for redo a 'redoable' task 
+
 * 0.1.3
   * Fixing bug with candidate group that did not support expression
 
