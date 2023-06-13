@@ -49,6 +49,8 @@ public class TaskInstanceService {
 
     private final TaskService taskService;
 
+    private final NoteService noteService;
+
     private final EntityManager entityManager;
 
     private final BeanFactory beanFactory;
@@ -59,13 +61,14 @@ public class TaskInstanceService {
             ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, TaskInstanceRepository taskInstanceRepository,
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
-            EntityManager entityManager,
+            NoteService noteService, EntityManager entityManager,
             BeanFactory beanFactory) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
         this.taskInstanceRepository = taskInstanceRepository;
         this.taskInstanceMapper = taskInstanceMapper;
         this.taskService = taskService;
+        this.noteService = noteService;
         this.entityManager = entityManager;
         this.beanFactory = beanFactory;
     }
@@ -162,8 +165,7 @@ public class TaskInstanceService {
         params.put(CamundaConstants.PROCESS_INSTANCE, processInstance);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().get());
         taskService.complete(taskInstance.getTaskId(), params);
-        //TODO... add a hook. Motivation: migrate the method below to a hook
-        //noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
+        noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }
 
     public void complete(TaskInstanceDTO taskInstance, IProcessEntity processEntity) {
@@ -173,8 +175,7 @@ public class TaskInstanceService {
         params.put(CamundaConstants.PROCESS_ENTITY, processEntity);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().orElseThrow());
         taskService.complete(taskInstance.getTaskId(), params);
-        //TODO... add a hook. Motivation: migrate the method below to a hook
-        //noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
+        noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }
 
     public void redo(Long id) {
