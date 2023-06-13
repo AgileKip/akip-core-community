@@ -105,6 +105,9 @@ public class CamundaTaskCreateListener implements TaskListener {
         camundaFormFieldDef.setId(formField.getId());
         camundaFormFieldDef.setLabel(formField.getLabel());
         camundaFormFieldDef.setType(formField.getTypeName());
+        if (formField.getType() instanceof EnumFormType) {
+            camundaFormFieldDef.setValues(((EnumFormType) formField.getType()).getValues());
+        }
         if (formField.getValue() != null) {
             camundaFormFieldDef.setDefaultValue(formField.getValue().getValue());
         }
@@ -112,9 +115,6 @@ public class CamundaTaskCreateListener implements TaskListener {
                 formField.getValidationConstraints().stream().map(this::toCamundaFormFieldValidationConstraintDef).collect(Collectors.toList())
         );
         camundaFormFieldDef.setProperties(formField.getProperties());
-        if (formField.getType() instanceof EnumFormType) {
-            camundaFormFieldDef.setValues(((EnumFormType) formField.getType()).getValues());
-        }
         return camundaFormFieldDef;
     }
 
