@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="en">
+  <head>
+    <title th:text="#{akip.email.notifyNewTaskToCandidateGroupEmail.title}">New task to you in the KIP4You Platform</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+  </head>
+  <body>
+    <p th:text="#{akip.email.notifyNewTaskToCandidateGroupEmail.greeting(${user.login})}">Dear</p>
+    <p
+      th:utext="#{akip.email.notifyNewTaskToAssigneeEmail.text1('<strong>' + ${delegateTask.name} + '</strong>', '<strong>' + ${delegateTask.processInstance.businessKey} + '</strong>')}"
+    >
+      You have a new task
+    </p>
+    <p th:text="#{akip.email.notifyNewTaskToCandidateGroupEmail.text2}">You can complete the task in the link below:</p>
+
+    <p>
+      <a th:with="url=(@{|${baseUrl}/my-candidate-tasks|})" th:href="${url}" th:text="#{akip.email.notifyNewTaskToCandidateGroupEmail.myTasks}"
+        >My Tasks</a
+      >
+    </p>
+    <p>
+      <span th:text="#{akip.email.notifyNewTaskToCandidateGroupEmail.regards}">Regards, </span>
+      <br />
+      <em th:text="#{akip.email.signature}">JHipster.</em>
+    </p>
+  </body>
+</html>
