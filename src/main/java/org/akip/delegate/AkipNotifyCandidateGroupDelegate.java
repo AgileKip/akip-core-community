@@ -57,7 +57,7 @@ public class AkipNotifyCandidateGroupDelegate implements TaskListener {
         for (IdentityLink authority : delegateTask.getCandidates()) {
             authoritiesList.add(authority.getGroupId());
         }
-        List<AkipUserDTO> users = userResolver.getUsers(authoritiesList);
+        List<AkipUserDTO> users = userResolver.getUsersByAuthorities(authoritiesList);
 
         if (users.isEmpty()) {
             return;

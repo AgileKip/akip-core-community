@@ -5,5 +5,6 @@ import java.util.List;
 public interface UserResolver {
     AkipUserDTO getUser(String login);
 
-    List<AkipUserDTO> getUsers(List<String> login);
+    List<AkipUserDTO> getUsersByAuthorities(List<String> authorities);
+    List<AkipUserDTO> getUsersByLogin(List<String> login);
 }
