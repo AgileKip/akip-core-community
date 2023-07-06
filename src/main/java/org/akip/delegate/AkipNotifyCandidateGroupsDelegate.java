@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
-public class AkipNotifyCandidateGroupDelegate implements TaskListener {
+public class AkipNotifyCandidateGroupsDelegate implements TaskListener {
 
-    private final Logger log = LoggerFactory.getLogger(AkipNotifyCandidateGroupDelegate.class);
+    private final Logger log = LoggerFactory.getLogger(AkipNotifyCandidateGroupsDelegate.class);
 
     private final MailService emailService;
 
@@ -33,7 +33,7 @@ public class AkipNotifyCandidateGroupDelegate implements TaskListener {
 
     private final MessageSource messageSource;
 
-    public AkipNotifyCandidateGroupDelegate(
+    public AkipNotifyCandidateGroupsDelegate(
             MailService emailService,
             UserResolver userResolver, Environment env,
             SpringTemplateEngine templateEngine,
