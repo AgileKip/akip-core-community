@@ -52,11 +52,11 @@ public class AkipNotifyCandidateUsersDelegate implements TaskListener {
             return;
         }
 
-        List<String> authoritiesList = new ArrayList<>();
-        for (IdentityLink authority : delegateTask.getCandidates()) {
-            authoritiesList.add(authority.getGroupId());
+        List<String> loginList = new ArrayList<>();
+        for (IdentityLink login : delegateTask.getCandidates()) {
+            loginList.add(login.getUserId());
         }
-        List<AkipUserDTO> users = userResolver.getUsersByLogin(authoritiesList);
+        List<AkipUserDTO> users = userResolver.getUsersByLogin(loginList);
 
         if (users.isEmpty()) {
             return;
