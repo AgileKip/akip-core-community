@@ -2,7 +2,7 @@ package org.akip.delegate;
 
 import org.akip.resolver.AkipUserDTO;
 import org.akip.resolver.UserResolver;
-import org.akip.service.MailService;
+import org.akip.service.AkipMailService;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.task.IdentityLink;
@@ -23,9 +23,9 @@ public class AkipNotifyCandidateGroupsDelegate implements TaskListener {
 
     private final Logger log = LoggerFactory.getLogger(AkipNotifyCandidateGroupsDelegate.class);
 
-    private final MailService emailService;
-
     private final UserResolver userResolver;
+
+    private final AkipMailService emailService;
 
     private final Environment env;
 
@@ -34,13 +34,12 @@ public class AkipNotifyCandidateGroupsDelegate implements TaskListener {
     private final MessageSource messageSource;
 
     public AkipNotifyCandidateGroupsDelegate(
-            MailService emailService,
-            UserResolver userResolver, Environment env,
+            AkipMailService emailService, UserResolver userResolver, Environment env,
             SpringTemplateEngine templateEngine,
             MessageSource messageSource
     ) {
-        this.userResolver = userResolver;
         this.emailService = emailService;
+        this.userResolver = userResolver;
         this.env = env;
         this.templateEngine = templateEngine;
         this.messageSource = messageSource;
@@ -64,8 +63,8 @@ public class AkipNotifyCandidateGroupsDelegate implements TaskListener {
         }
         users.forEach(
             user -> {
-                String templateName = "mail/notifyNewTaskToCandidateGroupEmail";
-                String titleKey = "akip.email.notifyNewTaskToCandidateGroupEmail.subject";
+                String templateName = "mail/notifyNewTaskToCandidateGroupsEmail";
+                String titleKey = "akip.email.notifyNewTaskToCandidateGroupsEmail.subject";
                 Locale locale = Locale.forLanguageTag(user.getLangKey());
                 Context context = new Context(locale);
                 context.setVariable("user", user);
