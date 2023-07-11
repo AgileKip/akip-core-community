@@ -2,7 +2,7 @@ package org.akip.delegate;
 
 import org.akip.resolver.AkipUserDTO;
 import org.akip.resolver.UserResolver;
-import org.akip.service.MailService;
+import org.akip.service.AkipMailService;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ public class AkipNotifyAssigneeDelegate implements TaskListener {
 
     private final UserResolver userResolver;
 
-    private final MailService emailService;
+    private final AkipMailService emailService;
 
     private final Environment env;
 
@@ -29,7 +29,7 @@ public class AkipNotifyAssigneeDelegate implements TaskListener {
 
     private final MessageSource messageSource;
 
-    public AkipNotifyAssigneeDelegate(UserResolver userResolver, MailService emailService, Environment env, SpringTemplateEngine templateEngine, MessageSource messageSource) {
+    public AkipNotifyAssigneeDelegate(UserResolver userResolver, AkipMailService emailService, Environment env, SpringTemplateEngine templateEngine, MessageSource messageSource) {
         this.userResolver = userResolver;
         this.emailService = emailService;
         this.env = env;

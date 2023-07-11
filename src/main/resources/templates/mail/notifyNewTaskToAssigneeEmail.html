@@ -6,7 +6,7 @@
     <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}" />
   </head>
   <body>
-    <p th:text="#{akip.email.notifyNewTaskToAssigneeEmail.greeting(${user.login})}">Dear</p>
+    <p th:text="#{akip.email.notifyNewTaskToAssigneeEmail.greeting(${user.firstName})}">Dear</p>
     <p
       th:utext="#{akip.email.notifyNewTaskToAssigneeEmail.text1('<strong>' + ${delegateTask.name} + '</strong>', '<strong>' + ${delegateTask.processInstance.businessKey} + '</strong>')}"
     >

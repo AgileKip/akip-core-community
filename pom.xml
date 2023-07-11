@@ -152,7 +152,7 @@
     <dependency>
       <groupId>com.owse</groupId>
       <artifactId>search-framework-server-side</artifactId>
-      <version>1.2.5</version>
+      <version>1.2.8</version>
     </dependency>
 
   </dependencies>
