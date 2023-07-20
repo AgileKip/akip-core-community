@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -58,6 +59,8 @@ public class TaskInstanceDTO implements Serializable {
     private String connectorConfigName;
 
     private List<CamundaFormFieldDef> formFields;
+
+    private Map<String, String> props;
 
     private ProcessDefinitionDTO processDefinition;
 
@@ -229,6 +232,14 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setFormFields(List<CamundaFormFieldDef> formFields) {
         this.formFields = formFields;
+    }
+
+    public Map<String, String> getProps() {
+        return props;
+    }
+
+    public void setProps(Map<String, String> props) {
+        this.props = props;
     }
 
     public ProcessDefinitionDTO getProcessDefinition() {

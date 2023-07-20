@@ -16,12 +16,13 @@ import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.FormFieldValidationConstraint;
 import org.camunda.bpm.engine.impl.form.type.EnumFormType;
 import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
+import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
+import org.camunda.bpm.model.bpmn.instance.UserTask;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -81,6 +82,7 @@ public class CamundaTaskCreateListener implements TaskListener {
         }
 
         taskInstanceDTO.setFormFields(extractFormFields(delegateTask));
+        taskInstanceDTO.setProps(extractProperties(delegateTask));
 
         return taskInstanceDTO;
     }
@@ -98,6 +100,29 @@ public class CamundaTaskCreateListener implements TaskListener {
                 .stream()
                 .map(this::toCamundaFormFieldDef)
                 .collect(Collectors.toList());
+    }
+
+    private Map<String, String> extractProperties(DelegateTask delegateTask) {
+        ExtensionElements extensionElements = ((TaskEntity) delegateTask).getBpmnModelElementInstance().getExtensionElements();
+        if (
+                extensionElements == null || extensionElements.getElementsQuery().filterByType(CamundaProperties.class).count() == 0
+        ) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, String> properties = new HashMap<>();
+        CamundaProperties camundaProperties = extensionElements
+                .getElementsQuery()
+                .filterByType(CamundaProperties.class)
+                .singleResult();
+        camundaProperties
+                .getCamundaProperties()
+                .forEach(
+                        camundaProperty -> {
+                            properties.put(camundaProperty.getCamundaName(), camundaProperty.getCamundaValue());
+                        }
+                );
+        return properties;
     }
 
     private CamundaFormFieldDef toCamundaFormFieldDef(FormField formField) {

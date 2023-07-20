@@ -90,6 +90,11 @@ public class TaskInstance implements Serializable {
     @Column(name = "form_fields")
     private String formFields;
 
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "props")
+    private String props;
+
     @ManyToOne
     private ProcessDefinition processDefinition;
 
@@ -369,6 +374,19 @@ public class TaskInstance implements Serializable {
 
     public void setFormFields(String formFields) {
         this.formFields = formFields;
+    }
+
+    public String getProps() {
+        return props;
+    }
+
+    public TaskInstance props(String props) {
+        this.props = props;
+        return this;
+    }
+
+    public void setProps(String props) {
+        this.props = props;
     }
 
     public ProcessDefinition getProcessDefinition() {
