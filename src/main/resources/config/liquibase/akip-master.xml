@@ -38,5 +38,7 @@
 
     <include file="config/liquibase/changelog/00000000002001_added_entity_AkipEmailConnectorConfig.xml" relativeToChangelogFile="false"/>
 
+    <include file="config/liquibase/changelog/20230222000001_added_entity_DecisionDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20230222000002_added_entity_DecisionDeployment.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
