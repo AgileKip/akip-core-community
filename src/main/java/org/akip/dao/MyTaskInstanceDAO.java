@@ -7,11 +7,14 @@ import org.akip.dao.filter.TenantFilter;
 import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
+import org.akip.recsys.AkipTaskInstanceRakingAlgorithmInterface;
+import org.akip.recsys.AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig;
 import org.akip.repository.TenantMemberRepository;
 import org.akip.security.SecurityUtils;
 import org.akip.service.ProcessDefinitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -28,10 +31,13 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
 
     private final TenantMemberRepository tenantMemberRepository;
 
-    MyTaskInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService, TenantMemberRepository tenantMemberRepository) {
+    private final BeanFactory beanFactory;
+
+    MyTaskInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService, TenantMemberRepository tenantMemberRepository, BeanFactory beanFactory) {
         super(entityManager, TaskInstance.class, TaskInstanceSearchDTO.class);
         this.processDefinitionService = processDefinitionService;
         this.tenantMemberRepository = tenantMemberRepository;
+        this.beanFactory = beanFactory;
     }
 
     @Override
@@ -105,6 +111,9 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         fields.add("entity.processInstance.businessKey");
         fields.add("tenant.name");
         fields.add("entity.processInstance.camundaDeploymentId");
+        fields.add("entity.domainEntityName");
+        fields.add("entity.domainEntityId");
+        fields.add("entity.props");
         return fields;
     }
 
@@ -299,6 +308,47 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         resultColumnProcessInstanceCamundaDeploymentId.setType("String");
         resultColumns.add(resultColumnProcessInstanceCamundaDeploymentId);
 
+        ResultColumn resultColumnProps = new ResultColumn();
+        resultColumnProps.setId("props");
+        resultColumnProps.setTitle("Props");
+        resultColumnProps.setDtoField("props");
+        resultColumnProps.setVisible(true);
+        resultColumnProps.setType("String");
+        resultColumns.add(resultColumnProps);
+
+        ResultColumn resultColumnRank = new ResultColumn();
+        resultColumnRank.setId("rank");
+        resultColumnRank.setTitle("Rank");
+        resultColumnRank.setDtoField("rank");
+        resultColumnRank.setVisible(true);
+        resultColumnRank.setType("String");
+        resultColumns.add(resultColumnRank);
+
+        ResultColumn resultColumnRankData = new ResultColumn();
+        resultColumnRankData.setId("rankData");
+        resultColumnRankData.setTitle("Rank Data");
+        resultColumnRankData.setDtoField("rankData");
+        resultColumnRankData.setVisible(true);
+        resultColumnRankData.setType("String");
+        resultColumns.add(resultColumnRankData);
+
+
+        ResultColumn resultColumnDomainEntityName = new ResultColumn();
+        resultColumnDomainEntityName.setId("domainEntityName");
+        resultColumnDomainEntityName.setTitle("Domain Entity");
+        resultColumnDomainEntityName.setDtoField("domainEntityName");
+        resultColumnDomainEntityName.setVisible(false);
+        resultColumnDomainEntityName.setType("String");
+        resultColumns.add(resultColumnDomainEntityName);
+
+        ResultColumn resultColumnDomainEntityId = new ResultColumn();
+        resultColumnDomainEntityId.setId("domainEntityId");
+        resultColumnDomainEntityId.setTitle("Domain Entity Id");
+        resultColumnDomainEntityId.setDtoField("domainEntityId");
+        resultColumnDomainEntityId.setVisible(false);
+        resultColumnDomainEntityId.setType("String");
+        resultColumns.add(resultColumnDomainEntityId);
+
         return resultColumns;
     }
 
@@ -317,4 +367,11 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         return null;
     }
 
+    @Override
+    public void handleResultAfterSearch(PageableSearchResult<TaskInstanceSearchDTO> searchResult) {
+        super.handleResultAfterSearch(searchResult);
+        AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig config = new AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig();
+        AkipTaskInstanceRakingAlgorithmInterface rakingAlgorithm = (AkipTaskInstanceRakingAlgorithmInterface) beanFactory.getBean(config.getRankingAlgorithmComponent());
+        rakingAlgorithm.buildRanking(searchResult.getList());
+    }
 }

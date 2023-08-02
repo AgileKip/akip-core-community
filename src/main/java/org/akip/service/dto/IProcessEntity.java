@@ -5,4 +5,8 @@ public interface IProcessEntity {
     ProcessInstanceDTO getProcessInstance();
 
     void setProcessInstance(ProcessInstanceDTO processInstanceDTO);
+
+    String getDomainEntityName();
+
+    Long getDomainEntityId();
 }

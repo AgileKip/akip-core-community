@@ -1,11 +1,17 @@
 package org.akip.dao;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.util.StringToListUtil;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TaskInstanceSearchDTO {
 
@@ -30,6 +36,13 @@ public class TaskInstanceSearchDTO {
     private String processInstanceTenantName;
     private String processInstanceCamundaDeploymentId;
 
+    private String domainEntityName;
+    private Long domainEntityId;
+
+    private Map<String, String> props;
+    private BigDecimal rank;
+    private Map<String, Object> rankData = new HashMap<>();
+
     public TaskInstanceSearchDTO(Long id,
                                  String taskId,
                                  String name,
@@ -49,7 +62,10 @@ public class TaskInstanceSearchDTO {
                                  String processDefinitionBpmnProcessDefinitionId,
                                  String processInstanceBusinessKey,
                                  String processInstanceTenantName,
-                                 String processInstanceCamundaDeploymentId) {
+                                 String processInstanceCamundaDeploymentId,
+                                 String domainEntityName,
+                                 Long domainEntityId,
+                                 String propsAsString) {
 
         this.id = id;
         this.taskId = taskId;
@@ -71,6 +87,13 @@ public class TaskInstanceSearchDTO {
         this.processInstanceBusinessKey = processInstanceBusinessKey;
         this.processInstanceTenantName = processInstanceTenantName;
         this.processInstanceCamundaDeploymentId = processInstanceCamundaDeploymentId;
+        this.domainEntityName = domainEntityName;
+        this.domainEntityId = domainEntityId;
+        try {
+            this.props = new ObjectMapper().readValue(propsAsString, new TypeReference<Map<String, String>>() {});
+        } catch (JsonProcessingException e) {
+            this.props = new HashMap<>();
+        }
     }
 
     public Long getId() {
@@ -231,5 +254,41 @@ public class TaskInstanceSearchDTO {
 
     public void setProcessInstanceCamundaDeploymentId(String processInstanceCamundaDeploymentId) {
         this.processInstanceCamundaDeploymentId = processInstanceCamundaDeploymentId;
+    }
+
+    public String getDomainEntityName() {
+        return domainEntityName;
+    }
+
+    public void setDomainEntityName(String domainEntityname) {
+        this.domainEntityName = domainEntityname;
+    }
+
+    public Long getDomainEntityId() {
+        return domainEntityId;
+    }
+
+    public void setDomainEntityId(Long domainEntityId) {
+        this.domainEntityId = domainEntityId;
+    }
+
+    public Map<String, String> getProps() {
+        return props;
+    }
+
+    public BigDecimal getRank() {
+        return rank;
+    }
+
+    public void setRank(BigDecimal rank) {
+        this.rank = rank;
+    }
+
+    public Map<String, Object> getRankData() {
+        return rankData;
+    }
+
+    public void setRankData(Map<String, Object> rankData) {
+        this.rankData = rankData;
     }
 }

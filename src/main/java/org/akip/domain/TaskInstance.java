@@ -85,6 +85,13 @@ public class TaskInstance implements Serializable {
     @Column(name = "connector_config_name")
     private String connectorConfigName;
 
+    @Column(name = "domain_entity_name")
+    private String domainEntityName;
+
+
+    @Column(name = "domain_entity_id")
+    private Long domainEntityId;
+
     @Lob
     @Type(type = "org.hibernate.type.TextType")
     @Column(name = "form_fields")
@@ -361,6 +368,22 @@ public class TaskInstance implements Serializable {
 
     public void setConnectorConfigName(String connectorConfigName) {
         this.connectorConfigName = connectorConfigName;
+    }
+
+    public String getDomainEntityName() {
+        return domainEntityName;
+    }
+
+    public void setDomainEntityName(String domainEntityName) {
+        this.domainEntityName = domainEntityName;
+    }
+
+    public Long getDomainEntityId() {
+        return domainEntityId;
+    }
+
+    public void setDomainEntityId(Long domainEntityId) {
+        this.domainEntityId = domainEntityId;
     }
 
     public String getFormFields() {

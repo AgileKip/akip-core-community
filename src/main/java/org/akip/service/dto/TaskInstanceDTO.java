@@ -58,6 +58,10 @@ public class TaskInstanceDTO implements Serializable {
 
     private String connectorConfigName;
 
+    private String domainEntityName;
+
+    private Long domainEntityId;
+
     private List<CamundaFormFieldDef> formFields;
 
     private Map<String, String> props;
@@ -224,6 +228,22 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setConnectorConfigName(String connectorConfigName) {
         this.connectorConfigName = connectorConfigName;
+    }
+
+    public String getDomainEntityName() {
+        return domainEntityName;
+    }
+
+    public void setDomainEntityName(String domainEntityName) {
+        this.domainEntityName = domainEntityName;
+    }
+
+    public Long getDomainEntityId() {
+        return domainEntityId;
+    }
+
+    public void setDomainEntityId(Long domainEntityId) {
+        this.domainEntityId = domainEntityId;
     }
 
     public List<CamundaFormFieldDef> getFormFields() {

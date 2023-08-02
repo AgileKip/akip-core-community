@@ -7,6 +7,7 @@ import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.service.TaskInstanceService;
+import org.akip.service.dto.IProcessEntity;
 import org.akip.service.dto.ProcessInstanceDTO;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.akip.service.mapper.ProcessDefinitionMapper;
@@ -83,6 +84,12 @@ public class CamundaTaskCreateListener implements TaskListener {
 
         taskInstanceDTO.setFormFields(extractFormFields(delegateTask));
         taskInstanceDTO.setProps(extractProperties(delegateTask));
+
+        IProcessEntity processEntity = (IProcessEntity) delegateTask.getVariable(CamundaConstants.PROCESS_ENTITY);
+        if (processEntity != null) {
+            taskInstanceDTO.setDomainEntityName(processEntity.getDomainEntityName());
+            taskInstanceDTO.setDomainEntityId(processEntity.getDomainEntityId());
+        }
 
         return taskInstanceDTO;
     }

@@ -16,6 +16,18 @@
             </column>
         </addColumn>
 
+        <addColumn tableName="task_instance">
+            <column name="domain_entity_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+
+        <addColumn tableName="task_instance">
+            <column name="domain_entity_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+
     </changeSet>
 
 </databaseChangeLog>
