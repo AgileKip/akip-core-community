@@ -44,10 +44,6 @@ public class AkipNotifyAssigneeDelegate implements TaskListener {
             return;
         }
 
-        if (userResolver.getUser(delegateTask.getAssignee()) != null) {
-            return;
-        }
-
         AkipUserDTO user = userResolver.getUser(delegateTask.getAssignee());
 
         String templateName = "mail/notifyNewTaskToAssigneeEmail";
