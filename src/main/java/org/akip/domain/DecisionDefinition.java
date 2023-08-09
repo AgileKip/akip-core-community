@@ -3,12 +3,8 @@ package org.akip.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "decision_definition")
@@ -27,9 +23,6 @@ public class DecisionDefinition implements Serializable {
 
     @Column(name = "name")
     private String name;
-
-    @OneToMany(mappedBy = "decisionDefinition")
-    private List<DecisionDeployment> decisionDeployments = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -55,14 +48,6 @@ public class DecisionDefinition implements Serializable {
         this.dmnDecisionDefinitionId = dmnDecisionDefinitionId;
     }
 
-    public List<DecisionDeployment> getDecisionDeployments() {
-        return decisionDeployments;
-    }
-
-    public void setDecisionDeployments(List<DecisionDeployment> decisionDeployments) {
-        this.decisionDeployments = decisionDeployments;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -86,7 +71,6 @@ public class DecisionDefinition implements Serializable {
                 "id=" + id +
                 ", dmnDecisionDefinitionId='" + dmnDecisionDefinitionId + '\'' +
                 ", name='" + name + '\'' +
-                ", decisionDeployments=" + decisionDeployments +
                 '}';
     }
 }
