@@ -9,7 +9,7 @@
     <!--
         Added the entity DecisionDeployment.
     -->
-    <changeSet id="20230222000002-1" author="cassiojr" context="dev or prod">
+    <changeSet id="00000000000015.1" author="cassiojr" context="dev or prod">
         <createTable tableName="decision_deployment">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -50,7 +50,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20230222000002-2" author="cassiojr">
+    <changeSet id="00000000000015.2" author="cassiojr">
         <addForeignKeyConstraint baseColumnNames="decision_definition_id"
                                  baseTableName="decision_deployment"
                                  constraintName="fk_dec_depl_dec_def_id"

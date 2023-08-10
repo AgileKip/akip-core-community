@@ -15,7 +15,7 @@
     <!--
         Added the entity DecisionDefinitionEntity.
     -->
-    <changeSet id="20230222000001-1" author="cassiojr">
+    <changeSet id="00000000000014" author="cassiojr">
         <createTable tableName="decision_definition">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
