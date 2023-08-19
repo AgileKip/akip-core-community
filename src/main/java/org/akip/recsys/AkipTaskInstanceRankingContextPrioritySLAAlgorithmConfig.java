@@ -1,43 +1,43 @@
 package org.akip.recsys;
 
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 
+@Component
 public class AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig {
-    private String rankingAlgorithmComponent = AkipTaskInstanceRankingContextPrioritySLAAlgorithm.class.getSimpleName().substring(0, 1).toLowerCase() + AkipTaskInstanceRankingContextPrioritySLAAlgorithm.class.getSimpleName().substring(1);
+
+    public AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig(Environment env) {
+        if (env.getProperty("akip.recsys.rankingContextPrioritySLA.priorityWeight") != null) {
+            this.priorityWeight = new BigDecimal(env.getProperty("akip.recsys.rankingContextPrioritySLA.priorityWeight"));
+        }
+
+        if (env.getProperty("akip.recsys.rankingContextPrioritySLA.slaWeight") != null) {
+            this.slaWeight = new BigDecimal(env.getProperty("akip.recsys.rankingContextPrioritySLA.slaWeight"));
+        }
+
+        if (env.getProperty("akip.recsys.rankingContextPrioritySLA.contextWeight") != null) {
+            this.contextWeight = new BigDecimal(env.getProperty("akip.recsys.rankingContextPrioritySLA.contextWeight"));
+        }
+
+    }
+
+
     private BigDecimal priorityWeight = BigDecimal.ONE;
     private BigDecimal slaWeight = BigDecimal.ONE;
     private BigDecimal contextWeight = BigDecimal.ONE;
 
-    public String getRankingAlgorithmComponent() {
-        return rankingAlgorithmComponent;
-    }
-
-    public void setRankingAlgorithmComponent(String rankingAlgorithmComponent) {
-        this.rankingAlgorithmComponent = rankingAlgorithmComponent;
-    }
-
     public BigDecimal getPriorityWeight() {
         return priorityWeight;
-    }
-
-    public void setPriorityWeight(BigDecimal priorityWeight) {
-        this.priorityWeight = priorityWeight;
     }
 
     public BigDecimal getSlaWeight() {
         return slaWeight;
     }
 
-    public void setSlaWeight(BigDecimal slaWeight) {
-        this.slaWeight = slaWeight;
-    }
-
     public BigDecimal getContextWeight() {
         return contextWeight;
-    }
-
-    public void setContextWeight(BigDecimal contextWeight) {
-        this.contextWeight = contextWeight;
     }
 
     public BigDecimal getSumWeights() {

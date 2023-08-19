@@ -8,6 +8,7 @@ import org.akip.util.StringToListUtil;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +33,13 @@ public class TaskInstanceSearchDTO {
     private List<String> candidateGroups = new ArrayList<>();
     private String processDefinitionName;
     private String processDefinitionBpmnProcessDefinitionId;
+
+    private Long processInstanceId;
     private String processInstanceBusinessKey;
     private String processInstanceTenantName;
     private String processInstanceCamundaDeploymentId;
+
+    private LocalDateTime processInstanceStartDate;
 
     private String domainEntityName;
     private Long domainEntityId;
@@ -60,9 +65,11 @@ public class TaskInstanceSearchDTO {
                                  String candidateGroups,
                                  String processDefinitionName,
                                  String processDefinitionBpmnProcessDefinitionId,
+                                 Long processInstanceId,
                                  String processInstanceBusinessKey,
                                  String processInstanceTenantName,
                                  String processInstanceCamundaDeploymentId,
+                                 LocalDateTime processInstanceStartDate,
                                  String domainEntityName,
                                  Long domainEntityId,
                                  String propsAsString) {
@@ -84,9 +91,11 @@ public class TaskInstanceSearchDTO {
         this.candidateGroups = StringToListUtil.stringToList(candidateGroups);
         this.processDefinitionName = processDefinitionName;
         this.processDefinitionBpmnProcessDefinitionId = processDefinitionBpmnProcessDefinitionId;
+        this.processInstanceId = processInstanceId;
         this.processInstanceBusinessKey = processInstanceBusinessKey;
         this.processInstanceTenantName = processInstanceTenantName;
         this.processInstanceCamundaDeploymentId = processInstanceCamundaDeploymentId;
+        this.processInstanceStartDate = processInstanceStartDate;
         this.domainEntityName = domainEntityName;
         this.domainEntityId = domainEntityId;
         try {
@@ -94,6 +103,10 @@ public class TaskInstanceSearchDTO {
         } catch (JsonProcessingException e) {
             this.props = new HashMap<>();
         }
+    }
+
+    public boolean isOpen() {
+        return StatusTaskInstance.NEW.equals(status) || StatusTaskInstance.ASSIGNED.equals(status);
     }
 
     public Long getId() {
@@ -232,6 +245,14 @@ public class TaskInstanceSearchDTO {
         this.processDefinitionBpmnProcessDefinitionId = processDefinitionBpmnProcessDefinitionId;
     }
 
+    public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
     public String getProcessInstanceBusinessKey() {
         return processInstanceBusinessKey;
     }
@@ -254,6 +275,14 @@ public class TaskInstanceSearchDTO {
 
     public void setProcessInstanceCamundaDeploymentId(String processInstanceCamundaDeploymentId) {
         this.processInstanceCamundaDeploymentId = processInstanceCamundaDeploymentId;
+    }
+
+    public LocalDateTime getProcessInstanceStartDate() {
+        return processInstanceStartDate;
+    }
+
+    public void setProcessInstanceStartDate(LocalDateTime processInstanceStartDate) {
+        this.processInstanceStartDate = processInstanceStartDate;
     }
 
     public String getDomainEntityName() {

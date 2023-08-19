@@ -108,9 +108,11 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         fields.add("entity.candidateGroups");
         fields.add("entity.processDefinition.name");
         fields.add("entity.processDefinition.bpmnProcessDefinitionId");
+        fields.add("entity.processInstance.id");
         fields.add("entity.processInstance.businessKey");
         fields.add("tenant.name");
         fields.add("entity.processInstance.camundaDeploymentId");
+        fields.add("entity.processInstance.startDate");
         fields.add("entity.domainEntityName");
         fields.add("entity.domainEntityId");
         fields.add("entity.props");
@@ -370,8 +372,14 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
     @Override
     public void handleResultAfterSearch(PageableSearchResult<TaskInstanceSearchDTO> searchResult) {
         super.handleResultAfterSearch(searchResult);
-        AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig config = new AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig();
-        AkipTaskInstanceRakingAlgorithmInterface rakingAlgorithm = (AkipTaskInstanceRakingAlgorithmInterface) beanFactory.getBean(config.getRankingAlgorithmComponent());
+
+        if (!beanFactory.containsBean("akipRankingAlgorithm")) {
+            getLog().info("No bean named 'akipRankingAlgorithm' configured. No ranking will be build.");
+            return;
+        }
+
+        AkipTaskInstanceRakingAlgorithmInterface rakingAlgorithm = (AkipTaskInstanceRakingAlgorithmInterface) beanFactory.getBean("akipRankingAlgorithm");
         rakingAlgorithm.buildRanking(searchResult.getList());
+
     }
 }

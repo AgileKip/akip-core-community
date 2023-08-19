@@ -46,15 +46,15 @@ class AkipTaskInstanceRankingContextPrioritySLABindingBuilder {
     }
 
     Binding buildBindingFromTask(TaskInstanceSearchDTO task) {
-        if (task.getDomainEntityname() == null || task.getDomainEntityId() == null) {
+        if (task.domainEntityName == null || task.domainEntityId == null) {
             return buildBindingFromProcessInstance(task.processInstanceId);
         }
 
-        return buildBindingFromProcessEntity(task.domainEntityname, task.domainEntityId)
+        return buildBindingFromProcessEntity(task.domainEntityName, task.domainEntityId)
     }
 
     Binding buildBindingFromProcessEntity(String entityName, Long entityId) {
-        Binding binding = Binding binding = buildBinding();
+        Binding binding = buildBinding();
         if (!entityName || !entityId) {
             return binding
         }
