@@ -1,7 +1,18 @@
 # Changelog
 
-* 0.1.4
-  * Including support for redo a 'redoable' task 
+* 0.1.5 (WIP)
+  * New API to 
+
+* 0.1.4 (released August 2023)
+  * Including support for DMN
+  * Including Process Instance Migration APIs
+  * Including new notifiers: AkipNotifyAssigneeDelegate, AkipNotifyCandidateGroupsDelegate, AkipNotifyCandidateUsersDelegate
+  * Updating dependency `search-framework-server-side` from 1.2.5 to *1.2.8*
+  * Adjusting the `ProcessInstanceMapper`
+  * Including Tenant into the default start process page #30
+  * Bug fix: reading the values property in an enum field.
+  * Bug fix: closing notes when a task is completed
+  * Including support for redo a 'redoable' task
 
 * 0.1.3
   * Fixing bug with candidate group that did not support expression
