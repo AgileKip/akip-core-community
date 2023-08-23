@@ -282,6 +282,13 @@ public class ProcessInstanceService {
         return Optional.of(processInstanceBpmnModel);
     }
 
+    public ProcessInstance findAndUpdateProcessInstance(String processDefinitionIdNew, String processInstanceId) {
+        Optional<ProcessInstance> processInstanceOpt = processInstanceRepository.findByCamundaProcessInstanceId(processInstanceId);
+        ProcessInstance processInstance = processInstanceOpt.get();
+        processInstance.setCamundaProcessDefinitionId(processDefinitionIdNew);
+        return processInstanceRepository.save(processInstance);
+    }
+
 //    TODO: This method should implement any type of pagination.
 //          Otherwise it may retrieve a huge amount of data
 //    public List<ProcessInstanceDTO> findByProcessDefinition(String idOrBpmnProcessDefinitionId) {

@@ -2,8 +2,10 @@ package org.akip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.camunda.CamundaConstants;
+import org.akip.delegate.RedoableDelegate;
 import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
+import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
 import org.akip.exception.ClaimNotAllowedException;
 import org.akip.repository.ProcessInstanceRepository;
@@ -14,9 +16,12 @@ import org.akip.service.dto.ProcessInstanceDTO;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.akip.service.mapper.TaskInstanceMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +49,11 @@ public class TaskInstanceService {
 
     private final TaskService taskService;
 
+    private final NoteService noteService;
+
     private final EntityManager entityManager;
+
+    private final BeanFactory beanFactory;
 
     private static final String ANONYMOUS_USER = "anonymousUser";
 
@@ -52,14 +61,16 @@ public class TaskInstanceService {
             ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, TaskInstanceRepository taskInstanceRepository,
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
-            EntityManager entityManager
-    ) {
+            NoteService noteService, EntityManager entityManager,
+            BeanFactory beanFactory) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
         this.taskInstanceRepository = taskInstanceRepository;
         this.taskInstanceMapper = taskInstanceMapper;
         this.taskService = taskService;
+        this.noteService = noteService;
         this.entityManager = entityManager;
+        this.beanFactory = beanFactory;
     }
 
     /**
@@ -154,8 +165,7 @@ public class TaskInstanceService {
         params.put(CamundaConstants.PROCESS_INSTANCE, processInstance);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().get());
         taskService.complete(taskInstance.getTaskId(), params);
-        //TODO... add a hook. Motivation: migrate the method below to a hook
-        //noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
+        noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }
 
     public void complete(TaskInstanceDTO taskInstance, IProcessEntity processEntity) {
@@ -165,8 +175,25 @@ public class TaskInstanceService {
         params.put(CamundaConstants.PROCESS_ENTITY, processEntity);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().orElseThrow());
         taskService.complete(taskInstance.getTaskId(), params);
-        //TODO... add a hook. Motivation: migrate the method below to a hook
-        //noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
+        noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
+    }
+
+    public void redo(Long id) {
+        log.debug("Request to redo TaskInstance : {}", id);
+        TaskInstanceDTO taskInstance = taskInstanceRepository.findById(id).map(taskInstanceMapper::toDto).get();
+
+        if (taskInstance.getType() == TypeTaskInstance.USER_TASK) {
+            throw new BadRequestErrorException("redoNotAllowedForUserTask", "taskInstance", "redoNotAllowedForUserTask");
+        }
+
+        if (StringUtils.isBlank(taskInstance.getConnectorName())) {
+            throw new BadRequestErrorException("noDelegateNameInTheTaskInstance", "taskInstance", "noDelegateNameInTheTaskInstance");
+        }
+
+        JavaDelegate delegate = (JavaDelegate) beanFactory.getBean(taskInstance.getConnectorName());
+        if (delegate instanceof RedoableDelegate) {
+            ((RedoableDelegate) delegate).redo(taskInstance);
+        }
     }
 
     public List<TaskInstanceDTO> findByProcessDefinition(String idOrBpmnProcessDefinitionId) {

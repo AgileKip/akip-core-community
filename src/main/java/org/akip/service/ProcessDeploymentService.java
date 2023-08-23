@@ -180,6 +180,21 @@ public class ProcessDeploymentService {
         );
     }
 
+    public Optional<ProcessDeployment> getProcessDeployment(Long tenantId, Long processDefinitionId) {
+        Optional<ProcessDeployment> pd = processDeploymentRepository.findByProcessDefinitionIdAndStatusAndTenantId(
+                tenantId,
+                processDefinitionId
+        );
+        return pd;
+    }
+
+    public Optional<ProcessDeployment> getProcessDeploymentWithoutTenant(Long processDefinitionId) {
+        Optional<ProcessDeployment> pd = processDeploymentRepository.findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(
+                processDefinitionId
+        );
+        return pd;
+    }
+
     private Map<String, String> extractProperties(BpmnModelInstance modelInstance) {
         ModelElementType processType = modelInstance.getModel().getType(Process.class);
         Process process = (Process) modelInstance.getModelElementsByType(processType).iterator().next();

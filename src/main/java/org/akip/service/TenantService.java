@@ -1,6 +1,7 @@
 package org.akip.service;
 
 import org.akip.domain.Tenant;
+import org.akip.domain.enumeration.StatusProcessDeployment;
 import org.akip.repository.TenantRepository;
 import org.akip.service.dto.TenantDTO;
 import org.akip.service.mapper.TenantMapper;
@@ -76,5 +77,12 @@ public class TenantService {
     public void delete(Long id) {
         log.debug("Request to delete Tenant : {}", id);
         tenantRepository.deleteById(id);
+    }
+
+    public List<TenantDTO> findByProcessDefinitionAndDeploymentActive(String bpmnProcessDefinitionId) {
+        return tenantRepository
+                .findByProcessDefinitionAndStatus(bpmnProcessDefinitionId, StatusProcessDeployment.ACTIVE)
+                .stream().map(tenantMapper::toDto)
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 }
