@@ -8,6 +8,7 @@ import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.service.dto.ProcessDefinitionDTO;
 import org.akip.service.mapper.ProcessDefinitionMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.impl.form.type.EnumFormType;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
@@ -18,10 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -176,6 +174,10 @@ public class ProcessDefinitionService {
         camundaFormFieldDef.setId(formField.getCamundaId());
         camundaFormFieldDef.setLabel(formField.getCamundaLabel());
         camundaFormFieldDef.setType(formField.getCamundaType());
+        if (formField.getCamundaValues() != null) {
+            camundaFormFieldDef.setValues(formField.getCamundaValues().stream().collect(Collectors.toMap(CamundaValue::getCamundaId, CamundaValue::getCamundaName)));
+        }
+
         if (formField.getCamundaDefaultValue() != null) {
             camundaFormFieldDef.setDefaultValue(formField.getCamundaDefaultValue());
         }

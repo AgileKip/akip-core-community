@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.HeaderUtil;
 
 import java.util.List;
 
@@ -72,5 +73,19 @@ public class TaskInstanceController {
         return ResponseEntity
             .noContent()
             .build();
+    }
+
+    @GetMapping("/task-instances/{id}/redo")
+    public ResponseEntity<Void> redoTaskInstance(@PathVariable Long id) {
+        log.debug("REST request to redo TaskInstance : {}", id);
+        taskInstanceService.redo(id);
+        return ResponseEntity
+                .noContent()
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildRedoMessage(id), "OK"))
+                .build();
+    }
+
+    private String buildRedoMessage(Long id) {
+        return "Task " + id + " re-executed successfully";
     }
 }
