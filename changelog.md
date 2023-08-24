@@ -1,9 +1,6 @@
 # Changelog
 
-* 0.1.5 (WIP)
-  * New API to 
-
-* 0.1.4 (released August 2023)
+* 0.1.5 (released August 2023)
   * Including support for DMN
   * Including Process Instance Migration APIs
   * Including new notifiers: AkipNotifyAssigneeDelegate, AkipNotifyCandidateGroupsDelegate, AkipNotifyCandidateUsersDelegate
