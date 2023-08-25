@@ -9,7 +9,7 @@
     <!--
     Added the entity ProcessTimelineItem.
     -->
-    <changeSet id="00000000000015-1" author="cassiojr">
+    <changeSet id="00000000000017-1" author="cassiojr">
         <createTable tableName="process_timeline_item_def">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
@@ -29,7 +29,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="00000000000015-2" author="cassiojr">
+    <changeSet id="00000000000017-2" author="cassiojr">
         <addForeignKeyConstraint baseColumnNames="process_timeline_definition_id"
                                  baseTableName="process_timeline_item_def"
                                  constraintName="fk_pro_timeline_def_item_id"

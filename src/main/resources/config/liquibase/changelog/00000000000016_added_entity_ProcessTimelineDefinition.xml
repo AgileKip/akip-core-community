@@ -9,7 +9,7 @@
     <!--
     Added the entity ProcessTimelineDefinition.
     -->
-    <changeSet id="00000000000014-1" author="cassiojr">
+    <changeSet id="00000000000016-1" author="cassiojr">
         <createTable tableName="process_timeline_definition">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>

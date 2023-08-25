@@ -42,7 +42,7 @@ public class ProcessTimelineService {
         List<ProcessTimelineDefinitionDTO> processTimelineDefinitions
     ) {
         if (processTimelineDefinitions.isEmpty()) {
-            throw new RuntimeException("error.timeline.notFoundTimeline");
+            throw new RuntimeException("No timeline found");
         }
 
         for (ProcessTimelineDefinitionDTO timelineDefinition : processTimelineDefinitions) {

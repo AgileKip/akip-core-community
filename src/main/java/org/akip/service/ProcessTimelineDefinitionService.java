@@ -46,7 +46,7 @@ public class ProcessTimelineDefinitionService {
         );
 
         if (processTimelineDefinitions.isEmpty()) {
-            throw new BadRequestErrorException("error.timeline.undefinedTimeline");
+            throw new BadRequestErrorException("Timeline not defined for the process");
         }
 
         return processTimelineDefinitions;
