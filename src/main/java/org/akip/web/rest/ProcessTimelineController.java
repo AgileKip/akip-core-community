@@ -53,7 +53,6 @@ public class ProcessTimelineController {
             @PathVariable String processDefinitionBusinessKey,
             @RequestBody ProcessTimelineDefinitionDTO processTimelineDefinition
     ) throws URISyntaxException {
-
         log.debug("REST request creating new ProcessTimelineDefinition");
         ProcessTimelineDefinitionDTO result = processTimelineDefinitionService.save(
                 processDefinitionBusinessKey,
@@ -102,7 +101,6 @@ public class ProcessTimelineController {
                 processDefinitionBusinessKey,
                 processTimelineDefinitionDTO
         );
-
         return ResponseEntity.ok().body(result);
     }
 
