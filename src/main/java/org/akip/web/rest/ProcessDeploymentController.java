@@ -1,5 +1,6 @@
 package org.akip.web.rest;
 
+import org.akip.domain.ProcessDeployment;
 import org.akip.service.ProcessDeploymentService;
 import org.akip.service.dto.ProcessDeploymentBpmnModelDTO;
 import org.akip.service.dto.ProcessDeploymentDTO;
@@ -12,6 +13,7 @@ import tech.jhipster.web.util.HeaderUtil;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * REST controller for managing {@link org.akip.domain.ProcessDeployment}.
@@ -114,5 +116,15 @@ public class ProcessDeploymentController {
                 .noContent()
                 .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_PROPERTIES_SAVED, id.toString()))
                 .build();
+    }
+
+    @GetMapping("/process-deployment/{tenantId}/{processDefinitionId}")
+    public Optional<ProcessDeployment> getProcessDeployment(@PathVariable Long tenantId, @PathVariable Long processDefinitionId) {
+        return processDeploymentService.getProcessDeployment(tenantId, processDefinitionId);
+    }
+
+    @GetMapping("/process-deployment-without-tenant/{processDefinitionId}")
+    public Optional<ProcessDeployment> getProcessDeploymentWithoutTenant(@PathVariable Long processDefinitionId) {
+        return processDeploymentService.getProcessDeploymentWithoutTenant(processDefinitionId);
     }
 }
