@@ -286,35 +286,6 @@ public class ProcessInstanceService {
         return Optional.of(processInstanceBpmnModel);
     }
 
-    public List<TaskInstanceDTO> getBpmnUserTasks(String bpmnProcessDefinitionId) {
-
-        ProcessDefinition processDefinition = processDefinitionRepository
-                .findByBpmnProcessDefinitionId(bpmnProcessDefinitionId)
-                .orElseThrow();
-
-        BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(
-                new ByteArrayInputStream(
-                        processDeploymentRepository
-                                .findByProcessDefinitionIdAndStatusIsActive(processDefinition.getId())
-                                .get()
-                                .getSpecificationFile()
-                )
-        );
-
-        return bpmnModelInstance
-                .getModelElementsByType(UserTask.class)
-                .stream()
-                .map(
-                        userTask -> {
-                            TaskInstanceDTO taskInstance = new TaskInstanceDTO();
-                            taskInstance.setTaskDefinitionKey(userTask.getId());
-                            taskInstance.setName(userTask.getName());
-                            return taskInstance;
-                        }
-                )
-                .collect(Collectors.toList());
-    }
-
     public ProcessInstance findAndUpdateProcessInstance(String processDefinitionIdNew, String processInstanceId) {
         Optional<ProcessInstance> processInstanceOpt = processInstanceRepository.findByCamundaProcessInstanceId(processInstanceId);
         ProcessInstance processInstance = processInstanceOpt.get();

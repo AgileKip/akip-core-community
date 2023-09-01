@@ -1,5 +1,6 @@
 package org.akip.web.rest;
 
+import org.akip.service.ProcessDefinitionService;
 import org.akip.service.ProcessInstanceService;
 import org.akip.service.ProcessTimelineDefinitionService;
 import org.akip.service.ProcessTimelineService;
@@ -31,13 +32,16 @@ public class ProcessTimelineController {
 
     private final ProcessInstanceService processInstanceService;
 
+    private final ProcessDefinitionService processDefinitionService;
+
     public ProcessTimelineController(
             ProcessTimelineDefinitionService processTimelineDefinitionService,
             ProcessTimelineService processTimelineService,
-            ProcessInstanceService processInstanceService) {
+            ProcessInstanceService processInstanceService, ProcessDefinitionService processDefinitionService) {
         this.processTimelineDefinitionService = processTimelineDefinitionService;
         this.processTimelineService = processTimelineService;
         this.processInstanceService = processInstanceService;
+        this.processDefinitionService = processDefinitionService;
     }
 
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/process-instances/{processInstanceId}/timeline")
@@ -77,7 +81,7 @@ public class ProcessTimelineController {
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/tasks")
     public List<TaskInstanceDTO> getBpmnUserTasks(@PathVariable String bpmnProcessDefinitionId) {
         log.debug("REST request to list process tasks");
-        return processInstanceService.getBpmnUserTasks(bpmnProcessDefinitionId);
+        return processDefinitionService.getBpmnUserTasks(bpmnProcessDefinitionId);
     }
 
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/{processTimelineDefinitionId}")
@@ -93,12 +97,12 @@ public class ProcessTimelineController {
     @PutMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/edit")
     public ResponseEntity<ProcessTimelineDefinitionDTO> updateTimeline(
             @PathVariable String bpmnProcessDefinitionId,
-            @RequestBody ProcessTimelineDefinitionDTO processTimelineDefinition
+            @RequestBody ProcessTimelineDefinitionDTO processTimelineDefinitionDTO
     ) {
         log.debug("REST request to update a ProcessTimelineDefinition");
         ProcessTimelineDefinitionDTO result = processTimelineDefinitionService.save(
                 bpmnProcessDefinitionId,
-                processTimelineDefinition
+                processTimelineDefinitionDTO
         );
         return ResponseEntity.ok().body(result);
     }
