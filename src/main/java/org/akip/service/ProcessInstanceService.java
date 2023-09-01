@@ -18,15 +18,11 @@ import org.akip.service.dto.ProcessInstanceDTO;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.model.bpmn.Bpmn;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
