@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ProcessTimelineDefinitionRepository extends JpaRepository<ProcessTimelineDefinition, Long> {
-    List<ProcessTimelineDefinition> findAllByProcessDefinitionBpmnProcessDefinitionId(String processDefinitionId);
+    List<ProcessTimelineDefinition> findByProcessDefinitionBpmnProcessDefinitionId(String processDefinitionId);
 }

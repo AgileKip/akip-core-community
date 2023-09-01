@@ -18,11 +18,15 @@ import org.akip.service.dto.ProcessInstanceDTO;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.model.bpmn.Bpmn;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -280,6 +284,35 @@ public class ProcessInstanceService {
         );
 
         return Optional.of(processInstanceBpmnModel);
+    }
+
+    public List<TaskInstanceDTO> getBpmnUserTasks(String bpmnProcessDefinitionId) {
+
+        ProcessDefinition processDefinition = processDefinitionRepository
+                .findByBpmnProcessDefinitionId(bpmnProcessDefinitionId)
+                .orElseThrow();
+
+        BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(
+                new ByteArrayInputStream(
+                        processDeploymentRepository
+                                .findByProcessDefinitionIdAndStatusIsActive(processDefinition.getId())
+                                .get()
+                                .getSpecificationFile()
+                )
+        );
+
+        return bpmnModelInstance
+                .getModelElementsByType(UserTask.class)
+                .stream()
+                .map(
+                        userTask -> {
+                            TaskInstanceDTO taskInstance = new TaskInstanceDTO();
+                            taskInstance.setTaskDefinitionKey(userTask.getId());
+                            taskInstance.setName(userTask.getName());
+                            return taskInstance;
+                        }
+                )
+                .collect(Collectors.toList());
     }
 
     public ProcessInstance findAndUpdateProcessInstance(String processDefinitionIdNew, String processInstanceId) {

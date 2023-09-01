@@ -34,34 +34,33 @@ public class ProcessTimelineController {
     public ProcessTimelineController(
             ProcessTimelineDefinitionService processTimelineDefinitionService,
             ProcessTimelineService processTimelineService,
-            ProcessInstanceService processInstanceService
-    ) {
+            ProcessInstanceService processInstanceService) {
         this.processTimelineDefinitionService = processTimelineDefinitionService;
         this.processTimelineService = processTimelineService;
         this.processInstanceService = processInstanceService;
     }
 
-    @GetMapping("/process-definitions/{processDefinitionBusinessKey}/process-instances/{processInstanceId}/timeline")
-    public ProcessTimelineDTO getTimeline(@PathVariable String processDefinitionBusinessKey, @PathVariable Long processInstanceId) {
+    @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/process-instances/{processInstanceId}/timeline")
+    public ProcessTimelineDTO getTimeline(@PathVariable String bpmnProcessDefinitionId, @PathVariable Long processInstanceId) {
         log.debug("REST request to get a timeline");
         ProcessInstanceDTO processInstance = processInstanceService.findOne(processInstanceId).orElseThrow();
-        return processTimelineService.buildTimeline(processDefinitionBusinessKey, processInstance);
+        return processTimelineService.buildTimeline(bpmnProcessDefinitionId, processInstance);
     }
 
-    @PostMapping("/process-definitions/{processDefinitionBusinessKey}/timeline")
+    @PostMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline")
     public ResponseEntity<ProcessTimelineDefinitionDTO> create(
-            @PathVariable String processDefinitionBusinessKey,
+            @PathVariable String bpmnProcessDefinitionId,
             @RequestBody ProcessTimelineDefinitionDTO processTimelineDefinition
     ) throws URISyntaxException {
         log.debug("REST request creating new ProcessTimelineDefinition");
         ProcessTimelineDefinitionDTO result = processTimelineDefinitionService.save(
-                processDefinitionBusinessKey,
+                bpmnProcessDefinitionId,
                 processTimelineDefinition
         );
 
         return ResponseEntity
-                .created(new URI("/api/process-definitions/" + processDefinitionBusinessKey + "/timeline/" + result.getId()))
-                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildInitMessage(result.getId()), processDefinitionBusinessKey))
+                .created(new URI("/api/process-definitions/" + bpmnProcessDefinitionId + "/timeline/" + result.getId()))
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildInitMessage(result.getId()), bpmnProcessDefinitionId))
                 .body(result);
     }
 
@@ -69,48 +68,48 @@ public class ProcessTimelineController {
         return "Process Timeline Definition successfully created: " + processTimelineDefinitionId;
     }
 
-    @GetMapping("/process-definitions/{processDefinitionBusinessKey}/timeline")
-    public List<ProcessTimelineDefinitionDTO> findAll(@PathVariable String processDefinitionBusinessKey) {
+    @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline")
+    public List<ProcessTimelineDefinitionDTO> findAll(@PathVariable String bpmnProcessDefinitionId) {
         log.debug("REST request to list ProcessTimelineDefinition");
-        return processTimelineDefinitionService.findAllByProcessDefinitionBpmnProcessDefinitionId(processDefinitionBusinessKey);
+        return processTimelineDefinitionService.findByProcessDefinitionBpmnProcessDefinitionId(bpmnProcessDefinitionId);
     }
 
-    @GetMapping("/process-definitions/{processDefinitionBusinessKey}/timeline/tasks")
-    public List<TaskInstanceDTO> getBpmnUserTasks(@PathVariable String processDefinitionBusinessKey) {
+    @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/tasks")
+    public List<TaskInstanceDTO> getBpmnUserTasks(@PathVariable String bpmnProcessDefinitionId) {
         log.debug("REST request to list process tasks");
-        return processTimelineDefinitionService.getBpmnUserTasks(processDefinitionBusinessKey);
+        return processInstanceService.getBpmnUserTasks(bpmnProcessDefinitionId);
     }
 
-    @GetMapping("/process-definitions/{processDefinitionBusinessKey}/timeline/{timelineDefinitionId}")
+    @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/{processTimelineDefinitionId}")
     public ResponseEntity<ProcessTimelineDefinitionDTO> findOne(
-            @PathVariable String processDefinitionBusinessKey,
-            @PathVariable Long timelineDefinitionId
+            @PathVariable String bpmnProcessDefinitionId,
+            @PathVariable Long processTimelineDefinitionId
     ) {
         log.debug("REST request to find one ProcessTimelineDefinition");
-        Optional<ProcessTimelineDefinitionDTO> processTimelineDefinition = processTimelineDefinitionService.findOne(timelineDefinitionId);
+        Optional<ProcessTimelineDefinitionDTO> processTimelineDefinition = processTimelineDefinitionService.findOne(processTimelineDefinitionId);
         return ResponseUtil.wrapOrNotFound(processTimelineDefinition);
     }
 
-    @PutMapping("/process-definitions/{processDefinitionBusinessKey}/timeline/edit")
+    @PutMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/edit")
     public ResponseEntity<ProcessTimelineDefinitionDTO> updateTimeline(
-            @PathVariable String processDefinitionBusinessKey,
-            @RequestBody ProcessTimelineDefinitionDTO processTimelineDefinitionDTO
+            @PathVariable String bpmnProcessDefinitionId,
+            @RequestBody ProcessTimelineDefinitionDTO processTimelineDefinition
     ) {
         log.debug("REST request to update a ProcessTimelineDefinition");
         ProcessTimelineDefinitionDTO result = processTimelineDefinitionService.save(
-                processDefinitionBusinessKey,
-                processTimelineDefinitionDTO
+                bpmnProcessDefinitionId,
+                processTimelineDefinition
         );
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/process-definitions/{processDefinitionBusinessKey}/timeline/{timelineDefinitionId}")
+    @DeleteMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/{processTimelineDefinitionId}")
     public ResponseEntity<Void> deleteProcessTimeline(
-            @PathVariable String processDefinitionBusinessKey,
-            @PathVariable Long timelineDefinitionId
+            @PathVariable String bpmnProcessDefinitionId,
+            @PathVariable Long processTimelineDefinitionId
     ) {
-        log.debug("REST request to delete a ProcessTimelineDefinition : {}", timelineDefinitionId);
-        processTimelineDefinitionService.delete(timelineDefinitionId);
+        log.debug("REST request to delete a ProcessTimelineDefinition : {}", processTimelineDefinitionId);
+        processTimelineDefinitionService.delete(processTimelineDefinitionId);
         return ResponseEntity.noContent().build();
     }
 }

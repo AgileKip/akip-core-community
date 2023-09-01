@@ -17,24 +17,24 @@ public class ProcessTimelineService {
     @Autowired
     private ProcessTimelineExpressionService expressionService;
 
-    public ProcessTimelineDTO buildTimeline(String processDefinitionBusinessKey, IProcessEntity processEntity) {
-        List<ProcessTimelineDefinitionDTO> timelineDefinitions = processTimelineDefinitionService.getByBpmnProcessDefinitionId(
-            processDefinitionBusinessKey
+    public ProcessTimelineDTO buildTimeline(String bpmnProcessDefinitionId, IProcessEntity processEntity) {
+        List<ProcessTimelineDefinitionDTO> processTimelineDefinitions = processTimelineDefinitionService.getByBpmnProcessDefinitionId(
+            bpmnProcessDefinitionId
         );
 
-        ProcessTimelineDefinitionDTO timelineDefinition = findTimelineDefinition(processEntity, timelineDefinitions);
+        ProcessTimelineDefinitionDTO processTimelineDefinition = findTimelineDefinition(processEntity, processTimelineDefinitions);
 
-        return calculateTimeline(processEntity.getProcessInstance(), timelineDefinition);
+        return calculateTimeline(processEntity.getProcessInstance(), processTimelineDefinition);
     }
 
-    public ProcessTimelineDTO buildTimeline(String processDefinitionBusinessKey, ProcessInstanceDTO processInstance) {
-        List<ProcessTimelineDefinitionDTO> timelineDefinitions = processTimelineDefinitionService.getByBpmnProcessDefinitionId(
-            processDefinitionBusinessKey
+    public ProcessTimelineDTO buildTimeline(String bpmnProcessDefinitionId, ProcessInstanceDTO processInstance) {
+        List<ProcessTimelineDefinitionDTO> processTimelineDefinitions = processTimelineDefinitionService.getByBpmnProcessDefinitionId(
+            bpmnProcessDefinitionId
         );
 
-        ProcessTimelineDefinitionDTO timelineDefinition = findTimelineDefinition(processInstance, timelineDefinitions);
+        ProcessTimelineDefinitionDTO processTimelineDefinition = findTimelineDefinition(processInstance, processTimelineDefinitions);
 
-        return calculateTimeline(processInstance, timelineDefinition);
+        return calculateTimeline(processInstance, processTimelineDefinition);
     }
 
     private ProcessTimelineDefinitionDTO findTimelineDefinition(
@@ -57,11 +57,11 @@ public class ProcessTimelineService {
         return processTimelineDefinitions.get(0);
     }
 
-    private ProcessTimelineDTO calculateTimeline(ProcessInstanceDTO processInstance, ProcessTimelineDefinitionDTO timelineDefinition) {
+    private ProcessTimelineDTO calculateTimeline(ProcessInstanceDTO processInstance, ProcessTimelineDefinitionDTO processTimelineDefinition) {
         ProcessTimelineDTO timeline = new ProcessTimelineDTO();
-        timeline.setTitle(timelineDefinition.getName());
+        timeline.setTitle(processTimelineDefinition.getName());
 
-        timelineDefinition
+        processTimelineDefinition
             .getItems()
             .forEach(
                 timelineItemDefinition -> {
