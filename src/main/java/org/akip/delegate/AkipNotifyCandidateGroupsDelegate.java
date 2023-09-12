@@ -8,6 +8,7 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.task.IdentityLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,9 @@ public class AkipNotifyCandidateGroupsDelegate implements TaskListener {
     private final SpringTemplateEngine templateEngine;
 
     private final MessageSource messageSource;
+
+    @Value("${spring.application.name}")
+    private String applicationName;
 
     public AkipNotifyCandidateGroupsDelegate(
             AkipMailService emailService, UserResolver userResolver, Environment env,
@@ -61,20 +65,31 @@ public class AkipNotifyCandidateGroupsDelegate implements TaskListener {
         if (users.isEmpty()) {
             return;
         }
+
         users.forEach(
-            user -> {
-                String templateName = "mail/notifyNewTaskToCandidateGroupsEmail";
-                String titleKey = "akip.email.notifyNewTaskToCandidateGroupsEmail.subject";
-                Locale locale = Locale.forLanguageTag(user.getLangKey());
-                Context context = new Context(locale);
-                context.setVariable("user", user);
-                context.setVariable("delegateTask", delegateTask);
-                context.setVariable("baseUrl", env.getProperty("jhipster.mail.base-url"));
-                String subject = messageSource.getMessage(titleKey, null, locale);
-                String content = templateEngine.process(templateName, context);
-                emailService.sendEmail(user.getEmail(), subject, content, false, true);
-                this.log.debug("###########################################################");
-            }
+                user -> {
+                    String templateName = "mail/notifyNewTaskToCandidateGroupsEmail";
+                    String titleKey = "akip.email.notifyNewTaskToCandidateGroupsEmail.subject";
+                    Locale locale = Locale.forLanguageTag(user.getLangKey());
+                    Context context = new Context(locale);
+                    context.setVariable("user", user);
+                    context.setVariable("delegateTask", delegateTask);
+                    context.setVariable("baseUrl", env.getProperty("jhipster.mail.base-url"));
+
+                    String subject = messageSource.getMessage(titleKey, new Object[]{applicationName}, "You have a new task in the " + applicationName + "!", locale);
+                    context.setVariable("title", messageSource.getMessage("akip.email.notifyNewTaskToCandidateGroupsEmail.title", new Object[]{applicationName}, "New task to you in the " + applicationName, locale));
+                    context.setVariable("greetings", messageSource.getMessage("akip.email.notifyNewTaskToCandidateGroupsEmail.greeting", new Object[]{user.getFirstName()}, "Dear " + user.getFirstName(), locale));
+                    context.setVariable("text1", messageSource.getMessage("akip.email.notifyNewTaskToCandidateGroupsEmail.text1", new Object[]{"<strong>" + delegateTask.getName() + "</strong>", "<strong>" + delegateTask.getExecution().getBusinessKey() + "</strong>", new Object[]{applicationName}}, "You have a new task <strong>" + delegateTask.getName() + "</strong> in the process with the businessKey " + "<strong>" + delegateTask.getExecution().getBusinessKey() + "</strong> in the KIP4You Platform", locale));
+                    context.setVariable("text2", messageSource.getMessage("akip.email.notifyNewTaskToCandidateGroupsEmail.text2", null, "You can complete the task in the link below:", locale));
+                    context.setVariable("myTasks", messageSource.getMessage("akip.email.notifyNewTaskToCandidateGroupsEmail.myTasks", null, "My Tasks", locale));
+                    context.setVariable("regards", messageSource.getMessage("akip.email.notifyNewTaskToCandidateGroupsEmail.regards", null, "Regards,", locale));
+                    context.setVariable("signature", messageSource.getMessage("akip.email.signature", new Object[]{applicationName}, applicationName, locale));
+
+                    String content = templateEngine.process(templateName, context);
+                    emailService.sendEmail(user.getEmail(), subject, content, false, true);
+                    this.log.debug("###########################################################");
+                }
         );
     }
+
 }
