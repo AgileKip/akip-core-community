@@ -6,7 +6,7 @@
 
   <groupId>org.akip</groupId>
   <artifactId>akip-core</artifactId>
-  <version>0.1.6-SNAPSHOT</version>
+  <version>0.1.6</version>
 
   <name>akip-core</name>
   <!-- FIXME change it to the project's website -->
