@@ -9,7 +9,7 @@
     <!--
         Added the entity DecisionDeployment.
     -->
-    <changeSet id="00000000000015.1" author="cassiojr" context="dev or prod">
+    <changeSet id="00000000000015.1" author="cassiojr">
         <createTable tableName="decision_deployment">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
