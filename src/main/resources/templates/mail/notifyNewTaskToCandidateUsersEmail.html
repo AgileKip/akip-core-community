@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="en">
-  <head>
-    <title th:text="#{akip.email.notifyNewTaskToCandidateUsersEmail.title}">New task to you in the KIP4You Platform</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}" />
-  </head>
-  <body>
-    <p th:text="#{akip.email.notifyNewTaskToCandidateUsersEmail.greeting(${user.firstName})}">Dear</p>
-    <p
-      th:utext="#{akip.email.notifyNewTaskToCandidateUsersEmail.text1('<strong>' + ${delegateTask.name} + '</strong>', '<strong>' + ${delegateTask.processInstance.businessKey} + '</strong>')}"
-    >
-      You have a new task
-    </p>
-    <p th:text="#{akip.email.notifyNewTaskToCandidateUsersEmail.text2}">You can complete the task in the link below:</p>
+<head>
+    <title th:text="${title}">New task to you in the KIP4You Platform</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}"/>
+</head>
+<body>
+<p th:text="${greetings}">Dear</p>
+<p
+        th:utext="${text1}"
+>
+    You have a new task
+</p>
 
-    <p>
-      <a th:with="url=(@{|${baseUrl}/my-candidate-tasks|})" th:href="${url}" th:text="#{akip.email.notifyNewTaskToCandidateUsersEmail.myTasks}"
-        >My Tasks</a
-      >
-    </p>
-    <p>
-      <span th:text="#{akip.email.notifyNewTaskToCandidateUsersEmail.regards}">Regards, </span>
-      <br />
-      <em th:text="#{akip.email.signature}">JHipster.</em>
-    </p>
-  </body>
+<p th:text="${text2}">You can complete the task in the link below:</p>
+<p>
+    <a th:with="url=(@{|${baseUrl}/my-candidate-tasks|})" th:href="${url}" th:text="${myTasks}"
+    >My Tasks</a
+    >
+</p>
+<p>
+    <span th:text="${regards}">Regards, </span>
+    <br/>
+    <em th:text="${signature}">JHipster.</em>
+</p>
+</body>
 </html>
