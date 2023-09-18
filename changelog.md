@@ -1,7 +1,10 @@
 # Changelog
 
 * 0.1.6 (WIP)
-  * 
+  * Including Process Timeline Definition
+  * Including Process Timeline
+  * Adding type TextArea (to be used in dynamic forms)
+  * Fixing Notifiers bug (when messages were not defined)
 
 * 0.1.5 (released August 2023)
   * Including support for DMN
