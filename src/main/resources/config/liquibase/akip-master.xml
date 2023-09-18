@@ -28,6 +28,7 @@
     <include file="config/liquibase/changelog/00000000000013_added_entity_NoteEntity.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000014_added_entity_DecisionDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000015_added_entity_DecisionDeployment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000016_added_entity_TemporaryProcessInstance.xml" relativeToChangelogFile="false"/>
 
     <include file="config/liquibase/changelog/00000000000004_added_entity_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000005_added_entity_constraints_ProcessDeployment.xml" relativeToChangelogFile="false"/>
