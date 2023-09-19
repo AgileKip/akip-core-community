@@ -2,21 +2,14 @@ package org.akip.service;
 
 
 import org.akip.camunda.CamundaConstants;
-import org.akip.domain.ProcessDefinition;
-import org.akip.domain.ProcessDeployment;
-import org.akip.domain.ProcessInstance;
-import org.akip.domain.Tenant;
+import org.akip.domain.*;
 import org.akip.domain.enumeration.StatusProcessInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
-import org.akip.repository.ProcessDefinitionRepository;
-import org.akip.repository.ProcessDeploymentRepository;
-import org.akip.repository.ProcessInstanceRepository;
+import org.akip.repository.*;
 import org.akip.security.SecurityUtils;
-import org.akip.service.dto.IProcessEntity;
-import org.akip.service.dto.ProcessInstanceBpmnModelDTO;
-import org.akip.service.dto.ProcessInstanceDTO;
-import org.akip.service.dto.TaskInstanceDTO;
+import org.akip.service.dto.*;
 import org.akip.service.mapper.ProcessInstanceMapper;
+import org.apache.poi.sl.usermodel.Notes;
 import org.camunda.bpm.engine.RuntimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +43,13 @@ public class ProcessInstanceService {
 
     private final RuntimeService runtimeService;
 
+    private final AttachmentEntityRepository attachmentEntityRepository;
+
+    private final AttachmentRepository attachmentRepository;
+    private final NoteRepository noteRepository;
+
+    private final NoteEntityRepository noteEntityRepository;
+
     public ProcessInstanceService(
         ProcessDeploymentService processDeploymentService,
         TaskInstanceService taskInstanceService,
@@ -57,7 +57,11 @@ public class ProcessInstanceService {
         ProcessDeploymentRepository processDeploymentRepository,
         ProcessInstanceRepository processInstanceRepository,
         ProcessInstanceMapper processInstanceMapper,
-        RuntimeService runtimeService
+        RuntimeService runtimeService,
+        AttachmentEntityRepository attachmentEntityRepository,
+        AttachmentRepository attachmentRepository,
+        NoteRepository noteRepository,
+        NoteEntityRepository noteEntityRepository
     ) {
         this.processDeploymentService = processDeploymentService;
         this.taskInstanceService = taskInstanceService;
@@ -66,6 +70,10 @@ public class ProcessInstanceService {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
         this.runtimeService = runtimeService;
+        this.attachmentEntityRepository = attachmentEntityRepository;
+        this.attachmentRepository = attachmentRepository;
+        this.noteRepository = noteRepository;
+        this.noteEntityRepository = noteEntityRepository;
     }
 
     public ProcessInstanceDTO create(ProcessInstanceDTO processInstanceDTO) {
@@ -107,8 +115,11 @@ public class ProcessInstanceService {
                 .setVariables(params)
                 .execute();
 
+
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
+        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        synchronizeNote(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -140,8 +151,11 @@ public class ProcessInstanceService {
                 .setVariables(params)
                 .execute();
 
+
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
+        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        synchronizeNote(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -287,6 +301,51 @@ public class ProcessInstanceService {
         ProcessInstance processInstance = processInstanceOpt.get();
         processInstance.setCamundaProcessDefinitionId(processDefinitionIdNew);
         return processInstanceRepository.save(processInstance);
+    }
+
+    private void synchronizeAttachments(
+            TemporaryProcessInstanceDTO temporaryProcessInstance,
+            ProcessInstance processInstance
+    ) {
+        List<Attachment> attachments = attachmentRepository.findByEntityNameAndEntityId(
+                TemporaryProcessInstance.class.getSimpleName(),
+                temporaryProcessInstance.getId()
+        );
+        if (attachments.isEmpty()) {
+            return;
+        }
+
+        attachments.forEach(
+                attachment -> {
+                    AttachmentEntity attachmentEntityProcessInstance = new AttachmentEntity();
+                    attachmentEntityProcessInstance.setAttachment(attachment);
+                    attachmentEntityProcessInstance.setEntityName(ProcessInstance.class.getSimpleName());
+                    attachmentEntityProcessInstance.setEntityId(processInstance.getId());
+                    attachmentEntityRepository.save(attachmentEntityProcessInstance);
+                }
+        );
+    }
+
+    private void synchronizeNote(
+            TemporaryProcessInstanceDTO temporaryProcessInstance,
+            ProcessInstance processInstance
+    ) {
+        List<Note> notes = noteRepository.findByEntityNameAndEntityId(
+                TemporaryProcessInstance.class.getSimpleName(),
+                temporaryProcessInstance.getId()
+        );
+        if (notes.isEmpty()) {
+            return;
+        }
+        notes.forEach(
+                note -> {
+                    NoteEntity noteEntityProcessInstance = new NoteEntity();
+                    noteEntityProcessInstance.setNote(note);
+                    noteEntityProcessInstance.setEntityName(ProcessInstance.class.getSimpleName());
+                    noteEntityProcessInstance.setEntityId(processInstance.getId());
+                    noteEntityRepository.save(noteEntityProcessInstance);
+                }
+        );
     }
 
 //    TODO: This method should implement any type of pagination.
