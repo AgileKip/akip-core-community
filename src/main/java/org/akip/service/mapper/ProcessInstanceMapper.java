@@ -29,6 +29,7 @@ public interface ProcessInstanceMapper extends EntityMapper<ProcessInstanceDTO, 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "businessKey", source = "businessKey")
     @Mapping(target = "tenant", source = "tenant")
+    @Mapping(target = "data", source = "data")
     @Mapping(target = "camundaProcessInstanceId", source = "camundaProcessInstanceId")
     ProcessInstanceDTO toDtoBusinessKey(ProcessInstance processInstance);
 
