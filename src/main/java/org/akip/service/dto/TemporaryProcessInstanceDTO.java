@@ -1,5 +1,7 @@
 package org.akip.service.dto;
 
+import org.akip.domain.ProcessInstance;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -18,6 +20,8 @@ public class TemporaryProcessInstanceDTO implements Serializable {
     private LocalDateTime endDate;
 
     private String status;
+
+    private ProcessInstance processInstance;
 
     public Long getId() {
         return id;
@@ -57,6 +61,14 @@ public class TemporaryProcessInstanceDTO implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public ProcessInstance getProcessInstance() {
+        return processInstance;
+    }
+
+    public void setProcessInstance(ProcessInstance processInstance) {
+        this.processInstance = processInstance;
     }
 
     @Override

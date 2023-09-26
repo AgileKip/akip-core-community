@@ -9,7 +9,7 @@
     <!--
         Added the entity TemporaryProcessInstance.
     -->
-    <changeSet id="00000000000016-1" author="bhruno">
+    <changeSet id="00000000000018-1" author="bhruno">
         <createTable tableName="temporary_process_instance">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
@@ -25,6 +25,9 @@
             </column>
             <column name="status" type="varchar(255)">
                 <constraints nullable="true" />
+            </column>
+            <column name="process_instance_id" type="bigint">
+                <constraints nullable="true"/>
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>

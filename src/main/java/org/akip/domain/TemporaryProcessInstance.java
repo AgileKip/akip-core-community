@@ -34,6 +34,10 @@ public class TemporaryProcessInstance implements Serializable {
     @Column(name = "status")
     private String status;
 
+    @OneToOne
+    @JoinColumn(name = "process_instance_id")
+    private ProcessInstance processInstanceId;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -98,6 +102,14 @@ public class TemporaryProcessInstance implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public ProcessInstance getProcessInstance() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstance(ProcessInstance processInstance) {
+        this.processInstanceId = processInstance;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

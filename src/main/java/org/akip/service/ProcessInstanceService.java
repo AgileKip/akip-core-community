@@ -9,7 +9,6 @@ import org.akip.repository.*;
 import org.akip.security.SecurityUtils;
 import org.akip.service.dto.*;
 import org.akip.service.mapper.ProcessInstanceMapper;
-import org.apache.poi.sl.usermodel.Notes;
 import org.camunda.bpm.engine.RuntimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +49,8 @@ public class ProcessInstanceService {
 
     private final NoteEntityRepository noteEntityRepository;
 
+    private final TemporaryProcessInstanceRepository temporaryProcessInstanceRepository;
+
     public ProcessInstanceService(
         ProcessDeploymentService processDeploymentService,
         TaskInstanceService taskInstanceService,
@@ -61,8 +62,8 @@ public class ProcessInstanceService {
         AttachmentEntityRepository attachmentEntityRepository,
         AttachmentRepository attachmentRepository,
         NoteRepository noteRepository,
-        NoteEntityRepository noteEntityRepository
-    ) {
+        NoteEntityRepository noteEntityRepository,
+        TemporaryProcessInstanceRepository temporaryProcessInstanceRepository) {
         this.processDeploymentService = processDeploymentService;
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
@@ -74,6 +75,7 @@ public class ProcessInstanceService {
         this.attachmentRepository = attachmentRepository;
         this.noteRepository = noteRepository;
         this.noteEntityRepository = noteEntityRepository;
+        this.temporaryProcessInstanceRepository = temporaryProcessInstanceRepository;
     }
 
     public ProcessInstanceDTO create(ProcessInstanceDTO processInstanceDTO) {
@@ -120,6 +122,7 @@ public class ProcessInstanceService {
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
         synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         synchronizeNote(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -156,6 +159,7 @@ public class ProcessInstanceService {
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
         synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         synchronizeNote(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }

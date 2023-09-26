@@ -57,27 +57,6 @@ public class TemporaryProcessInstanceService {
     }
 
     /**
-     * Partially update a temporaryProcessInstance.
-     *
-     * @param temporaryProcessInstanceDTO the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Optional<TemporaryProcessInstanceDTO> partialUpdate(TemporaryProcessInstanceDTO temporaryProcessInstanceDTO) {
-        log.debug("Request to partially update TemporaryProcessInstance : {}", temporaryProcessInstanceDTO);
-
-        return temporaryProcessInstanceRepository
-            .findById(temporaryProcessInstanceDTO.getId())
-            .map(
-                existingTemporaryProcessInstance -> {
-                    temporaryProcessInstanceMapper.partialUpdate(existingTemporaryProcessInstance, temporaryProcessInstanceDTO);
-                    return existingTemporaryProcessInstance;
-                }
-            )
-            .map(temporaryProcessInstanceRepository::save)
-            .map(temporaryProcessInstanceMapper::toDto);
-    }
-
-    /**
      * Get all the temporaryProcessInstances.
      *
      * @return the list of entities.
