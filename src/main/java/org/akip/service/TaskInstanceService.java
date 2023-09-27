@@ -112,21 +112,25 @@ public class TaskInstanceService {
     public Optional<TaskInstanceDTO> claim(Long id) {
         log.debug("Request to claim TaskInstance : {}", id);
         Optional<TaskInstance> optionalTaskInstance = taskInstanceRepository.findById(id);
-        if (optionalTaskInstance.isPresent()) {
-            TaskInstance taskInstance = optionalTaskInstance.get();
-            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getCandidateGroups()));
+        try {
+            if (optionalTaskInstance.isPresent()) {
+                TaskInstance taskInstance = optionalTaskInstance.get();
+                checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getCandidateGroups()));
 
-            taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
-            taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
+                taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
+                taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
 
-            //Reset starTine on the first claiming or when changing assignee
-            if (taskInstance.getStartTime() == null || (taskInstance.getAssignee() != null && !taskInstance.getAssignee().equals(SecurityUtils.getCurrentUserLogin().get()))) {
-                taskInstance.setStartTime(Instant.now());
+                //Reset starTine on the first claiming or when changing assignee
+                if (taskInstance.getStartTime() == null || (taskInstance.getAssignee() != null && !taskInstance.getAssignee().equals(SecurityUtils.getCurrentUserLogin().get()))) {
+                    taskInstance.setStartTime(Instant.now());
+                }
+                String currentUser = SecurityUtils.getCurrentUserLogin().get();
+                taskService.setAssignee(taskInstance.getTaskId(), currentUser);
+                taskService.claim(taskInstance.getTaskId(), currentUser);
+                taskInstanceRepository.save(taskInstance);
             }
-            String currentUser = SecurityUtils.getCurrentUserLogin().get();
-            taskService.setAssignee(taskInstance.getTaskId(), currentUser);
-            taskService.claim(taskInstance.getTaskId(), currentUser);
-            taskInstanceRepository.save(taskInstance);
+        } catch (ClaimNotAllowedException ex) {
+            throw new BadRequestErrorException("Task reserved for users " + ex.getCandidateGroups());
         }
         return optionalTaskInstance.map(taskInstanceMapper::toDTOLoadTaskContext);
     }
