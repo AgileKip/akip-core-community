@@ -112,25 +112,21 @@ public class TaskInstanceService {
     public Optional<TaskInstanceDTO> claim(Long id) {
         log.debug("Request to claim TaskInstance : {}", id);
         Optional<TaskInstance> optionalTaskInstance = taskInstanceRepository.findById(id);
-        try {
-            if (optionalTaskInstance.isPresent()) {
-                TaskInstance taskInstance = optionalTaskInstance.get();
-                checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getCandidateGroups()));
+        if (optionalTaskInstance.isPresent()) {
+            TaskInstance taskInstance = optionalTaskInstance.get();
+            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getCandidateGroups()));
 
-                taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
-                taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
+            taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
+            taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
 
-                //Reset starTine on the first claiming or when changing assignee
-                if (taskInstance.getStartTime() == null || (taskInstance.getAssignee() != null && !taskInstance.getAssignee().equals(SecurityUtils.getCurrentUserLogin().get()))) {
-                    taskInstance.setStartTime(Instant.now());
-                }
-                String currentUser = SecurityUtils.getCurrentUserLogin().get();
-                taskService.setAssignee(taskInstance.getTaskId(), currentUser);
-                taskService.claim(taskInstance.getTaskId(), currentUser);
-                taskInstanceRepository.save(taskInstance);
+            //Reset starTine on the first claiming or when changing assignee
+            if (taskInstance.getStartTime() == null || (taskInstance.getAssignee() != null && !taskInstance.getAssignee().equals(SecurityUtils.getCurrentUserLogin().get()))) {
+                taskInstance.setStartTime(Instant.now());
             }
-        } catch (ClaimNotAllowedException ex) {
-            throw new BadRequestErrorException("Task reserved for users " + ex.getCandidateGroups());
+            String currentUser = SecurityUtils.getCurrentUserLogin().get();
+            taskService.setAssignee(taskInstance.getTaskId(), currentUser);
+            taskService.claim(taskInstance.getTaskId(), currentUser);
+            taskInstanceRepository.save(taskInstance);
         }
         return optionalTaskInstance.map(taskInstanceMapper::toDTOLoadTaskContext);
     }
@@ -155,7 +151,7 @@ public class TaskInstanceService {
             }
         }
 
-        throw new ClaimNotAllowedException(String.join(", ", candidateGroups));
+        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", candidateGroups));
     }
 
     public void complete(TaskInstanceDTO taskInstanceDTO) {
@@ -203,10 +199,10 @@ public class TaskInstanceService {
     public List<TaskInstanceDTO> findByProcessDefinition(String idOrBpmnProcessDefinitionId) {
         log.debug("Request to get TaskInstances of the ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
         return taskInstanceRepository
-            .findByProcessDefinitionIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
-            .stream()
-            .map(taskInstanceMapper::toDto)
-            .collect(Collectors.toList());
+                .findByProcessDefinitionIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
+                .stream()
+                .map(taskInstanceMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public List<TaskInstanceDTO> findByProcessInstance(Long id) {
@@ -227,17 +223,17 @@ public class TaskInstanceService {
         }
         hql.append(" ) ");
         List<TaskInstance> taskInstances = (List<TaskInstance>) entityManager
-            .createQuery(hql.toString())
-            .setParameter(
-                "statusList",
-                Arrays.asList(
-                    StatusTaskInstance.NEW,
-                    StatusTaskInstance.ASSIGNED,
-                    StatusTaskInstance.DELEGATED,
-                    StatusTaskInstance.UNASSIGNED
+                .createQuery(hql.toString())
+                .setParameter(
+                        "statusList",
+                        Arrays.asList(
+                                StatusTaskInstance.NEW,
+                                StatusTaskInstance.ASSIGNED,
+                                StatusTaskInstance.DELEGATED,
+                                StatusTaskInstance.UNASSIGNED
+                        )
                 )
-            )
-            .getResultList();
+                .getResultList();
         return taskInstances.stream().map(taskInstanceMapper::toDto).collect(Collectors.toList());
     }
 
@@ -245,18 +241,18 @@ public class TaskInstanceService {
     public List<TaskInstanceDTO> getMyAssignedTaskInstances() {
         log.debug("Request to get myAssignedTaskInstances: {}", SecurityUtils.getCurrentUserLogin().get());
         return taskInstanceRepository
-            .findByAssigneeAndStatusIn(
-                SecurityUtils.getCurrentUserLogin().get(),
-                Arrays.asList(
-                    StatusTaskInstance.NEW,
-                    StatusTaskInstance.ASSIGNED,
-                    StatusTaskInstance.DELEGATED,
-                    StatusTaskInstance.UNASSIGNED
+                .findByAssigneeAndStatusIn(
+                        SecurityUtils.getCurrentUserLogin().get(),
+                        Arrays.asList(
+                                StatusTaskInstance.NEW,
+                                StatusTaskInstance.ASSIGNED,
+                                StatusTaskInstance.DELEGATED,
+                                StatusTaskInstance.UNASSIGNED
+                        )
                 )
-            )
-            .stream()
-            .map(taskInstanceMapper::toDto)
-            .collect(Collectors.toList());
+                .stream()
+                .map(taskInstanceMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     private void updateProcessInstanceData(ProcessInstanceDTO processInstanceDTO) {
