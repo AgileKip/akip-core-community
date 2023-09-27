@@ -8,7 +8,6 @@ import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.recsys.AkipTaskInstanceRakingAlgorithmInterface;
-import org.akip.recsys.AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig;
 import org.akip.repository.TenantMemberRepository;
 import org.akip.security.SecurityUtils;
 import org.akip.service.ProcessDefinitionService;
@@ -18,9 +17,9 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 
 @Service("myTaskInstance")
 class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
@@ -32,6 +31,8 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
     private final TenantMemberRepository tenantMemberRepository;
 
     private final BeanFactory beanFactory;
+
+    private Boolean sortedByRank = false;
 
     MyTaskInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService, TenantMemberRepository tenantMemberRepository, BeanFactory beanFactory) {
         super(entityManager, TaskInstance.class, TaskInstanceSearchDTO.class);
@@ -315,7 +316,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         resultColumnProps.setTitle("Props");
         resultColumnProps.setDtoField("props");
         resultColumnProps.setVisible(true);
-        resultColumnProps.setType("String");
+        resultColumnProps.setType("Custom");
         resultColumns.add(resultColumnProps);
 
         ResultColumn resultColumnRank = new ResultColumn();
@@ -331,7 +332,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         resultColumnRankData.setTitle("Rank Data");
         resultColumnRankData.setDtoField("rankData");
         resultColumnRankData.setVisible(true);
-        resultColumnRankData.setType("String");
+        resultColumnRankData.setType("Custom");
         resultColumns.add(resultColumnRankData);
 
 
@@ -370,6 +371,16 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
     }
 
     @Override
+    public void handleRequestBeforeSearch(PageableSearchRequest searchRequest) {
+        HashMap<String, Object> sortedByMap = (HashMap<String, Object>) searchRequest.getSortedBy();
+        sortedByRank = sortedByMap.get("id").equals("rank");
+        if (sortedByRank) {
+            sortedByMap.put("id", "id");
+        }
+        super.handleRequestBeforeSearch(searchRequest);
+    }
+
+    @Override
     public void handleResultAfterSearch(PageableSearchResult<TaskInstanceSearchDTO> searchResult) {
         super.handleResultAfterSearch(searchResult);
 
@@ -381,5 +392,18 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         AkipTaskInstanceRakingAlgorithmInterface rakingAlgorithm = (AkipTaskInstanceRakingAlgorithmInterface) beanFactory.getBean("akipRankingAlgorithm");
         rakingAlgorithm.buildRanking(searchResult.getList());
 
+        if (sortedByRank) {
+            HashMap<String, Object> sortedByMap = (HashMap<String, Object>) searchResult.getSortedBy();
+            sortedByMap.put("id", "rank");
+            if (Boolean.TRUE.equals(sortedByMap.get("reverse"))) {
+                searchResult.getList().sort(Comparator.comparing(TaskInstanceSearchDTO::getRank).reversed());
+            } else {
+                searchResult.getList().sort(Comparator.comparing(TaskInstanceSearchDTO::getRank));
+            }
+        }
     }
+
 }
+
+
+

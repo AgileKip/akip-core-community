@@ -14,7 +14,7 @@ public class AkipTaskInstanceRankingContextConfigDTO implements Serializable {
     @Lob
     private String contextValueExpression;
 
-    private Long processDefinitionId;
+    private ProcessDefinitionDTO processDefinition;
 
     public Long getId() {
         return id;
@@ -32,12 +32,12 @@ public class AkipTaskInstanceRankingContextConfigDTO implements Serializable {
         this.contextValueExpression = contextValueExpression;
     }
 
-    public Long getProcessDefinitionId() {
-        return processDefinitionId;
+    public ProcessDefinitionDTO getProcessDefinition() {
+        return processDefinition;
     }
 
-    public void setProcessDefinitionId(Long processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
+    public void setProcessDefinition(ProcessDefinitionDTO processDefinition) {
+        this.processDefinition = processDefinition;
     }
 
     @Override

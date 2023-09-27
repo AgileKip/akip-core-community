@@ -9,10 +9,7 @@ import org.akip.util.StringToListUtil;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TaskInstanceSearchDTO {
 
@@ -46,7 +43,10 @@ public class TaskInstanceSearchDTO {
 
     private Map<String, String> props;
     private BigDecimal rank;
-    private Map<String, Object> rankData = new HashMap<>();
+    private Map<String, Object> rankData = new LinkedHashMap<>();
+
+    public TaskInstanceSearchDTO() {
+    }
 
     public TaskInstanceSearchDTO(Long id,
                                  String taskId,

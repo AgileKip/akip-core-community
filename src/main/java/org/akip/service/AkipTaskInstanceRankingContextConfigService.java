@@ -1,7 +1,6 @@
 package org.akip.service;
 
 import org.akip.domain.AkipTaskInstanceRankingContextConfig;
-import org.akip.domain.ProcessDefinition;
 import org.akip.repository.AkipTaskInstanceRankingContextConfigRepository;
 import org.akip.service.dto.AkipTaskInstanceRankingContextConfigDTO;
 import org.akip.service.dto.ProcessDefinitionDTO;
@@ -69,7 +68,7 @@ public class AkipTaskInstanceRankingContextConfigService {
         List<AkipTaskInstanceRankingContextConfigDTO> configs = processDefinitions.stream()
                 .map(processDefinition -> {
                     AkipTaskInstanceRankingContextConfigDTO config = new AkipTaskInstanceRankingContextConfigDTO();
-                    config.setProcessDefinitionId(processDefinition.getId());
+                    config.setProcessDefinition(processDefinition);
                     return config;
                 })
                 .collect(Collectors.toCollection(LinkedList::new));
@@ -83,8 +82,8 @@ public class AkipTaskInstanceRankingContextConfigService {
         configs.forEach(config -> {
             existingConfigs
                     .stream()
-                    .filter(existingConfig -> config.getProcessDefinitionId().equals(existingConfig.getProcessDefinitionId()))
-                    .findFirst().ifPresent(akipTaskInstanceRankingContextConfigDTO -> config.setProcessDefinitionId(akipTaskInstanceRankingContextConfigDTO.getProcessDefinitionId()));
+                    .filter(existingConfig -> config.getProcessDefinition().getId().equals(existingConfig.getProcessDefinition().getId()))
+                    .findFirst().ifPresent(akipTaskInstanceRankingContextConfigDTO -> config.setId(akipTaskInstanceRankingContextConfigDTO.getId()));
         });
 
         return configs;

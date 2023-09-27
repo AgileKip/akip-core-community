@@ -1,6 +1,7 @@
 package org.akip.web.rest;
 
 import org.akip.exception.BadRequestErrorException;
+import org.akip.recsys.AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig;
 import org.akip.repository.AkipTaskInstanceRankingContextConfigRepository;
 import org.akip.service.AkipTaskInstanceRankingContextConfigService;
 import org.akip.service.dto.AkipTaskInstanceRankingContextConfigDTO;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -36,12 +38,15 @@ public class AkipTaskInstanceRankingContextConfigResource {
 
     private final AkipTaskInstanceRankingContextConfigRepository akipTaskInstanceRankingContextConfigRepository;
 
+    private final AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig akipTaskInstanceRankingContextPrioritySLAAlgorithmConfig;
+
     public AkipTaskInstanceRankingContextConfigResource(
         AkipTaskInstanceRankingContextConfigService akipTaskInstanceRankingContextConfigService,
-        AkipTaskInstanceRankingContextConfigRepository akipTaskInstanceRankingContextConfigRepository
-    ) {
+        AkipTaskInstanceRankingContextConfigRepository akipTaskInstanceRankingContextConfigRepository,
+        AkipTaskInstanceRankingContextPrioritySLAAlgorithmConfig akipTaskInstanceRankingContextPrioritySLAAlgorithmConfig) {
         this.akipTaskInstanceRankingContextConfigService = akipTaskInstanceRankingContextConfigService;
         this.akipTaskInstanceRankingContextConfigRepository = akipTaskInstanceRankingContextConfigRepository;
+        this.akipTaskInstanceRankingContextPrioritySLAAlgorithmConfig = akipTaskInstanceRankingContextPrioritySLAAlgorithmConfig;
     }
 
     /**
@@ -152,4 +157,5 @@ public class AkipTaskInstanceRankingContextConfigResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
+
 }
