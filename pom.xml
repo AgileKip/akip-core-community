@@ -7,7 +7,6 @@
   <groupId>org.akip</groupId>
   <artifactId>akip-core</artifactId>
   <version>0.1.7-SNAPSHOT</version>
-
   <name>akip-core</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>

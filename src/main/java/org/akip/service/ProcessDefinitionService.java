@@ -5,13 +5,16 @@ import org.akip.camunda.form.CamundaFormFieldValidationConstraintDef;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.akip.repository.ProcessDefinitionRepository;
+import org.akip.repository.ProcessDeploymentRepository;
 import org.akip.service.dto.ProcessDefinitionDTO;
+import org.akip.service.dto.TaskInstanceDTO;
 import org.akip.service.mapper.ProcessDefinitionMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.engine.impl.form.type.EnumFormType;
+import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
+import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.*;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.slf4j.Logger;
@@ -19,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,12 +41,15 @@ public class ProcessDefinitionService {
 
     private final ProcessDefinitionMapper processDefinitionMapper;
 
+    private final ProcessDeploymentRepository processDeploymentRepository;
+
     public ProcessDefinitionService(
         ProcessDefinitionRepository processDefinitionRepository,
-        ProcessDefinitionMapper processDefinitionMapper
-    ) {
+        ProcessDefinitionMapper processDefinitionMapper,
+        ProcessDeploymentRepository processDeploymentRepository) {
         this.processDefinitionRepository = processDefinitionRepository;
         this.processDefinitionMapper = processDefinitionMapper;
+        this.processDeploymentRepository = processDeploymentRepository;
     }
 
     public ProcessDefinition createOrUpdateProcessDefinition(BpmnModelInstance bpmnModelInstance) {
@@ -202,6 +209,35 @@ public class ProcessDefinitionService {
         camundaFormFieldValidationConstraintDef.setName(camundaConstraint.getCamundaName());
         camundaFormFieldValidationConstraintDef.setConfiguration(camundaConstraint.getCamundaConfig());
         return camundaFormFieldValidationConstraintDef;
+    }
+
+    public List<TaskInstanceDTO> getBpmnUserTasks(String bpmnProcessDefinitionId) {
+
+        ProcessDefinition processDefinition = processDefinitionRepository
+                .findByBpmnProcessDefinitionId(bpmnProcessDefinitionId)
+                .orElseThrow();
+
+        BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(
+                new ByteArrayInputStream(
+                        processDeploymentRepository
+                                .findByProcessDefinitionIdAndStatusIsActive(processDefinition.getId())
+                                .get()
+                                .getSpecificationFile()
+                )
+        );
+
+        return bpmnModelInstance
+                .getModelElementsByType(UserTask.class)
+                .stream()
+                .map(
+                        userTask -> {
+                            TaskInstanceDTO taskInstance = new TaskInstanceDTO();
+                            taskInstance.setTaskDefinitionKey(userTask.getId());
+                            taskInstance.setName(userTask.getName());
+                            return taskInstance;
+                        }
+                )
+                .collect(Collectors.toList());
     }
 
 }
