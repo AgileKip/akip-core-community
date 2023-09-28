@@ -17,6 +17,6 @@ import java.time.LocalDate;
 @Repository
 public interface TemporaryProcessInstanceRepository extends JpaRepository<TemporaryProcessInstance, Long> {
     @Modifying
-    @Query("update TemporaryProcessInstance t set t.processInstanceId = :processInstance where t.id = :temporaryProcessId")
+    @Query("update TemporaryProcessInstance t set t.processInstance = :processInstance where t.id = :temporaryProcessId")
     void updateProcessInstanceIdById(@Param("processInstance") ProcessInstance processInstance, @Param("temporaryProcessId") Long temporaryProcessId);
 }
