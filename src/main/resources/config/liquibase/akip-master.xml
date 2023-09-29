@@ -30,6 +30,7 @@
     <include file="config/liquibase/changelog/00000000000015_added_entity_DecisionDeployment.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000016_added_entity_ProcessTimelineDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000017_added_entity_ProcessTimelineItemDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000018_added_entity_TemporaryProcessInstance.xml" relativeToChangelogFile="false"/>
 
     <include file="config/liquibase/changelog/00000000000004_added_entity_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000005_added_entity_constraints_ProcessDeployment.xml" relativeToChangelogFile="false"/>
@@ -41,6 +42,7 @@
     <include file="config/liquibase/changelog/00000000001003_added_entity_constraints_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>
 
     <include file="config/liquibase/changelog/00000000002001_added_entity_AkipEmailConnectorConfig.xml" relativeToChangelogFile="false"/>
+
 
 
 </databaseChangeLog>
