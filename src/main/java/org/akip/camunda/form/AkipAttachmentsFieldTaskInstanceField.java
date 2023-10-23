@@ -3,11 +3,11 @@ package org.akip.camunda.form;
 import org.camunda.bpm.engine.impl.form.type.AbstractFormFieldType;
 import org.camunda.bpm.engine.variable.value.TypedValue;
 
-public class AkipAttachmentsFieldTaskInstance extends AbstractFormFieldType {
+public class AkipAttachmentsFieldTaskInstanceField extends AbstractFormFieldType {
 
     @Override
     public String getName() {
-        return AkipAttachmentsFieldTaskInstance.class.getSimpleName();
+        return AkipAttachmentsFieldTaskInstanceField.class.getSimpleName();
     }
 
     @Override
