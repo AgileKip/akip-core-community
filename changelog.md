@@ -1,6 +1,13 @@
 # Changelog
 
-* 0.1.6 (WIP)
+* 0.1.7 (WIP)
+  * Improvements in the dynamic form support
+  * Including TemporaryProcessInstance entity
+  * Showing the notes in chronological order
+  * Some bug fixes (#52, )
+
+
+* 0.1.6
   * Including Process Timeline Definition
   * Including Process Timeline
   * Adding type TextArea (to be used in dynamic forms)
