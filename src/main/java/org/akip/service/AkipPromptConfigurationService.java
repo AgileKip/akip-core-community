@@ -111,6 +111,6 @@ public class AkipPromptConfigurationService {
         return akipPromptConfigurationRepository
                 .findByName(name)
                 .map(akipPromptConfigurationMapper::toDto)
-                .orElseThrow(() -> { return new BadRequestErrorException("akip.akipChatConfiguration.error.notFound", name); });
+                .orElseThrow(() -> { return new BadRequestErrorException("akip.akipPromptConfiguration.error.notFound", name); });
     }
 }

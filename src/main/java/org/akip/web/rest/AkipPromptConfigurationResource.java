@@ -6,14 +6,12 @@ import org.akip.service.AkipPromptConfigurationService;
 import org.akip.service.dto.AkipPromptConfigurationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -31,8 +29,9 @@ public class AkipPromptConfigurationResource {
 
     private static final String ENTITY_NAME = "akipPromptConfiguration";
 
-    @Value("${jhipster.clientApp.name}")
-    private String applicationName;
+    private static final String MESSAGE_PROMPT_CONFIGURATION_CREATED = "Prompt Configuration Successfully Created";
+    private static final String MESSAGE_PROMPT_CONFIGURATION_UPDATED = "Prompt Configuration Successfully Updated";
+    private static final String MESSAGE_PROMPT_CONFIGURATION_REMOVED = "Prompt Configuration Successfully Removed";
 
     private final AkipPromptConfigurationService akipPromptConfigurationService;
 
@@ -64,7 +63,7 @@ public class AkipPromptConfigurationResource {
         AkipPromptConfigurationDTO result = akipPromptConfigurationService.save(akipPromptConfigurationDTO);
         return ResponseEntity
             .created(new URI("/api/akip-prompt-configurations/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_PROMPT_CONFIGURATION_CREATED, result.getId().toString()))
             .body(result);
     }
 
@@ -98,44 +97,8 @@ public class AkipPromptConfigurationResource {
         AkipPromptConfigurationDTO result = akipPromptConfigurationService.save(akipPromptConfigurationDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, akipPromptConfigurationDTO.getId().toString()))
+            .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_PROMPT_CONFIGURATION_UPDATED, id.toString()))
             .body(result);
-    }
-
-    /**
-     * {@code PATCH  /akip-prompt-configurations/:id} : Partial updates given fields of an existing akipPromptConfiguration, field will ignore if it is null
-     *
-     * @param id the id of the akipPromptConfigurationDTO to save.
-     * @param akipPromptConfigurationDTO the akipPromptConfigurationDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated akipPromptConfigurationDTO,
-     * or with status {@code 400 (Bad Request)} if the akipPromptConfigurationDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the akipPromptConfigurationDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the akipPromptConfigurationDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PatchMapping(value = "/akip-prompt-configurations/{id}", consumes = "application/merge-patch+json")
-    public ResponseEntity<AkipPromptConfigurationDTO> partialUpdateAkipPromptConfiguration(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody AkipPromptConfigurationDTO akipPromptConfigurationDTO
-    ) throws URISyntaxException {
-        log.debug("REST request to partial update AkipPromptConfiguration partially : {}, {}", id, akipPromptConfigurationDTO);
-        if (akipPromptConfigurationDTO.getId() == null) {
-            throw new BadRequestErrorException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, akipPromptConfigurationDTO.getId())) {
-            throw new BadRequestErrorException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
-
-        if (!akipPromptConfigurationRepository.existsById(id)) {
-            throw new BadRequestErrorException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
-
-        Optional<AkipPromptConfigurationDTO> result = akipPromptConfigurationService.partialUpdate(akipPromptConfigurationDTO);
-
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, akipPromptConfigurationDTO.getId().toString())
-        );
     }
 
     /**
@@ -180,7 +143,7 @@ public class AkipPromptConfigurationResource {
         akipPromptConfigurationService.delete(id);
         return ResponseEntity
             .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_PROMPT_CONFIGURATION_REMOVED, id.toString()))
             .build();
     }
 }
