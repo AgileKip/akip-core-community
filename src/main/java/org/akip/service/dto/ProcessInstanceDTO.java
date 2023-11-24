@@ -16,6 +16,8 @@ public class ProcessInstanceDTO implements Serializable {
 
     private Long id;
 
+    private TemporaryProcessInstanceDTO temporaryProcessInstance;
+
     private String businessKey;
 
     private String camundaDeploymentId;
@@ -45,12 +47,20 @@ public class ProcessInstanceDTO implements Serializable {
 
     private TenantDTO tenant;
 
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+    public TemporaryProcessInstanceDTO getTemporaryProcessInstance() {
+        return temporaryProcessInstance;
+    }
+
+    public void setTemporaryProcessInstance(TemporaryProcessInstanceDTO temporaryProcessInstance) {
+        this.temporaryProcessInstance = temporaryProcessInstance;
     }
 
     public String getBusinessKey() {
