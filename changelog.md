@@ -1,6 +1,10 @@
 # Changelog
 
-* 0.1.6 (WIP)
+* 0.1.7
+  * Including ChatGPT components (camunda delegate and form assistant)
+  * Including Akip Prompt Configuration entity
+
+* 0.1.6
   * Including Process Timeline Definition
   * Including Process Timeline
   * Adding type TextArea (to be used in dynamic forms)
