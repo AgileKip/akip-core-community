@@ -47,5 +47,9 @@
     <include file="config/liquibase/changelog/00000000002002_added_entity_AkipTaskInstanceRankingContextConfig.xml" relativeToChangelogFile="false"/>
 
 
+    <include file="config/liquibase/changelog/00000000003001_added_entity_AkipPromptConfiguration.xml" relativeToChangelogFile="false"/>
+
+
+
 
 </databaseChangeLog>

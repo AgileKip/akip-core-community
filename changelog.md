@@ -1,11 +1,17 @@
 # Changelog
 
-* 0.1.7 (WIP)
-  * Improvements in the dynamic form support
-  * Including TemporaryProcessInstance entity
-  * Showing the notes in chronological order
-  * Some bug fixes (#52, )
+* 0.1.8 (WIP)
+  * Including RecSys
 
+* 0.1.7
+  * Including ChatGPT components (camunda delegate and form assistant)
+  * Including Akip Prompt Configuration entity
+  * Including new types: AkipAttachmentsTaskInstanceField and AkipNotesTaskInstanceField
+  * Improvements in the dynamic form support
+  * Including Temporary Process Instance Entity
+  * Including support for attachment and notes in the start form
+  * Improving error messages
+  * Some bug fixes (#52, )
 
 * 0.1.6
   * Including Process Timeline Definition
