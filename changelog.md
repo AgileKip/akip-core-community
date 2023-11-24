@@ -3,6 +3,10 @@
 * 0.1.7
   * Including ChatGPT components (camunda delegate and form assistant)
   * Including Akip Prompt Configuration entity
+  * Including new types: AkipAttachmentsTaskInstanceField and AkipNotesTaskInstanceField
+  * Including Temporary Process Instance Entity
+  * Including support for attachment and notes in the start form
+  * Improving error messages
 
 * 0.1.6
   * Including Process Timeline Definition
