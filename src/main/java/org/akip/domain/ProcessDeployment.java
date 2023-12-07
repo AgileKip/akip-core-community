@@ -61,6 +61,7 @@ public class ProcessDeployment implements Serializable {
     private String props;
 
     @ManyToOne
+    @JoinColumn(name = "process_definition_id")
     private ProcessDefinition processDefinition;
 
     @ManyToOne

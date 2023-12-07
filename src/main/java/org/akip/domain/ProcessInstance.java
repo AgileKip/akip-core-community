@@ -74,6 +74,7 @@ public class ProcessInstance implements Serializable {
     private LocalDate accessTokenExpirationDate;
 
     @ManyToOne
+    @JoinColumn(name = "process_definition_id")
     private ProcessDefinition processDefinition;
 
     @ManyToOne

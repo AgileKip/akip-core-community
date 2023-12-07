@@ -76,7 +76,7 @@ public class TaskInstance implements Serializable {
     @Column(name = "priority")
     private Integer priority;
 
-    @Column(name = "candidateGroups")
+    @Column(name = "candidate_groups")
     private String candidateGroups;
 
     @Column(name = "connector_name")
@@ -91,10 +91,11 @@ public class TaskInstance implements Serializable {
     private String formFields;
 
     @ManyToOne
+    @JoinColumn(name = "process_definition_id")
     private ProcessDefinition processDefinition;
 
     @ManyToOne
-    @JoinColumn(name = "camundaProcessInstanceId", referencedColumnName = "camunda_process_instance_id")
+    @JoinColumn(name = "camunda_process_instance_id", referencedColumnName = "camunda_process_instance_id")
     private ProcessInstance processInstance;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

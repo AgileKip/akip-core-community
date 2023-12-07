@@ -40,7 +40,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <dependency>
         <groupId>org.camunda.bpm</groupId>
         <artifactId>camunda-bom</artifactId>
@@ -59,10 +58,14 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb</artifactId>
       <version>${spring-boot.version}</version>
     </dependency>
     <dependency>
@@ -75,13 +78,11 @@
       <artifactId>spring-boot-starter-security</artifactId>
       <version>${spring-boot.version}</version>
     </dependency>
-
     <dependency>
       <groupId>javax.annotation</groupId>
       <artifactId>javax.annotation-api</artifactId>
       <version>${javax.annotation.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.camunda.bpm.model</groupId>
       <artifactId>camunda-bpmn-model</artifactId>

@@ -3,6 +3,7 @@ package org.akip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.camunda.CamundaConstants;
 import org.akip.delegate.RedoableDelegate;
+import org.akip.domain.ProcessInstance;
 import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
@@ -55,6 +56,8 @@ public class TaskInstanceService {
 
     private final BeanFactory beanFactory;
 
+    private final MongoService mongoService;
+
     private static final String ANONYMOUS_USER = "anonymousUser";
 
     public TaskInstanceService(
@@ -62,7 +65,7 @@ public class TaskInstanceService {
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
             NoteService noteService, EntityManager entityManager,
-            BeanFactory beanFactory) {
+            BeanFactory beanFactory, MongoService mongoService) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
         this.taskInstanceRepository = taskInstanceRepository;
@@ -71,6 +74,7 @@ public class TaskInstanceService {
         this.noteService = noteService;
         this.entityManager = entityManager;
         this.beanFactory = beanFactory;
+        this.mongoService = mongoService;
     }
 
     /**
@@ -261,6 +265,7 @@ public class TaskInstanceService {
                     processInstanceMapper.mapToString(processInstanceDTO.getData()),
                     processInstanceDTO.getId()
             );
+            this.mongoService.saveInMongo(processInstanceDTO);
         } catch (JsonProcessingException e) {
             throw new BadRequestErrorException(e.toString());
         }

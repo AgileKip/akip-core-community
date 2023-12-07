@@ -1,6 +1,7 @@
 package org.akip.service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.camunda.CamundaConstants;
 import org.akip.domain.*;
 import org.akip.domain.enumeration.StatusProcessInstance;
@@ -51,6 +52,8 @@ public class ProcessInstanceService {
 
     private final TemporaryProcessInstanceRepository temporaryProcessInstanceRepository;
 
+    private final MongoService mongoService;
+
     public ProcessInstanceService(
         ProcessDeploymentService processDeploymentService,
         TaskInstanceService taskInstanceService,
@@ -63,7 +66,8 @@ public class ProcessInstanceService {
         AttachmentRepository attachmentRepository,
         NoteRepository noteRepository,
         NoteEntityRepository noteEntityRepository,
-        TemporaryProcessInstanceRepository temporaryProcessInstanceRepository) {
+        TemporaryProcessInstanceRepository temporaryProcessInstanceRepository,
+        MongoService mongoService){
         this.processDeploymentService = processDeploymentService;
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
@@ -76,6 +80,7 @@ public class ProcessInstanceService {
         this.noteRepository = noteRepository;
         this.noteEntityRepository = noteEntityRepository;
         this.temporaryProcessInstanceRepository = temporaryProcessInstanceRepository;
+        this.mongoService = mongoService;
     }
 
     public ProcessInstanceDTO create(ProcessInstanceDTO processInstanceDTO) {
@@ -123,6 +128,7 @@ public class ProcessInstanceService {
         synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        this.mongoService.saveInMongo(processInstance, processInstanceSaved);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -160,6 +166,7 @@ public class ProcessInstanceService {
         synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        this.mongoService.saveInMongo(processInstance, processInstanceSaved);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -208,6 +215,11 @@ public class ProcessInstanceService {
                 .execute();
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
+        try {
+            this.mongoService.saveInMongo(processInstanceMapper.toDto(processInstance));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         return processInstanceRepository.save(processInstance);
     }
 
@@ -252,6 +264,11 @@ public class ProcessInstanceService {
                 .execute();
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
+        try {
+            this.mongoService.saveInMongo(processInstanceMapper.toDto(processInstance));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         return processInstanceRepository.save(processInstance);
     }
 

@@ -47,6 +47,7 @@ public class ProcessDefinition implements Serializable {
     private String startFormFields;
 
     @ManyToOne
+    @JoinColumn(name = "kip_app_id")
     private KipApp kipApp;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
