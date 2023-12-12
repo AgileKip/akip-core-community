@@ -1,7 +1,11 @@
 # Changelog
 
-* 0.1.8 (WIP)
+* 0.1.9 (WIP)
   * Including RecSys
+
+* 0.1.8
+  * Including new field type: AkipTextareaChatGptField
+
 
 * 0.1.7
   * Including ChatGPT components (camunda delegate and form assistant)
