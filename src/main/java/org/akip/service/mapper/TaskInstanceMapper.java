@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity {@link TaskInstance} and its DTO {@link TaskInstanceDTO}.
  */
-@Mapper(componentModel = "spring", uses = { ProcessDefinitionMapper.class, ProcessInstanceMapper.class, CamundaFormFieldDefMapper.class })
+@Mapper(componentModel = "spring", uses = { ProcessDefinitionMapper.class, ProcessInstanceMapper.class, TaskDefinitionMapper.class, CamundaFormFieldDefMapper.class })
 public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskInstance> {
 
     ObjectMapper objectMapper = new ObjectMapper();
@@ -30,6 +30,7 @@ public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskIn
 
     @Mapping(target = "processDefinition", source = "processDefinition", qualifiedByName = "name")
     @Mapping(target = "processInstance", source = "processInstance", qualifiedByName = "businessKey")
+    @Mapping(target = "taskDefinition", source = "taskDefinition", qualifiedByName = "name")
     TaskInstanceDTO toDto(TaskInstance s);
 
     @Named("loadTaskContext")

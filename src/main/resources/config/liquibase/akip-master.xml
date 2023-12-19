@@ -44,8 +44,8 @@
     <include file="config/liquibase/changelog/00000000002001_added_entity_AkipEmailConnectorConfig.xml" relativeToChangelogFile="false"/>
 
     <include file="config/liquibase/changelog/00000000003001_added_entity_AkipPromptConfiguration.xml" relativeToChangelogFile="false"/>
-
-
-
+    <include file="config/liquibase/changelog/00000000000020_added_entity_TaskDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000021_alter_entity_TaskInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000022_added_new_constraints_TaskInstance.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

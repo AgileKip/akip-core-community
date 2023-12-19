@@ -3,19 +3,27 @@ package org.akip.service;
 import org.akip.camunda.form.CamundaFormFieldDef;
 import org.akip.camunda.form.CamundaFormFieldValidationConstraintDef;
 import org.akip.domain.ProcessDefinition;
+import org.akip.domain.TaskDefinition;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.repository.ProcessDeploymentRepository;
+import org.akip.repository.TaskDefinitionRepository;
 import org.akip.service.dto.ProcessDefinitionDTO;
+import org.akip.service.dto.TaskDefinitionDTO;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.akip.service.mapper.ProcessDefinitionMapper;
+import org.akip.service.mapper.TaskDefinitionMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.*;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +51,19 @@ public class ProcessDefinitionService {
 
     private final ProcessDeploymentRepository processDeploymentRepository;
 
+    private final TaskDefinitionRepository taskDefinitionRepository;
+
+    private final TaskDefinitionMapper taskDefinitionMapper;
+
     public ProcessDefinitionService(
-        ProcessDefinitionRepository processDefinitionRepository,
-        ProcessDefinitionMapper processDefinitionMapper,
-        ProcessDeploymentRepository processDeploymentRepository) {
+            ProcessDefinitionRepository processDefinitionRepository,
+            ProcessDefinitionMapper processDefinitionMapper,
+            ProcessDeploymentRepository processDeploymentRepository, TaskDefinitionRepository taskDefinitionRepository, TaskDefinitionMapper taskDefinitionMapper) {
         this.processDefinitionRepository = processDefinitionRepository;
         this.processDefinitionMapper = processDefinitionMapper;
         this.processDeploymentRepository = processDeploymentRepository;
+        this.taskDefinitionRepository = taskDefinitionRepository;
+        this.taskDefinitionMapper = taskDefinitionMapper;
     }
 
     public ProcessDefinition createOrUpdateProcessDefinition(BpmnModelInstance bpmnModelInstance) {
@@ -97,7 +111,11 @@ public class ProcessDefinitionService {
 
         processDefinition.setStartFormFields(extractFormFields(bpmnModelInstance));
 
-        return processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
+        ProcessDefinition processDefinitionSaved = processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
+
+        extractAndSaveTaskDefs(processDefinitionMapper.toDto(processDefinitionSaved), bpmnModelInstance);
+
+        return processDefinitionSaved;
     }
 
     private ProcessDefinition updateProcessDefinition(Process process, BpmnModelInstance bpmnModelInstance) {
@@ -111,7 +129,11 @@ public class ProcessDefinitionService {
 
         processDefinition.setStartFormFields(extractFormFields(bpmnModelInstance));
 
-        return processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
+        ProcessDefinition processDefinitionUpdated = processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
+
+        extractAndSaveTaskDefs(processDefinitionMapper.toDto(processDefinitionUpdated), bpmnModelInstance);
+
+        return processDefinitionUpdated;
     }
 
     /**
@@ -238,6 +260,41 @@ public class ProcessDefinitionService {
                         }
                 )
                 .collect(Collectors.toList());
+    }
+
+    private void extractAndSaveTaskDefs(ProcessDefinitionDTO processDefinitionDTO, BpmnModelInstance bpmnModelInstance){
+
+        bpmnModelInstance
+                .getModelElementsByType(UserTask.class)
+                .forEach(
+                        userTask -> {
+                                TaskDefinitionDTO taskDefinition = taskDefinitionMapper.toDto(taskDefinitionRepository.findTaskDefinitionByBpmnProcessDefinitionIdAndTaskId(processDefinitionDTO.getBpmnProcessDefinitionId(), userTask.getId()).orElse(new TaskDefinition(processDefinitionDTO.getBpmnProcessDefinitionId(), userTask.getId())));
+                                taskDefinition.setName(userTask.getName());
+                                taskDefinition.setAssignee(userTask.getCamundaAssignee());
+                                taskDefinition.setCandidateGroups(userTask.getCamundaCandidateGroups());
+                                taskDefinition.setCandidateUsers(userTask.getCamundaCandidateUsers());
+                                taskDefinitionRepository.save(taskDefinitionMapper.toEntity(taskDefinition));
+                        }
+                );
+
+    }
+
+    private Map<String, String> extractProperties(UserTask userTask) {
+        ExtensionElements extensionElements = userTask.getExtensionElements();
+        if (extensionElements == null || extensionElements.getElementsQuery().filterByType(CamundaProperties.class).count() == 0) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, String> properties = new HashMap<>();
+        CamundaProperties camundaProperties = extensionElements.getElementsQuery().filterByType(CamundaProperties.class).singleResult();
+        camundaProperties
+                .getCamundaProperties()
+                .forEach(
+                        camundaProperty -> {
+                            properties.put(camundaProperty.getCamundaName(), camundaProperty.getCamundaValue());
+                        }
+                );
+        return properties;
     }
 
 }

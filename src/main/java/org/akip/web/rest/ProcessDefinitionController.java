@@ -1,13 +1,8 @@
 package org.akip.web.rest;
 
-import org.akip.service.ProcessDefinitionService;
-import org.akip.service.ProcessDeploymentService;
-import org.akip.service.ProcessInstanceService;
-import org.akip.service.TaskInstanceService;
-import org.akip.service.dto.ProcessDefinitionDTO;
-import org.akip.service.dto.ProcessDeploymentDTO;
-import org.akip.service.dto.ProcessInstanceDTO;
-import org.akip.service.dto.TaskInstanceDTO;
+import org.akip.service.*;
+import org.akip.service.dto.*;
+import org.simpleframework.xml.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -30,14 +25,17 @@ public class ProcessDefinitionController {
 
     private final TaskInstanceService taskInstanceService;
 
+    private final TaskDefinitionService taskDefinitionService;
+
     public ProcessDefinitionController(
-        ProcessDefinitionService processDefinitionService,
-        ProcessDeploymentService processDeploymentService,
-        TaskInstanceService taskInstanceService
+            ProcessDefinitionService processDefinitionService,
+            ProcessDeploymentService processDeploymentService,
+            TaskInstanceService taskInstanceService, TaskDefinitionService taskDefinitionService
     ) {
         this.processDefinitionService = processDefinitionService;
         this.processDeploymentService = processDeploymentService;
         this.taskInstanceService = taskInstanceService;
+        this.taskDefinitionService = taskDefinitionService;
     }
 
     /**
@@ -88,6 +86,12 @@ public class ProcessDefinitionController {
     public List<TaskInstanceDTO> getTaskInstances(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
         log.debug("REST request to get TaskInstances of the ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
         return taskInstanceService.findByProcessDefinition(idOrBpmnProcessDefinitionId);
+    }
+
+    @GetMapping("/process-definitions/tasksDefinition/{bpmnProcessDefinitionId}")
+    public List<TaskDefinitionDTO> getTasksDefinition(@PathVariable String bpmnProcessDefinitionId) {
+        log.debug("REST request to get TaskInstances of the ProcessDefinition : {}", bpmnProcessDefinitionId);
+        return taskDefinitionService.findTasksDefinitionByBpmnProcessDefinitionId(bpmnProcessDefinitionId);
     }
 
     /**
