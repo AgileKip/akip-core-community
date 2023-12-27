@@ -6,10 +6,12 @@ import org.akip.domain.ProcessDefinition;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.repository.ProcessDefinitionRepository;
+import org.akip.repository.TaskDefinitionRepository;
 import org.akip.service.TaskInstanceService;
 import org.akip.service.dto.ProcessInstanceDTO;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.akip.service.mapper.ProcessDefinitionMapper;
+import org.akip.service.mapper.TaskDefinitionMapper;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.form.FormField;
@@ -33,14 +35,20 @@ public class CamundaTaskCreateListener implements TaskListener {
 
     private final ProcessDefinitionMapper processDefinitionMapper;
 
+    private final TaskDefinitionRepository taskDefinitionRepository;
+
+    private final TaskDefinitionMapper taskDefinitionMapper;
+
     public CamundaTaskCreateListener(
-        TaskInstanceService taskInstanceService,
-        ProcessDefinitionRepository processDefinitionRepository,
-        ProcessDefinitionMapper processDefinitionMapper
+            TaskInstanceService taskInstanceService,
+            ProcessDefinitionRepository processDefinitionRepository,
+            ProcessDefinitionMapper processDefinitionMapper, TaskDefinitionRepository taskDefinitionRepository, TaskDefinitionMapper taskDefinitionMapper
     ) {
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
         this.processDefinitionMapper = processDefinitionMapper;
+        this.taskDefinitionRepository = taskDefinitionRepository;
+        this.taskDefinitionMapper = taskDefinitionMapper;
     }
 
     public void notify(DelegateTask delegateTask) {
@@ -54,7 +62,6 @@ public class CamundaTaskCreateListener implements TaskListener {
         taskInstanceDTO.setName(delegateTask.getName());
         taskInstanceDTO.setStatus(StatusTaskInstance.NEW);
         taskInstanceDTO.setType(TypeTaskInstance.USER_TASK);
-        taskInstanceDTO.setDescription(delegateTask.getDescription());
         taskInstanceDTO.setCreateDate(Instant.now());
         taskInstanceDTO.setCreateTime(Instant.now());
         taskInstanceDTO.setAssignee(delegateTask.getAssignee());
@@ -62,6 +69,7 @@ public class CamundaTaskCreateListener implements TaskListener {
         taskInstanceDTO.setTaskDefinitionKey(delegateTask.getTaskDefinitionKey());
         //taskInstanceDTO.setSuspended(delegateTask.getCaseExecution().isSuspended());
         taskInstanceDTO.setPriority(delegateTask.getPriority());
+        taskInstanceDTO.setTaskDefinition(taskDefinitionMapper.toDto(taskDefinitionRepository.findTaskDefinitionByBpmnProcessDefinitionIdAndTaskId(delegateTask.getProcessDefinitionId().split(":")[0], delegateTask.getTaskDefinitionKey()).orElseThrow()));
 
         delegateTask.getCandidates()
                 .stream()

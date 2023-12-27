@@ -28,7 +28,7 @@ public class TaskDefinitionDTO implements Serializable {
 
     private String candidateGroups;
 
-    private String priority;
+    private Integer priority;
 
     @Lob
     private Map<String, String> props;
@@ -101,11 +101,11 @@ public class TaskDefinitionDTO implements Serializable {
         this.taskId = taskId;
     }
 
-    public String getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(Integer priority) {
         this.priority = priority;
     }
 

@@ -42,7 +42,7 @@ public class TaskDefinition implements Serializable {
     private String candidateGroups;
 
     @Column(name = "priority")
-    private String priority;
+    private Integer priority;
 
     @Lob
     @Type(type = "org.hibernate.type.TextType")
@@ -168,15 +168,15 @@ public class TaskDefinition implements Serializable {
         return this;
     }
 
-    public String getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    public TaskDefinition priority(String priority) {
+    public TaskDefinition priority(Integer priority) {
         this.priority = priority;
         return this;
     }

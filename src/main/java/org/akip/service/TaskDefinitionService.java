@@ -42,4 +42,8 @@ public class TaskDefinitionService {
     public TaskDefinitionDTO save(TaskDefinitionDTO taskDefinitionDTO){
         return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinitionMapper.toEntity(taskDefinitionDTO)));
     }
+
+    public List<TaskDefinitionDTO> findAll(){
+        return taskDefinitionMapper.toDto(taskDefinitionRepository.findAll());
+    }
 }

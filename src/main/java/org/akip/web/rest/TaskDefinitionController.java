@@ -29,6 +29,12 @@ public class TaskDefinitionController {
         return taskDefinitionService.findTaskByBpmnProcessDefinitionIdAndTaskId(bpmnProcessDefinitionId, taskDefinitionId);
     }
 
+    @GetMapping("/task-definition")
+    public List<TaskDefinitionDTO> findAll() {
+        log.debug("REST request to find all TaskDefinition");
+        return taskDefinitionService.findAll();
+    }
+
     @PostMapping("/task-definition")
     public ResponseEntity<TaskDefinitionDTO> save(@RequestBody TaskDefinitionDTO taskDefinitionDTO) throws URISyntaxException {
         log.debug("REST request to save TaskDefinition : {} ", taskDefinitionDTO);

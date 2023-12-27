@@ -32,7 +32,7 @@
             <column name="candidate_groups" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="priority" type="varchar(255)">
+            <column name="priority" type="bigint">
                 <constraints nullable="true"/>
             </column>
             <column name="props" type="${clobType}">
