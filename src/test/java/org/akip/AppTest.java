@@ -57,7 +57,7 @@ public class AppTest
         ModelElementType processType = modelInstance.getModel().getType(Process.class);
         Process process = (Process) modelInstance.getModelElementsByType(processType).iterator().next();
 
-        ProcessDefinitionService service = new ProcessDefinitionService(null, null);
+        ProcessDefinitionService service = new ProcessDefinitionService(null, null, null);
         List<CamundaFormFieldDef> extractFormFields = service.extractFormFields(modelInstance);
 
         System.out.println(extractFormFields);
