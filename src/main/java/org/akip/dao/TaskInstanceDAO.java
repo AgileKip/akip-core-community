@@ -80,9 +80,14 @@ class TaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         fields.add("entity.candidateGroups");
         fields.add("entity.processDefinition.name");
         fields.add("entity.processDefinition.bpmnProcessDefinitionId");
+        fields.add("entity.processInstance.id");
         fields.add("entity.processInstance.businessKey");
         fields.add("tenant.name");
         fields.add("entity.processInstance.camundaDeploymentId");
+        fields.add("entity.processInstance.startDate");
+        fields.add("entity.domainEntityName");
+        fields.add("entity.domainEntityId");
+        fields.add("entity.props");
         return fields;
     }
 
