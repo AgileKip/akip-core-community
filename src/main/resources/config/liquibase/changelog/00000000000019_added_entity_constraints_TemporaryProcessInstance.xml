@@ -14,4 +14,13 @@
                                  referencedColumnNames="id"
                                  referencedTableName="process_instance"/>
     </changeSet>
+
+
+    <changeSet id="00000000000019-2" author="utelemaco">
+
+        <dropForeignKeyConstraint
+                                 baseTableName="temporary_process_instance"
+                                 constraintName="fk_process_instance_id"
+                                 />
+    </changeSet>
 </databaseChangeLog>
