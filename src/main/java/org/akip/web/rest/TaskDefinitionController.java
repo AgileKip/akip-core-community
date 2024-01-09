@@ -1,5 +1,6 @@
 package org.akip.web.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.service.TaskDefinitionService;
 import org.akip.service.dto.TaskDefinitionDTO;
 import org.slf4j.Logger;
@@ -29,10 +30,24 @@ public class TaskDefinitionController {
         return taskDefinitionService.findTaskByBpmnProcessDefinitionIdAndTaskId(bpmnProcessDefinitionId, taskDefinitionId);
     }
 
+    @GetMapping("/task-definition/{id}")
+    public TaskDefinitionDTO find(@PathVariable Long id) {
+        log.debug("REST request to get TaskDefinition of the TaskDefinitionId : {} ", id);
+        return taskDefinitionService.findTaskDefinitionById(id);
+    }
+
     @GetMapping("/task-definition")
     public List<TaskDefinitionDTO> findAll() {
         log.debug("REST request to find all TaskDefinition");
         return taskDefinitionService.findAll();
+    }
+    @DeleteMapping("/task-definition/{id}")
+    public ResponseEntity<Void> deleteTaskDefinition(@PathVariable("id") Long id) {
+        log.debug("REST request to delete ProcessDefinition : {}", id);
+        taskDefinitionService.delete(id);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
     @PostMapping("/task-definition")

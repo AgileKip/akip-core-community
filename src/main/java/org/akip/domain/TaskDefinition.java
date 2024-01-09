@@ -44,6 +44,17 @@ public class TaskDefinition implements Serializable {
     @Column(name = "priority")
     private Integer priority;
 
+    @Column(name = "form_builder")
+    private String formBuilder;
+
+    @Column(name = "form_version")
+    private String formVersion;
+
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "form_schema")
+    private String formSchema;
+
     @Lob
     @Type(type = "org.hibernate.type.TextType")
     @Column(name = "props")
@@ -207,17 +218,56 @@ public class TaskDefinition implements Serializable {
         return this;
     }
 
+    public String getFormBuilder() {
+        return formBuilder;
+    }
+
+    public void setFormBuilder(String formBuilder) {
+        this.formBuilder = formBuilder;
+    }
+
+    public TaskDefinition formBuilder(String formBuilder) {
+        this.formBuilder = formBuilder;
+        return this;
+    }
+
+    public String getFormVersion() {
+        return formVersion;
+    }
+
+    public void setFormVersion(String formVersion) {
+        this.formVersion = formVersion;
+    }
+
+    public TaskDefinition formVersion(String formVersion) {
+        this.formVersion = formVersion;
+        return this;
+    }
+
+    public String getFormSchema() {
+        return formSchema;
+    }
+
+    public void setFormSchema(String formSchema) {
+        this.formSchema = formSchema;
+    }
+
+    public TaskDefinition formSchema(String formSchema) {
+        this.formSchema = formSchema;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskDefinition that = (TaskDefinition) o;
-        return Objects.equals(id, that.id) && Objects.equals(taskId, that.taskId) && Objects.equals(name, that.name) && Objects.equals(documentation, that.documentation) && Objects.equals(assignee, that.assignee) && Objects.equals(candidateUsers, that.candidateUsers) && Objects.equals(candidateGroups, that.candidateGroups) && Objects.equals(priority, that.priority) && Objects.equals(props, that.props) && Objects.equals(formFields, that.formFields) && Objects.equals(bpmnProcessDefinitionId, that.bpmnProcessDefinitionId);
+        return Objects.equals(id, that.id) && Objects.equals(taskId, that.taskId) && Objects.equals(name, that.name) && Objects.equals(documentation, that.documentation) && Objects.equals(assignee, that.assignee) && Objects.equals(candidateUsers, that.candidateUsers) && Objects.equals(candidateGroups, that.candidateGroups) && Objects.equals(priority, that.priority) && Objects.equals(formBuilder, that.formBuilder) && Objects.equals(formVersion, that.formVersion) && Objects.equals(formSchema, that.formSchema) && Objects.equals(props, that.props) && Objects.equals(formFields, that.formFields) && Objects.equals(bpmnProcessDefinitionId, that.bpmnProcessDefinitionId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, taskId, name, documentation, assignee, candidateUsers, candidateGroups, priority, props, formFields, bpmnProcessDefinitionId);
+        return Objects.hash(id, taskId, name, documentation, assignee, candidateUsers, candidateGroups, priority, formBuilder, formVersion, formSchema, props, formFields, bpmnProcessDefinitionId);
     }
 
     @Override
@@ -230,7 +280,10 @@ public class TaskDefinition implements Serializable {
                 ", assignee='" + assignee + '\'' +
                 ", candidateUsers='" + candidateUsers + '\'' +
                 ", candidateGroups='" + candidateGroups + '\'' +
-                ", priority='" + priority + '\'' +
+                ", priority=" + priority +
+                ", formBuilder='" + formBuilder + '\'' +
+                ", formVersion='" + formVersion + '\'' +
+                ", formSchema='" + formSchema + '\'' +
                 ", props='" + props + '\'' +
                 ", formFields='" + formFields + '\'' +
                 ", bpmnProcessDefinitionId='" + bpmnProcessDefinitionId + '\'' +

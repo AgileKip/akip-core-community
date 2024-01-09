@@ -1,6 +1,5 @@
 package org.akip.service;
 
-import org.akip.domain.ProcessDefinition;
 import org.akip.domain.TaskDefinition;
 import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.repository.TaskDefinitionRepository;
@@ -39,10 +38,30 @@ public class TaskDefinitionService {
         return taskDefinitionMapper.toDto(taskDefinitionRepository.findTaskDefinitionByBpmnProcessDefinitionIdAndTaskId(bpmnProcessDefinitionId, taskDefinitionId).orElseThrow());
     }
 
+    public TaskDefinitionDTO findTaskDefinitionById(Long id){
+        return taskDefinitionMapper.toDto(taskDefinitionRepository.findById(id).orElseThrow());
+    }
+
     public TaskDefinitionDTO save(TaskDefinitionDTO taskDefinitionDTO){
+        if (taskDefinitionDTO.getId() != null){
+            TaskDefinition taskDefinition = taskDefinitionRepository.findById(taskDefinitionDTO.getId()).get();
+            if (taskDefinitionDTO.getFormVersion() != null){
+                if (!taskDefinitionDTO.getFormSchema().equals(taskDefinition.getFormSchema())){
+                    taskDefinitionDTO.setFormVersion(String.valueOf(Integer.parseInt(taskDefinitionDTO.getFormVersion())+1));
+                }
+            } else {
+                taskDefinitionDTO.setFormVersion("1");
+            }
+        } else {
+            taskDefinitionDTO.setFormVersion("1");
+        }
         return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinitionMapper.toEntity(taskDefinitionDTO)));
     }
 
+    public void delete(Long id){
+        log.debug("Request to delete TaskDefinition : {}", id);
+        taskDefinitionRepository.deleteById(id);
+    }
     public List<TaskDefinitionDTO> findAll(){
         return taskDefinitionMapper.toDto(taskDefinitionRepository.findAll());
     }

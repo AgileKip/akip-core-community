@@ -35,6 +35,15 @@
             <column name="priority" type="bigint">
                 <constraints nullable="true"/>
             </column>
+            <column name="form_builder" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="form_version" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="form_schema" type="${clobType}">
+                <constraints nullable="true" />
+            </column>
             <column name="props" type="${clobType}">
                 <constraints nullable="true" />
             </column>
