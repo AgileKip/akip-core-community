@@ -416,49 +416,31 @@ public class TaskInstance implements Serializable {
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TaskInstance that = (TaskInstance) o;
-        return Objects.equals(id, that.id) && Objects.equals(taskId, that.taskId) && Objects.equals(name, that.name) && status == that.status && type == that.type && Objects.equals(description, that.description) && Objects.equals(createDate, that.createDate) && Objects.equals(createTime, that.createTime) && Objects.equals(dueDate, that.dueDate) && Objects.equals(startTime, that.startTime) && Objects.equals(endTime, that.endTime) && Objects.equals(owner, that.owner) && Objects.equals(assignee, that.assignee) && Objects.equals(executionId, that.executionId) && Objects.equals(taskDefinitionKey, that.taskDefinitionKey) && Objects.equals(suspended, that.suspended) && Objects.equals(priority, that.priority) && Objects.equals(candidateGroups, that.candidateGroups) && Objects.equals(connectorName, that.connectorName) && Objects.equals(connectorConfigName, that.connectorConfigName) && Objects.equals(formFields, that.formFields) && Objects.equals(processDefinition, that.processDefinition) && Objects.equals(taskDefinition, that.taskDefinition) && Objects.equals(processInstance, that.processInstance);
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TaskInstance)) {
+            return false;
+        }
+        return id != null && id.equals(((TaskInstance) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, taskId, name, status, type, description, createDate, createTime, dueDate, startTime, endTime, owner, assignee, executionId, taskDefinitionKey, suspended, priority, candidateGroups, connectorName, connectorConfigName, formFields, processDefinition, taskDefinition, processInstance);
+        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+        return getClass().hashCode();
     }
 
     // prettier-ignore
-
     @Override
     public String toString() {
         return "TaskInstance{" +
-                "id=" + id +
-                ", taskId='" + taskId + '\'' +
-                ", name='" + name + '\'' +
-                ", status=" + status +
-                ", type=" + type +
-                ", description='" + description + '\'' +
-                ", createDate=" + createDate +
-                ", createTime=" + createTime +
-                ", dueDate=" + dueDate +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", owner='" + owner + '\'' +
-                ", assignee='" + assignee + '\'' +
-                ", executionId='" + executionId + '\'' +
-                ", taskDefinitionKey='" + taskDefinitionKey + '\'' +
-                ", suspended=" + suspended +
-                ", priority=" + priority +
-                ", candidateGroups='" + candidateGroups + '\'' +
-                ", connectorName='" + connectorName + '\'' +
-                ", connectorConfigName='" + connectorConfigName + '\'' +
-                ", formFields='" + formFields + '\'' +
-                ", processDefinition=" + processDefinition +
-                ", taskDefinition=" + taskDefinition +
-                ", processInstance=" + processInstance +
-                '}';
+                "id=" + getId() +
+                ", taskId='" + getTaskId() + "'" +
+                ", name='" + getName() + "'" +
+                ", status='" + getStatus() + "'" +
+                "}";
     }
 }

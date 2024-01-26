@@ -268,7 +268,7 @@ public class ProcessDefinitionService {
                 .getModelElementsByType(UserTask.class)
                 .forEach(
                         userTask -> {
-                                TaskDefinitionDTO taskDefinition = taskDefinitionMapper.toDto(taskDefinitionRepository.findTaskDefinitionByBpmnProcessDefinitionIdAndTaskId(processDefinitionDTO.getBpmnProcessDefinitionId(), userTask.getId()).orElse(new TaskDefinition(processDefinitionDTO.getBpmnProcessDefinitionId(), userTask.getId())));
+                                TaskDefinitionDTO taskDefinition = taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(processDefinitionDTO.getBpmnProcessDefinitionId(), userTask.getId()).orElse(new TaskDefinition(processDefinitionDTO.getBpmnProcessDefinitionId(), userTask.getId())));
                                 taskDefinition.setName(userTask.getName());
                                 taskDefinition.setAssignee(userTask.getCamundaAssignee());
                                 taskDefinition.setCandidateGroups(userTask.getCamundaCandidateGroups());

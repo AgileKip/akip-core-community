@@ -35,9 +35,13 @@ public class TaskDefinition implements Serializable {
     @Column(name = "assignee")
     private String assignee;
 
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "candidate_users")
     private String candidateUsers;
 
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "candidate_groups")
     private String candidateGroups;
 
@@ -262,12 +266,12 @@ public class TaskDefinition implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskDefinition that = (TaskDefinition) o;
-        return Objects.equals(id, that.id) && Objects.equals(taskId, that.taskId) && Objects.equals(name, that.name) && Objects.equals(documentation, that.documentation) && Objects.equals(assignee, that.assignee) && Objects.equals(candidateUsers, that.candidateUsers) && Objects.equals(candidateGroups, that.candidateGroups) && Objects.equals(priority, that.priority) && Objects.equals(formBuilder, that.formBuilder) && Objects.equals(formVersion, that.formVersion) && Objects.equals(formSchema, that.formSchema) && Objects.equals(props, that.props) && Objects.equals(formFields, that.formFields) && Objects.equals(bpmnProcessDefinitionId, that.bpmnProcessDefinitionId);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, taskId, name, documentation, assignee, candidateUsers, candidateGroups, priority, formBuilder, formVersion, formSchema, props, formFields, bpmnProcessDefinitionId);
+        return Objects.hash(id);
     }
 
     @Override
@@ -275,18 +279,6 @@ public class TaskDefinition implements Serializable {
         return "TaskDefinition{" +
                 "id=" + id +
                 ", taskId='" + taskId + '\'' +
-                ", name='" + name + '\'' +
-                ", documentation='" + documentation + '\'' +
-                ", assignee='" + assignee + '\'' +
-                ", candidateUsers='" + candidateUsers + '\'' +
-                ", candidateGroups='" + candidateGroups + '\'' +
-                ", priority=" + priority +
-                ", formBuilder='" + formBuilder + '\'' +
-                ", formVersion='" + formVersion + '\'' +
-                ", formSchema='" + formSchema + '\'' +
-                ", props='" + props + '\'' +
-                ", formFields='" + formFields + '\'' +
-                ", bpmnProcessDefinitionId='" + bpmnProcessDefinitionId + '\'' +
                 '}';
     }
 }

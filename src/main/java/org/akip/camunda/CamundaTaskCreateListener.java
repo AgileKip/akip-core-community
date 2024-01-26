@@ -69,7 +69,7 @@ public class CamundaTaskCreateListener implements TaskListener {
         taskInstanceDTO.setTaskDefinitionKey(delegateTask.getTaskDefinitionKey());
         //taskInstanceDTO.setSuspended(delegateTask.getCaseExecution().isSuspended());
         taskInstanceDTO.setPriority(delegateTask.getPriority());
-        taskInstanceDTO.setTaskDefinition(taskDefinitionMapper.toDto(taskDefinitionRepository.findTaskDefinitionByBpmnProcessDefinitionIdAndTaskId(delegateTask.getProcessDefinitionId().split(":")[0], delegateTask.getTaskDefinitionKey()).orElseThrow()));
+        taskInstanceDTO.setTaskDefinition(taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(delegateTask.getProcessDefinitionId().split(":")[0], delegateTask.getTaskDefinitionKey()).orElseThrow()));
 
         delegateTask.getCandidates()
                 .stream()

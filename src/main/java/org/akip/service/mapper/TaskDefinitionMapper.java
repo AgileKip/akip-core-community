@@ -23,11 +23,8 @@ public interface TaskDefinitionMapper extends EntityMapper<TaskDefinitionDTO, Ta
     @Named("name")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
     @Mapping(target = "documentation", source = "documentation")
-    @Mapping(target = "taskId", source = "taskId")
     @Mapping(target = "formBuilder", source = "formBuilder")
-    @Mapping(target = "formVersion", source = "formVersion")
     @Mapping(target = "formSchema", source = "formSchema")
     TaskDefinitionDTO toDtoName(TaskDefinition processDefinition);
 

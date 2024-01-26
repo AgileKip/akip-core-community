@@ -7,7 +7,7 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Added the entity ProcessDefinition.
+        Added the entity TaskDefinition.
     -->
     <changeSet id="20231218000020-1" author="joao">
         <createTable tableName="task_definition">
@@ -26,10 +26,10 @@
             <column name="assignee" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="candidate_users" type="varchar(255)">
+            <column name="candidate_users" type="${clobType}">
                 <constraints nullable="true" />
             </column>
-            <column name="candidate_groups" type="varchar(255)">
+            <column name="candidate_groups" type="${clobType}">
                 <constraints nullable="true" />
             </column>
             <column name="priority" type="bigint">

@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface TaskDefinitionRepository extends JpaRepository<TaskDefinition, Long> {
 
-    public Optional<TaskDefinition> findTaskDefinitionByBpmnProcessDefinitionIdAndTaskId(String bpmnProcessDefiinitionId, String taskId);
+    public Optional<TaskDefinition> findByBpmnProcessDefinitionIdAndTaskId(String bpmnProcessDefiinitionId, String taskId);
 
-    public List<TaskDefinition> findTaskDefinitionByBpmnProcessDefinitionId(String bpmnProcessDefiinitionId);
+    public List<TaskDefinition> findByBpmnProcessDefinitionId(String bpmnProcessDefiinitionId);
 }

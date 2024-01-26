@@ -31,11 +31,11 @@ public class TaskDefinitionService {
     }
 
     public List<TaskDefinitionDTO> findTasksDefinitionByBpmnProcessDefinitionId(String bpmnProcessDefinitionId){
-        return taskDefinitionMapper.toDto(taskDefinitionRepository.findTaskDefinitionByBpmnProcessDefinitionId(bpmnProcessDefinitionId));
+        return taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionId(bpmnProcessDefinitionId));
     }
 
     public TaskDefinitionDTO findTaskByBpmnProcessDefinitionIdAndTaskId(String bpmnProcessDefinitionId, String taskDefinitionId){
-        return taskDefinitionMapper.toDto(taskDefinitionRepository.findTaskDefinitionByBpmnProcessDefinitionIdAndTaskId(bpmnProcessDefinitionId, taskDefinitionId).orElseThrow());
+        return taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(bpmnProcessDefinitionId, taskDefinitionId).orElseThrow());
     }
 
     public TaskDefinitionDTO findTaskDefinitionById(Long id){
@@ -43,19 +43,22 @@ public class TaskDefinitionService {
     }
 
     public TaskDefinitionDTO save(TaskDefinitionDTO taskDefinitionDTO){
-        if (taskDefinitionDTO.getId() != null){
-            TaskDefinition taskDefinition = taskDefinitionRepository.findById(taskDefinitionDTO.getId()).get();
-            if (taskDefinitionDTO.getFormVersion() != null){
-                if (!taskDefinitionDTO.getFormSchema().equals(taskDefinition.getFormSchema())){
-                    taskDefinitionDTO.setFormVersion(String.valueOf(Integer.parseInt(taskDefinitionDTO.getFormVersion())+1));
-                }
-            } else {
-                taskDefinitionDTO.setFormVersion("1");
-            }
-        } else {
-            taskDefinitionDTO.setFormVersion("1");
-        }
+        taskDefinitionDTO.setFormVersion(calculeFormVersion(taskDefinitionDTO));
         return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinitionMapper.toEntity(taskDefinitionDTO)));
+    }
+
+    public String calculeFormVersion(TaskDefinitionDTO taskDefinitionDTO){
+        if (taskDefinitionDTO.getFormSchema() == null){
+            return "0";
+        }
+        if (taskDefinitionDTO.getId() != null) {
+            TaskDefinition taskDefinition = taskDefinitionRepository.findById(taskDefinitionDTO.getId()).get();
+            if (taskDefinitionDTO.getFormVersion() != null && !taskDefinitionDTO.getFormSchema().equals(taskDefinition.getFormSchema())){
+                return String.valueOf(Integer.parseInt(taskDefinitionDTO.getFormVersion())+1);
+            }
+            return String.valueOf(Integer.parseInt(taskDefinitionDTO.getFormVersion()));
+        }
+        return "1";
     }
 
     public void delete(Long id){
