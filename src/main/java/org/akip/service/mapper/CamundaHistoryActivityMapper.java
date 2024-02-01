@@ -24,7 +24,6 @@ public class CamundaHistoryActivityMapper {
             return null;
         } else {
             return new CamundaHistoryActivityDTO(
-
                 historyActivity.getId(),
                 historyActivity.getActivityType(),
                 historyActivity.getActivityName(),
@@ -32,6 +31,7 @@ public class CamundaHistoryActivityMapper {
                 historyActivity.getProcessInstanceId(),
                 historyActivity.getActivityId(),
                 historyActivity.getStartTime(),
+                historyActivity.getEndTime(),
                 historyActivity.getTenantId()
             );
         }

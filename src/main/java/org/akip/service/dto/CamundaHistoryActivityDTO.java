@@ -21,17 +21,10 @@ public class CamundaHistoryActivityDTO implements Serializable, HistoricActivity
     private String processInstanceId;
     private String activityId;
     private Date startTime;
+    private Date endTime;
     private String tenantId;
 
-    public CamundaHistoryActivityDTO(
-        String id,
-        String activityType,
-        String activityName,
-        String executionId,
-        String processInstanceId,
-        String activityId,
-        Date startTime,
-        String tenantId) {
+    public CamundaHistoryActivityDTO(String id, String activityType, String activityName, String executionId, String processInstanceId, String activityId, Date startTime, Date endTime, String tenantId) {
         this.id = id;
         this.activityType = activityType;
         this.activityName = activityName;
@@ -39,6 +32,7 @@ public class CamundaHistoryActivityDTO implements Serializable, HistoricActivity
         this.processInstanceId = processInstanceId;
         this.activityId = activityId;
         this.startTime = startTime;
+        this.endTime = endTime;
         this.tenantId = tenantId;
     }
 
@@ -70,6 +64,10 @@ public class CamundaHistoryActivityDTO implements Serializable, HistoricActivity
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     public void setTenantId(String tenantId) {
@@ -148,7 +146,7 @@ public class CamundaHistoryActivityDTO implements Serializable, HistoricActivity
 
     @Override
     public Date getEndTime() {
-        return null;
+        return endTime;
     }
 
     @Override
