@@ -43,8 +43,8 @@ public class CamundaEventSubscriptionController {
     }
 
     @GetMapping("/process-instance/{processInstanceId}/camunda-event-subscriptions")
-    public List<CamundaEventSubscriptionDTO> getEventSubscriptionsByProcessInstanceId(@PathVariable Long processInstanceId) {
-        log.debug("REST request to get all EventSubscriptions for process instance id: {}", processInstanceId);
+    public List<CamundaEventSubscriptionDTO> getCamundaEventSubscriptionsByProcessInstanceId(@PathVariable Long processInstanceId) {
+        log.debug("REST request to get EventSubscriptions by process instance id: {}", processInstanceId);
         try {
             ProcessInstance processInstance = processInstanceRepository.findById(processInstanceId).orElseThrow();
 
