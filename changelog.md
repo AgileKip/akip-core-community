@@ -1,11 +1,14 @@
 # Changelog
 
-* 0.1.9 (WIP)
+* 0.1.10 (WIP)
   * Including RecSys
+
+* 0.1.9
+  * Including TaskDefinition entity
+  * Including in the ProcessInstance page sections Event Subscriptions and History Activities  
 
 * 0.1.8
   * Including new field type: AkipTextareaChatGptField
-
 
 * 0.1.7
   * Including ChatGPT components (camunda delegate and form assistant)

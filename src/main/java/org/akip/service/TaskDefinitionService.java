@@ -1,7 +1,6 @@
 package org.akip.service;
 
 import org.akip.domain.TaskDefinition;
-import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.repository.TaskDefinitionRepository;
 import org.akip.service.dto.TaskDefinitionDTO;
 import org.akip.service.mapper.TaskDefinitionMapper;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -20,22 +20,20 @@ public class TaskDefinitionService {
 
     private final TaskDefinitionMapper taskDefinitionMapper;
 
-    private final ProcessDefinitionRepository processDefinitionRepository;
-
     private final TaskDefinitionRepository taskDefinitionRepository;
 
-    public TaskDefinitionService(TaskDefinitionMapper taskDefinitionMapper, ProcessDefinitionRepository processDefinitionRepository, TaskDefinitionRepository taskDefinitionRepository) {
+    public TaskDefinitionService(TaskDefinitionMapper taskDefinitionMapper, TaskDefinitionRepository taskDefinitionRepository) {
         this.taskDefinitionMapper = taskDefinitionMapper;
-        this.processDefinitionRepository = processDefinitionRepository;
         this.taskDefinitionRepository = taskDefinitionRepository;
     }
 
-    public List<TaskDefinitionDTO> findTasksDefinitionByBpmnProcessDefinitionId(String bpmnProcessDefinitionId){
-        return taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionId(bpmnProcessDefinitionId));
-    }
-
-    public TaskDefinitionDTO findTaskByBpmnProcessDefinitionIdAndTaskId(String bpmnProcessDefinitionId, String taskDefinitionId){
-        return taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(bpmnProcessDefinitionId, taskDefinitionId).orElseThrow());
+    public List<TaskDefinitionDTO> findByProcessDefinition(String bpmnProcessDefinitionId){
+        log.debug("Request to get TaskDefinitions of the ProcessDefinition : {}", bpmnProcessDefinitionId);
+        return taskDefinitionRepository
+                .findByBpmnProcessDefinitionId(bpmnProcessDefinitionId)
+                .stream()
+                .map(taskDefinitionMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public TaskDefinitionDTO findTaskDefinitionById(Long id){

@@ -88,10 +88,10 @@ public class ProcessDefinitionController {
         return taskInstanceService.findByProcessDefinition(idOrBpmnProcessDefinitionId);
     }
 
-    @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/tasksDefinitions")
+    @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/tasks-definitions")
     public List<TaskDefinitionDTO> getTasksDefinition(@PathVariable String bpmnProcessDefinitionId) {
         log.debug("REST request to get TaskInstances of the ProcessDefinition : {}", bpmnProcessDefinitionId);
-        return taskDefinitionService.findTasksDefinitionByBpmnProcessDefinitionId(bpmnProcessDefinitionId);
+        return taskDefinitionService.findByProcessDefinition(bpmnProcessDefinitionId);
     }
 
     /**

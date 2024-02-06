@@ -8,6 +8,7 @@ import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.repository.TaskDefinitionRepository;
 import org.akip.service.TaskInstanceService;
+import org.akip.service.dto.ProcessDefinitionDTO;
 import org.akip.service.dto.ProcessInstanceDTO;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.akip.service.mapper.ProcessDefinitionMapper;
@@ -67,9 +68,7 @@ public class CamundaTaskCreateListener implements TaskListener {
         taskInstanceDTO.setAssignee(delegateTask.getAssignee());
         taskInstanceDTO.setExecutionId(delegateTask.getExecutionId());
         taskInstanceDTO.setTaskDefinitionKey(delegateTask.getTaskDefinitionKey());
-        //taskInstanceDTO.setSuspended(delegateTask.getCaseExecution().isSuspended());
         taskInstanceDTO.setPriority(delegateTask.getPriority());
-        taskInstanceDTO.setTaskDefinition(taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(delegateTask.getProcessDefinitionId().split(":")[0], delegateTask.getTaskDefinitionKey()).orElseThrow()));
 
         delegateTask.getCandidates()
                 .stream()
@@ -81,12 +80,12 @@ public class CamundaTaskCreateListener implements TaskListener {
         processInstance.setCamundaProcessInstanceId(delegateTask.getProcessInstanceId());
         taskInstanceDTO.setProcessInstance(processInstance);
 
-        Optional<ProcessDefinition> optionalProcessDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(
-            delegateTask.getProcessDefinitionId().split(":")[0]
-        );
-        if (optionalProcessDefinition.isPresent()) {
-            taskInstanceDTO.setProcessDefinition(processDefinitionMapper.toDto(optionalProcessDefinition.get()));
-        }
+        ProcessDefinitionDTO processDefinitionDTO = processDefinitionRepository
+                .findByBpmnProcessDefinitionId(delegateTask.getProcessDefinitionId().split(":")[0])
+                .map(processDefinitionMapper::toDto)
+                .get();
+        taskInstanceDTO.setProcessDefinition(processDefinitionDTO);
+        taskInstanceDTO.setTaskDefinition(taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(processDefinitionDTO.getBpmnProcessDefinitionId(), delegateTask.getTaskDefinitionKey()).orElseThrow()));
 
         taskInstanceDTO.setFormFields(extractFormFields(delegateTask));
 

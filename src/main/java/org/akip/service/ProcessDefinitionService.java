@@ -9,21 +9,16 @@ import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.repository.ProcessDeploymentRepository;
 import org.akip.repository.TaskDefinitionRepository;
 import org.akip.service.dto.ProcessDefinitionDTO;
-import org.akip.service.dto.TaskDefinitionDTO;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.akip.service.mapper.ProcessDefinitionMapper;
 import org.akip.service.mapper.TaskDefinitionMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.*;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +35,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ProcessDefinitionService {
-
-    private static final String ENTITY_NAME = "processDefinition";
 
     private final Logger log = LoggerFactory.getLogger(ProcessDefinitionService.class);
 
@@ -113,7 +106,7 @@ public class ProcessDefinitionService {
 
         ProcessDefinition processDefinitionSaved = processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
 
-        extractAndSaveTaskDefs(processDefinitionMapper.toDto(processDefinitionSaved), bpmnModelInstance);
+        extractAndSaveTaskDefs(bpmnModelInstance, processDefinitionSaved);
 
         return processDefinitionSaved;
     }
@@ -131,7 +124,7 @@ public class ProcessDefinitionService {
 
         ProcessDefinition processDefinitionUpdated = processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
 
-        extractAndSaveTaskDefs(processDefinitionMapper.toDto(processDefinitionUpdated), bpmnModelInstance);
+        extractAndSaveTaskDefs(bpmnModelInstance, processDefinitionUpdated);
 
         return processDefinitionUpdated;
     }
@@ -262,39 +255,21 @@ public class ProcessDefinitionService {
                 .collect(Collectors.toList());
     }
 
-    private void extractAndSaveTaskDefs(ProcessDefinitionDTO processDefinitionDTO, BpmnModelInstance bpmnModelInstance){
+    private void extractAndSaveTaskDefs(BpmnModelInstance bpmnModelInstance, ProcessDefinition processDefinition){
 
         bpmnModelInstance
                 .getModelElementsByType(UserTask.class)
                 .forEach(
                         userTask -> {
-                                TaskDefinitionDTO taskDefinition = taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(processDefinitionDTO.getBpmnProcessDefinitionId(), userTask.getId()).orElse(new TaskDefinition(processDefinitionDTO.getBpmnProcessDefinitionId(), userTask.getId())));
+                                TaskDefinition taskDefinition = taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(processDefinition.getBpmnProcessDefinitionId(), userTask.getId()).orElse(new TaskDefinition(processDefinition.getBpmnProcessDefinitionId(), userTask.getId()));
                                 taskDefinition.setName(userTask.getName());
                                 taskDefinition.setAssignee(userTask.getCamundaAssignee());
                                 taskDefinition.setCandidateGroups(userTask.getCamundaCandidateGroups());
                                 taskDefinition.setCandidateUsers(userTask.getCamundaCandidateUsers());
-                                taskDefinitionRepository.save(taskDefinitionMapper.toEntity(taskDefinition));
+                                taskDefinitionRepository.save(taskDefinition);
                         }
                 );
 
-    }
-
-    private Map<String, String> extractProperties(UserTask userTask) {
-        ExtensionElements extensionElements = userTask.getExtensionElements();
-        if (extensionElements == null || extensionElements.getElementsQuery().filterByType(CamundaProperties.class).count() == 0) {
-            return Collections.emptyMap();
-        }
-
-        Map<String, String> properties = new HashMap<>();
-        CamundaProperties camundaProperties = extensionElements.getElementsQuery().filterByType(CamundaProperties.class).singleResult();
-        camundaProperties
-                .getCamundaProperties()
-                .forEach(
-                        camundaProperty -> {
-                            properties.put(camundaProperty.getCamundaName(), camundaProperty.getCamundaValue());
-                        }
-                );
-        return properties;
     }
 
 }

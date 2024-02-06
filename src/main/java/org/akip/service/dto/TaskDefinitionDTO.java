@@ -1,8 +1,5 @@
 package org.akip.service.dto;
 
-import org.akip.domain.ProcessDefinition;
-
-import javax.persistence.Column;
 import javax.persistence.Lob;
 import java.io.Serializable;
 import java.util.Map;
@@ -173,6 +170,7 @@ public class TaskDefinitionDTO implements Serializable {
                 "id=" + id +
                 ", taskId='" + taskId + '\'' +
                 ", name='" + name + '\'' +
+                ", bpmnProcessDefinitionId='" + bpmnProcessDefinitionId + '\'' +
                 '}';
     }
 }

@@ -3,9 +3,7 @@ package org.akip.service.mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.akip.domain.ProcessDefinition;
 import org.akip.domain.TaskDefinition;
-import org.akip.service.dto.ProcessDefinitionDTO;
 import org.akip.service.dto.TaskDefinitionDTO;
 
 import org.mapstruct.BeanMapping;
