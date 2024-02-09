@@ -59,6 +59,9 @@ public class TaskDefinition implements Serializable {
     @Column(name = "form_schema")
     private String formSchema;
 
+    @Column(name = "dynamic_forms_is_enable")
+    private boolean dynamicFormsIsEnable;
+
     @Lob
     @Type(type = "org.hibernate.type.TextType")
     @Column(name = "props")
@@ -258,6 +261,19 @@ public class TaskDefinition implements Serializable {
 
     public TaskDefinition formSchema(String formSchema) {
         this.formSchema = formSchema;
+        return this;
+    }
+
+    public boolean isDynamicFormsIsEnable() {
+        return dynamicFormsIsEnable;
+    }
+
+    public void setDynamicFormsIsEnable(boolean dynamicFormsIsEnable) {
+        this.dynamicFormsIsEnable = dynamicFormsIsEnable;
+    }
+
+    public TaskDefinition dynamicFormsIsEnable(boolean dynamicFormsIsEnable) {
+        this.dynamicFormsIsEnable = dynamicFormsIsEnable;
         return this;
     }
 

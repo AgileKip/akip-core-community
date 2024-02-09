@@ -33,6 +33,8 @@ public class TaskDefinitionDTO implements Serializable {
 
     private String formSchema;
 
+    private boolean dynamicFormsIsEnable;
+
     private Map<String, String> props;
 
     private Map<String, String> formFields;
@@ -149,6 +151,14 @@ public class TaskDefinitionDTO implements Serializable {
 
     public void setFormSchema(String formSchema) {
         this.formSchema = formSchema;
+    }
+
+    public boolean getDynamicFormsIsEnable() {
+        return dynamicFormsIsEnable;
+    }
+
+    public void setDynamicFormsIsEnable(boolean dynamicFormsIsEnable) {
+        this.dynamicFormsIsEnable = dynamicFormsIsEnable;
     }
 
     @Override

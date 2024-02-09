@@ -42,6 +42,9 @@ public class TaskDefinitionService {
 
     public TaskDefinitionDTO save(TaskDefinitionDTO taskDefinitionDTO){
         taskDefinitionDTO.setFormVersion(calculeFormVersion(taskDefinitionDTO));
+        if (taskDefinitionDTO.getDynamicFormsIsEnable()){
+            taskDefinitionDTO.setDynamicFormsIsEnable(false);
+        }
         return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinitionMapper.toEntity(taskDefinitionDTO)));
     }
 

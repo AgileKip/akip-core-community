@@ -44,6 +44,9 @@
             <column name="form_schema" type="${clobType}">
                 <constraints nullable="true" />
             </column>
+            <column name="dynamic_forms_is_enable" type="boolean">
+                <constraints nullable="true" />
+            </column>
             <column name="props" type="${clobType}">
                 <constraints nullable="true" />
             </column>
