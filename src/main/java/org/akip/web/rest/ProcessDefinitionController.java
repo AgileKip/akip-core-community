@@ -1,5 +1,6 @@
 package org.akip.web.rest;
 
+import org.akip.domain.TaskDefinition;
 import org.akip.service.*;
 import org.akip.service.dto.*;
 import org.simpleframework.xml.Path;
@@ -89,7 +90,7 @@ public class ProcessDefinitionController {
     }
 
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/tasks-definitions")
-    public List<TaskDefinitionDTO> getTasksDefinition(@PathVariable String bpmnProcessDefinitionId) {
+    public List<TaskDefinition> getTasksDefinition(@PathVariable String bpmnProcessDefinitionId) {
         log.debug("REST request to get TaskInstances of the ProcessDefinition : {}", bpmnProcessDefinitionId);
         return taskDefinitionService.findByProcessDefinition(bpmnProcessDefinitionId);
     }

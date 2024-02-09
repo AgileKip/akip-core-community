@@ -27,13 +27,13 @@ public class TaskDefinitionService {
         this.taskDefinitionRepository = taskDefinitionRepository;
     }
 
-    public List<TaskDefinitionDTO> findByProcessDefinition(String bpmnProcessDefinitionId){
+    public List<TaskDefinition> findByProcessDefinition(String bpmnProcessDefinitionId){
         log.debug("Request to get TaskDefinitions of the ProcessDefinition : {}", bpmnProcessDefinitionId);
-        return taskDefinitionRepository
-                .findByBpmnProcessDefinitionId(bpmnProcessDefinitionId)
-                .stream()
-                .map(taskDefinitionMapper::toDto)
-                .collect(Collectors.toList());
+        return taskDefinitionRepository.findByBpmnProcessDefinitionId(bpmnProcessDefinitionId);
+        }
+
+    public TaskDefinitionDTO findTaskByBpmnProcessDefinitionIdAndTaskId(String bpmnProcessDefinitionId, String taskDefinitionId){
+        return taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(bpmnProcessDefinitionId, taskDefinitionId).orElseThrow());
     }
 
     public TaskDefinitionDTO findTaskDefinitionById(Long id){
