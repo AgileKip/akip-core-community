@@ -21,6 +21,8 @@ public interface ProcessDeploymentRepository extends JpaRepository<ProcessDeploy
 
     Optional<ProcessDeployment> findByCamundaProcessDefinitionId(String camundaProcessDefinitionId);
 
+    Optional<ProcessDeployment> findByCamundaDeploymentId(String camundaDeploymentId);
+
     @Query("from ProcessDeployment where processDefinition.id = ?1 and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE")
     Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusIsActive(Long processDefinitionId);
 
