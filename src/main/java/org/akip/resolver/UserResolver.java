@@ -9,6 +9,4 @@ public interface UserResolver {
     List<AkipUserDTO> getUsersByAuthorities(List<String> authorities);
 
     List<AkipUserDTO> getUsersByLogins(List<String> logins);
-
-    Set<AkipUserDTO> getUsersByLoginInAndActivationTrue(Set<String> list);
 }

@@ -8,10 +8,7 @@ import org.akip.resolver.UserResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +38,9 @@ public class AlertUserService {
             .map(TaskInstance::getAssignee)
             .collect(Collectors.toSet());
 
-        Set<AkipUserDTO> users = userResolver.getUsersByLoginInAndActivationTrue(usersLogin);
+        List<String> userLoginList = new ArrayList<>(usersLogin);
+
+        List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
 
         for (AkipUserDTO user : users){
             List<TaskInstance> userTasks = tasksAssigned
