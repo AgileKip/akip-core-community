@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="en">
+<head>
+  <title th:text="#{akip.email.alertUserAssignedTasks.title}">You have a Assigned Tasks in kip4youProcesses</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="#{akip.email.alertUserAssignedTasks.greeting(${user.login})}">Dear</p>
+<p th:text="#{akip.email.alertUserAssignedTasks.text1(${tasks.size()})}">
+</p>
+<table border="1">
+  <thead>
+  <tr>
+    <th>Task Name</th>
+    <th>Priority</th>
+    <th>Process</th>
+    <th>Link</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="task : ${tasks}">
+    <td th:text="${task.name}"></td>
+    <td th:text="${task.priority}"></td>
+    <td th:text="${task.processDefinition.bpmnProcessDefinitionId}"></td>
+    <td>
+      <p>
+        <a th:with="url=(@{|${baseUrl}/process-definition/${task.processDefinition.bpmnProcessDefinitionId}/task/${task.taskDefinitionKey}/${task.id}/execute|})" th:href="${url}" th:text="#{akip.email.alertUserAssignedTasks.link}">Execute</a>
+      </p>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
