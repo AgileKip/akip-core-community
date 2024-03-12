@@ -7,7 +7,6 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.List;
 
 /**
  * A TaskInstance.
@@ -78,6 +77,11 @@ public class TaskInstance implements Serializable {
 
     @Column(name = "candidateGroups")
     private String candidateGroups;
+
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "candidate_groups_computed")
+    private String candidateGroupsComputed;
 
     @Column(name = "connector_name")
     private String connectorName;
@@ -330,6 +334,19 @@ public class TaskInstance implements Serializable {
 
     public void setCandidateGroups(String candidateGroups) {
         this.candidateGroups = candidateGroups;
+    }
+
+    public String getCandidateGroupsComputed() {
+        return candidateGroupsComputed;
+    }
+
+    public TaskInstance candidateGroupsComputed(String candidateGroupsComputed) {
+        this.candidateGroupsComputed = candidateGroupsComputed;
+        return this;
+    }
+
+    public void setCandidateGroupsComputed(String candidateGroupsComputed) {
+        this.candidateGroupsComputed = candidateGroupsComputed;
     }
 
     public String getConnectorName() {

@@ -31,7 +31,17 @@
     <include file="config/liquibase/changelog/00000000000016_added_entity_ProcessTimelineDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000017_added_entity_ProcessTimelineItemDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000018_added_entity_TemporaryProcessInstance.xml" relativeToChangelogFile="false"/>
-
+    <include file="config/liquibase/changelog/00000000000019_added_constraints_TemporaryProcessInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000020_added_entity_ProcessRole.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000021_added_constraints_ProcessRole.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000022_added_entity_TenantRole.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000023_alter_entity_TaskInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000024_alter_entity_ProcessDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000025_added_constraints_TenantRole.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000026_added_entity_ProcessMember.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000027_added_constraints_ProcessMember.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000028_added_entity_ProcessMemberProcessRole.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000029_added_entity_TenantMemberTenantRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000004_added_entity_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000005_added_entity_constraints_ProcessDeployment.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000007_added_entity_constraints_ProcessInstance.xml" relativeToChangelogFile="false"/>

@@ -53,6 +53,8 @@ public class TaskInstanceDTO implements Serializable {
 
     private List<String> candidateGroups = new ArrayList<>();
 
+    private List<String> computedCandidateGroups = new ArrayList<>();
+
     private String connectorName;
 
     private String connectorConfigName;
@@ -205,6 +207,14 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setCandidateGroups(List<String> candidateGroups) {
         this.candidateGroups = candidateGroups;
+    }
+
+    public List<String> getComputedCandidateGroups() {
+        return computedCandidateGroups;
+    }
+
+    public void setComputedCandidateGroups(List<String> computedCandidateGroups) {
+        this.computedCandidateGroups = computedCandidateGroups;
     }
 
     public String getConnectorName() {

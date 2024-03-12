@@ -1,5 +1,6 @@
 package org.akip.domain;
 
+import org.akip.domain.enumeration.ProcessType;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -45,6 +46,10 @@ public class ProcessDefinition implements Serializable {
     @Type(type = "org.hibernate.type.TextType")
     @Column(name = "start_form_fields")
     private String startFormFields;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "process_type")
+    private ProcessType processType;
 
     @ManyToOne
     private KipApp kipApp;
@@ -109,6 +114,14 @@ public class ProcessDefinition implements Serializable {
 
     public void setStartFormFields(String startFormFields) {
         this.startFormFields = startFormFields;
+    }
+
+    public ProcessType getProcessType() {
+        return processType;
+    }
+
+    public void setProcessType(ProcessType processType) {
+        this.processType = processType;
     }
 
     public KipApp getKipApp() {
