@@ -1,11 +1,15 @@
 package org.akip.security;
 
+import org.akip.domain.ProcessMember;
+import org.akip.domain.ProcessRole;
+import org.akip.domain.TenantMember;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,6 +51,38 @@ public final class SecurityUtils {
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
+    }
+
+    public static List<String> getFullAuthorities(List<ProcessMember> processMembers, List<TenantMember> tenantMembers) {
+        List<String> authorities = new ArrayList<>();
+
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .forEach(grantedAuthority -> {
+                    authorities.add(grantedAuthority.getAuthority());
+                });
+
+        for (ProcessMember processMember : processMembers){
+            List<ProcessRole> processRoles = processMember.getProcessRoles();
+            processRoles
+                    .stream()
+                    .forEach(processRole -> {
+                        authorities.add(processMember.getProcessDefinition().getBpmnProcessDefinitionId() + "." + processRole.getName());
+                    });
+        }
+
+//        for (TenantMember tenantMember : tenantMembers){
+//            tenantMember.getTenantRoles()
+//                    .stream()
+//                    .forEach(tenantRole -> {
+//                        authorities.add(tenantRole.getTenant().getIdentifier() + "." + tenantRole.getName());
+//                    });
+//        }
+
+        return authorities;
     }
 
 }

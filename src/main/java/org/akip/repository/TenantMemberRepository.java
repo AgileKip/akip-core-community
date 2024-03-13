@@ -17,6 +17,8 @@ public interface TenantMemberRepository extends JpaRepository<TenantMember, Long
 
     List<TenantMember> findByTenantId(Long tenantId);
 
+    List<TenantMember> findTenantMembersByUsername(String username);
+
     @Query("select tenant from TenantMember where username = ?1")
     List<Tenant> findTenantByTenantMemberUsername(String username);
 

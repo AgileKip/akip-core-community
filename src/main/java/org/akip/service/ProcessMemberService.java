@@ -54,6 +54,11 @@ public class ProcessMemberService {
         return processMemberMapper.toDto(processMemberToSaved);
     }
 
+    @Transactional(readOnly = true)
+    public List<ProcessMember> findProcessMemberByUser(String user){
+        return processMemberRepository.findProcessMembersByUser(user);
+    }
+
     public void delete(Long ProcessId, Long ProcessMemberId) {
         log.debug("Request to delete ProcessMember : {}", ProcessId, ProcessMemberId);
         processMemberRepository.deleteById(ProcessMemberId);

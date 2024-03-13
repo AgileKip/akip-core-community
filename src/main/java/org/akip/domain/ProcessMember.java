@@ -13,6 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "process_member")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ProcessMember implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,14 +30,14 @@ public class ProcessMember implements Serializable {
     private ProcessDefinition processDefinition;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "process_member_process_role",
             joinColumns = { @JoinColumn(name = "process_member_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "process_role_id", referencedColumnName = "id") }
     )
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @BatchSize(size = 20)
+    @BatchSize(size = 10)
     private List<ProcessRole> processRoles = new ArrayList<>();
 
     public Long getId() {

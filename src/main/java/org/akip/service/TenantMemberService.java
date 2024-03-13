@@ -42,6 +42,11 @@ public class TenantMemberService {
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
+    @Transactional
+    public List<TenantMember> findTenantMembersByUsername(String username){
+        return tenantMemberRepository.findTenantMembersByUsername(username);
+    }
+
 
     public TenantMemberDTO save(Long tenantId, TenantMemberDTO tenantMemberDTO) {
         log.debug("Request to save TentantMember : {}{}", tenantId, tenantMemberDTO.getUsername());
