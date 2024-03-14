@@ -74,7 +74,7 @@ public class CamundaTaskCreateListener implements TaskListener {
         taskInstanceDTO.setTaskDefinitionKey(delegateTask.getTaskDefinitionKey());
         //taskInstanceDTO.setSuspended(delegateTask.getCaseExecution().isSuspended());
         taskInstanceDTO.setPriority(delegateTask.getPriority());
-        taskInstanceDTO.getCandidateGroups().addAll(calculeCandidateGroups(delegateTask));
+        taskInstanceDTO.getCandidateGroups().addAll(calculateCandidateGroups(delegateTask));
 
         ProcessInstanceDTO processInstance = new ProcessInstanceDTO();
         processInstance.setId(1L);
@@ -94,7 +94,7 @@ public class CamundaTaskCreateListener implements TaskListener {
         return taskInstanceDTO;
     }
 
-    private List<String> calculeCandidateGroups(DelegateTask delegateTask){
+    private List<String> calculateCandidateGroups(DelegateTask delegateTask){
 
         List<String> candidateGroups = new ArrayList<>();
 
