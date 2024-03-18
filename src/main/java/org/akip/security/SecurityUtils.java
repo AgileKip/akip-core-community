@@ -74,13 +74,13 @@ public final class SecurityUtils {
                     });
         }
 
-//        for (TenantMember tenantMember : tenantMembers){
-//            tenantMember.getTenantRoles()
-//                    .stream()
-//                    .forEach(tenantRole -> {
-//                        authorities.add(tenantRole.getTenant().getIdentifier() + "." + tenantRole.getName());
-//                    });
-//        }
+        for (TenantMember tenantMember : tenantMembers){
+            tenantMember.getTenantRoles()
+                    .stream()
+                    .forEach(tenantRole -> {
+                        authorities.add(tenantRole.getTenant().getIdentifier() + "." + tenantRole.getName());
+                    });
+        }
 
         return authorities;
     }

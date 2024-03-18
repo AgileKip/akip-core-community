@@ -3,6 +3,7 @@ package org.akip.service;
 
 import org.akip.camunda.CamundaConstants;
 import org.akip.domain.*;
+import org.akip.domain.enumeration.StatusProcessDeployment;
 import org.akip.domain.enumeration.StatusProcessInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.repository.*;
@@ -16,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -96,10 +100,7 @@ public class ProcessInstanceService {
         processInstance.setProcessDefinition(processDefinition);
 
         ProcessDeployment processDeployment = processDeploymentRepository
-                .findByProcessDefinitionIdAndStatusIsActiveAndTenantId(processDefinition.getId(), processInstance.getTenant().getId())
-                .orElse(processDeploymentRepository
-                        .findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(processDefinition.getId())
-                        .orElseThrow());
+                .findProcessDeploymentByProcessDefinitionIdAndStatusAndTenantId(processDefinition.getId(), StatusProcessDeployment.ACTIVE, processInstance.getTenant().getId());
 
         processInstance.setUsername(SecurityUtils.getCurrentUserLogin().orElseThrow());
         processInstance.setCamundaProcessDefinitionId(processDeployment.getCamundaProcessDefinitionId());
@@ -120,9 +121,11 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        if (processInstanceDTO.getTemporaryProcessInstance() != null){
+            synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+            synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+            temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        }
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -157,9 +160,11 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        if (processInstanceDTO.getTemporaryProcessInstance() != null){
+            synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+            synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+            temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        }
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }

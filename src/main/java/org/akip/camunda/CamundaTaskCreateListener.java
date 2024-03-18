@@ -4,13 +4,13 @@ import org.akip.camunda.form.CamundaFormFieldDef;
 import org.akip.camunda.form.CamundaFormFieldValidationConstraintDef;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.ProcessDeployment;
-import org.akip.domain.ProcessRole;
 import org.akip.domain.enumeration.ProcessType;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.repository.ProcessDeploymentRepository;
 import org.akip.repository.ProcessRoleRepository;
+import org.akip.repository.TenantRoleRepository;
 import org.akip.service.TaskInstanceService;
 import org.akip.service.dto.ProcessInstanceDTO;
 import org.akip.service.dto.TaskInstanceDTO;
@@ -43,16 +43,19 @@ public class CamundaTaskCreateListener implements TaskListener {
 
     private final ProcessDeploymentRepository processDeploymentRepository;
 
+    private final TenantRoleRepository tenantRoleRepository;
+
     public CamundaTaskCreateListener(
             TaskInstanceService taskInstanceService,
             ProcessDefinitionRepository processDefinitionRepository,
-            ProcessDefinitionMapper processDefinitionMapper, ProcessRoleRepository processRoleRepository, ProcessDeploymentRepository processDeploymentRepository
+            ProcessDefinitionMapper processDefinitionMapper, ProcessRoleRepository processRoleRepository, ProcessDeploymentRepository processDeploymentRepository, TenantRoleRepository tenantRoleRepository
     ) {
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
         this.processDefinitionMapper = processDefinitionMapper;
         this.processRoleRepository = processRoleRepository;
         this.processDeploymentRepository = processDeploymentRepository;
+        this.tenantRoleRepository = tenantRoleRepository;
     }
 
     public void notify(DelegateTask delegateTask) {
@@ -74,7 +77,13 @@ public class CamundaTaskCreateListener implements TaskListener {
         taskInstanceDTO.setTaskDefinitionKey(delegateTask.getTaskDefinitionKey());
         //taskInstanceDTO.setSuspended(delegateTask.getCaseExecution().isSuspended());
         taskInstanceDTO.setPriority(delegateTask.getPriority());
-        taskInstanceDTO.getCandidateGroups().addAll(calculateCandidateGroups(delegateTask));
+
+        delegateTask.getCandidates()
+                .stream()
+                .filter(identityLink -> identityLink.getGroupId() != null)
+                .forEach(identityLink -> taskInstanceDTO.getCandidateGroups().add(identityLink.getGroupId()));
+
+        taskInstanceDTO.getComputedCandidateGroups().addAll(calculateCandidateGroups(delegateTask, taskInstanceDTO.getCandidateGroups()));
 
         ProcessInstanceDTO processInstance = new ProcessInstanceDTO();
         processInstance.setId(1L);
@@ -94,46 +103,38 @@ public class CamundaTaskCreateListener implements TaskListener {
         return taskInstanceDTO;
     }
 
-    private List<String> calculateCandidateGroups(DelegateTask delegateTask){
+    private List<String> calculateCandidateGroups(DelegateTask delegateTask, List<String> candidateGroups){
 
-        List<String> candidateGroups = new ArrayList<>();
-
-        delegateTask.getCandidates()
-                .stream()
-                .filter(identityLink -> identityLink.getGroupId() != null)
-                .forEach(identityLink -> candidateGroups.add(identityLink.getGroupId()));
+        List<String> computedCandidateGroups = new ArrayList<>();
 
         ProcessDefinition processDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(
                 delegateTask.getProcessDefinitionId().split(":")[0]
         ).get();
 
         if (processDefinition.getProcessType() == ProcessType.PUBLIC){
-            return candidateGroups;
+            computedCandidateGroups.addAll(candidateGroups);
+            return computedCandidateGroups;
         }
-
-        List<ProcessRole> processRoles = processRoleRepository.findByProcessDefinitionId(processDefinition.getId());
 
         if (processDefinition.getProcessType() == ProcessType.PRIVATE){
-            processRoles
+            candidateGroups
                     .stream()
-                    .forEach(processRole -> {
-                        candidateGroups.add(processDefinition.getBpmnProcessDefinitionId() + "." + processRole.getName());
+                    .forEach(candidateGroup -> {
+                        computedCandidateGroups.add(processDefinition.getBpmnProcessDefinitionId() + "." + candidateGroup);
                     });
-            return candidateGroups;
+            return computedCandidateGroups;
         }
 
-
-        //TODO Esse método tem que ser melhorado pois quando tem mais de 1 deploy no mesmo dia ele tras dois ou mais resultados gerando assim um erro
         ProcessDeployment processDeployment = processDeploymentRepository.findByProcessDefinitionIdAndStatusIsActive(processDefinition.getId()).get();
 
         if (processDefinition.getProcessType() == ProcessType.INTERNAL){
-            processRoles
+            candidateGroups
                     .stream()
-                    .forEach(processRole -> {
-                        candidateGroups.add(processDeployment.getTenant().getIdentifier() + "." + processRole.getName());
+                    .forEach(candidateGroup -> {
+                        computedCandidateGroups.add(processDeployment.getTenant().getIdentifier() + "." + candidateGroup);
                     });
         }
-        return candidateGroups;
+        return computedCandidateGroups;
     }
 
     private List<CamundaFormFieldDef> extractFormFields(DelegateTask delegateTask) {

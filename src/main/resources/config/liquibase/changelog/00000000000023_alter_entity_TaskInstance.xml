@@ -11,7 +11,7 @@
     -->
     <changeSet id="00000000000023-1" author="joao">
         <addColumn tableName="task_instance">
-            <column name="candidate_groups_computed" type="${clobType}">
+            <column name="computed_candidate_groups" type="${clobType}">
                 <constraints nullable="true" />
             </column>
         </addColumn>

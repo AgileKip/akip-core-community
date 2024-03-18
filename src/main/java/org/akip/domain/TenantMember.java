@@ -32,14 +32,14 @@ public class TenantMember implements Serializable {
     private Tenant tenant;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "tenant_member_tenant_role",
             joinColumns = { @JoinColumn(name = "tenant_member_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "tenant_role_id", referencedColumnName = "id") }
     )
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @BatchSize(size = 20)
+    @BatchSize(size = 10)
     private List<TenantRole> tenantRoles = new ArrayList<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

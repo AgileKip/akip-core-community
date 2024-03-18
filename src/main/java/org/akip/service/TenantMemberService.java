@@ -42,7 +42,6 @@ public class TenantMemberService {
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
-    @Transactional
     public List<TenantMember> findTenantMembersByUsername(String username){
         return tenantMemberRepository.findTenantMembersByUsername(username);
     }

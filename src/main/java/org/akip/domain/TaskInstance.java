@@ -78,10 +78,8 @@ public class TaskInstance implements Serializable {
     @Column(name = "candidateGroups")
     private String candidateGroups;
 
-    @Lob
-    @Type(type = "org.hibernate.type.TextType")
-    @Column(name = "candidate_groups_computed")
-    private String candidateGroupsComputed;
+    @Column(name = "computed_candidate_groups")
+    private String computedCandidateGroups;
 
     @Column(name = "connector_name")
     private String connectorName;
@@ -336,17 +334,17 @@ public class TaskInstance implements Serializable {
         this.candidateGroups = candidateGroups;
     }
 
-    public String getCandidateGroupsComputed() {
-        return candidateGroupsComputed;
+    public String getComputedCandidateGroups() {
+        return computedCandidateGroups;
     }
 
-    public TaskInstance candidateGroupsComputed(String candidateGroupsComputed) {
-        this.candidateGroupsComputed = candidateGroupsComputed;
+    public TaskInstance computedCandidateGroups(String computedCandidateGroups) {
+        this.computedCandidateGroups = computedCandidateGroups;
         return this;
     }
 
-    public void setCandidateGroupsComputed(String candidateGroupsComputed) {
-        this.candidateGroupsComputed = candidateGroupsComputed;
+    public void setComputedCandidateGroups(String computedCandidateGroups) {
+        this.computedCandidateGroups = computedCandidateGroups;
     }
 
     public String getConnectorName() {
