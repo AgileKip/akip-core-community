@@ -164,7 +164,6 @@ public class ProcessInstanceService {
         synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
-
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
