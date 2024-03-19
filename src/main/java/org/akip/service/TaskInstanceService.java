@@ -3,11 +3,12 @@ package org.akip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.camunda.CamundaConstants;
 import org.akip.delegate.RedoableDelegate;
+import org.akip.domain.ProcessMember;
 import org.akip.domain.TaskInstance;
+import org.akip.domain.TenantMember;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
-import org.akip.exception.ClaimNotAllowedException;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.TaskInstanceRepository;
 import org.akip.security.SecurityUtils;
@@ -43,6 +44,10 @@ public class TaskInstanceService {
 
     private final ProcessInstanceMapper processInstanceMapper;
 
+    private final ProcessMemberService processMemberService;
+
+    private final TenantMemberService tenantMemberService;
+
     private final TaskInstanceRepository taskInstanceRepository;
 
     private final TaskInstanceMapper taskInstanceMapper;
@@ -58,13 +63,15 @@ public class TaskInstanceService {
     private static final String ANONYMOUS_USER = "anonymousUser";
 
     public TaskInstanceService(
-            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, TaskInstanceRepository taskInstanceRepository,
+            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, ProcessMemberService processMemberService, TenantMemberService tenantMemberService, TaskInstanceRepository taskInstanceRepository,
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
             NoteService noteService, EntityManager entityManager,
             BeanFactory beanFactory) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
+        this.processMemberService = processMemberService;
+        this.tenantMemberService = tenantMemberService;
         this.taskInstanceRepository = taskInstanceRepository;
         this.taskInstanceMapper = taskInstanceMapper;
         this.taskService = taskService;
@@ -114,7 +121,7 @@ public class TaskInstanceService {
         Optional<TaskInstance> optionalTaskInstance = taskInstanceRepository.findById(id);
         if (optionalTaskInstance.isPresent()) {
             TaskInstance taskInstance = optionalTaskInstance.get();
-            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getCandidateGroups()));
+            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getComputedCandidateGroups()));
 
             taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
             taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
@@ -136,6 +143,10 @@ public class TaskInstanceService {
      * @param candidateGroups candidateGroups
      */
     private void checkCurrentUserPermission(List<String> candidateGroups) {
+
+        List<ProcessMember> processMembers = processMemberService.findProcessMemberByUser(SecurityUtils.getCurrentUserLogin().get());
+        List<TenantMember> tenantMembers = tenantMemberService.findTenantMembersByUsername(SecurityUtils.getCurrentUserLogin().get());
+
         if (candidateGroups.isEmpty()) {
             return;
         }
@@ -144,7 +155,7 @@ public class TaskInstanceService {
             return;
         }
 
-        List<String> authoritiesCurrentUser = SecurityUtils.getAuthorities();
+        List<String> authoritiesCurrentUser = SecurityUtils.getFullAuthorities(processMembers, tenantMembers);
         for (String authority : authoritiesCurrentUser) {
             if (candidateGroups.contains(authority)) {
                 return;

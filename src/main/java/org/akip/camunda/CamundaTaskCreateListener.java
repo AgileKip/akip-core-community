@@ -24,7 +24,6 @@ import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -83,16 +82,16 @@ public class CamundaTaskCreateListener implements TaskListener {
                 .filter(identityLink -> identityLink.getGroupId() != null)
                 .forEach(identityLink -> taskInstanceDTO.getCandidateGroups().add(identityLink.getGroupId()));
 
-        taskInstanceDTO.getComputedCandidateGroups().addAll(calculateCandidateGroups(delegateTask, taskInstanceDTO.getCandidateGroups()));
+        Optional<ProcessDefinition> optionalProcessDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(
+                delegateTask.getProcessDefinitionId().split(":")[0]
+        );
+
+        taskInstanceDTO.getComputedCandidateGroups().addAll(calculateCandidateGroups(optionalProcessDefinition.get(), taskInstanceDTO.getCandidateGroups()));
 
         ProcessInstanceDTO processInstance = new ProcessInstanceDTO();
         processInstance.setId(1L);
         processInstance.setCamundaProcessInstanceId(delegateTask.getProcessInstanceId());
         taskInstanceDTO.setProcessInstance(processInstance);
-
-        Optional<ProcessDefinition> optionalProcessDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(
-                delegateTask.getProcessDefinitionId().split(":")[0]
-        );
 
         if (optionalProcessDefinition.isPresent()) {
             taskInstanceDTO.setProcessDefinition(processDefinitionMapper.toDto(optionalProcessDefinition.get()));
@@ -103,38 +102,25 @@ public class CamundaTaskCreateListener implements TaskListener {
         return taskInstanceDTO;
     }
 
-    private List<String> calculateCandidateGroups(DelegateTask delegateTask, List<String> candidateGroups){
-
-        List<String> computedCandidateGroups = new ArrayList<>();
-
-        ProcessDefinition processDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(
-                delegateTask.getProcessDefinitionId().split(":")[0]
-        ).get();
-
-        if (processDefinition.getProcessType() == ProcessType.PUBLIC){
-            computedCandidateGroups.addAll(candidateGroups);
-            return computedCandidateGroups;
-        }
+    private List<String> calculateCandidateGroups(ProcessDefinition processDefinition, List<String> candidateGroups){
 
         if (processDefinition.getProcessType() == ProcessType.PRIVATE){
-            candidateGroups
+            return candidateGroups
                     .stream()
-                    .forEach(candidateGroup -> {
-                        computedCandidateGroups.add(processDefinition.getBpmnProcessDefinitionId() + "." + candidateGroup);
-                    });
-            return computedCandidateGroups;
+                    .map(candidateGroup -> processDefinition.getBpmnProcessDefinitionId() + "." + candidateGroup)
+                    .collect(Collectors.toList());
         }
 
         ProcessDeployment processDeployment = processDeploymentRepository.findByProcessDefinitionIdAndStatusIsActive(processDefinition.getId()).get();
 
         if (processDefinition.getProcessType() == ProcessType.INTERNAL){
-            candidateGroups
+            return candidateGroups
                     .stream()
-                    .forEach(candidateGroup -> {
-                        computedCandidateGroups.add(processDeployment.getTenant().getIdentifier() + "." + candidateGroup);
-                    });
+                    .map(candidateGroup -> processDeployment.getTenant().getIdentifier() + "." + candidateGroup)
+                    .collect(Collectors.toList());
         }
-        return computedCandidateGroups;
+
+        return candidateGroups;
     }
 
     private List<CamundaFormFieldDef> extractFormFields(DelegateTask delegateTask) {

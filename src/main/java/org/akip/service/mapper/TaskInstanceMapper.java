@@ -1,10 +1,6 @@
 package org.akip.service.mapper;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.akip.camunda.form.CamundaFormFieldDef;
 import org.akip.domain.TaskInstance;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -45,9 +41,9 @@ public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskIn
         Arrays
             .stream(string.split(delimiter))
             .forEach(
-                candidateGroup -> {
-                    if (candidateGroup.length() > 0) {
-                        list.add(candidateGroup);
+                computedCandidateGroup -> {
+                    if (computedCandidateGroup.length() > 0) {
+                        list.add(computedCandidateGroup);
                     }
                 }
             );
