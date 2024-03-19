@@ -56,7 +56,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         AssigneeAndCandidateGroupFilter assigneeAndCandidateGroupFilter = new AssigneeAndCandidateGroupFilter();
         assigneeAndCandidateGroupFilter.setId("assigneeAndCandidateGroupFilter");
         assigneeAndCandidateGroupFilter.setAssignee(SecurityUtils.getCurrentUserLogin().get());
-        assigneeAndCandidateGroupFilter.setValues(SecurityUtils.getFullAuthorities(processMembers, tenantMembers));
+        assigneeAndCandidateGroupFilter.setValues(SecurityUtils.getComputedAuthorities(processMembers, tenantMembers));
 
         EnumFilter userTaskFilter = new EnumFilter();
         userTaskFilter.setId("type");

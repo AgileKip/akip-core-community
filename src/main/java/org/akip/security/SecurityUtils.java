@@ -53,7 +53,7 @@ public final class SecurityUtils {
                 .collect(Collectors.toList());
     }
 
-    public static List<String> getFullAuthorities(List<ProcessMember> processMembers, List<TenantMember> tenantMembers) {
+    public static List<String> getComputedAuthorities(List<ProcessMember> processMembers, List<TenantMember> tenantMembers) {
         List<String> authorities = new ArrayList<>();
 
         SecurityContextHolder

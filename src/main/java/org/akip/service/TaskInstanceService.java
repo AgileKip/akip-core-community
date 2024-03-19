@@ -155,7 +155,7 @@ public class TaskInstanceService {
             return;
         }
 
-        List<String> authoritiesCurrentUser = SecurityUtils.getFullAuthorities(processMembers, tenantMembers);
+        List<String> authoritiesCurrentUser = SecurityUtils.getComputedAuthorities(processMembers, tenantMembers);
         for (String authority : authoritiesCurrentUser) {
             if (candidateGroups.contains(authority)) {
                 return;

@@ -100,7 +100,10 @@ public class ProcessInstanceService {
         processInstance.setProcessDefinition(processDefinition);
 
         ProcessDeployment processDeployment = processDeploymentRepository
-                .findProcessDeploymentByProcessDefinitionIdAndStatusAndTenantId(processDefinition.getId(), StatusProcessDeployment.ACTIVE, processInstance.getTenant().getId());
+                .findProcessDeploymentByProcessDefinitionIdAndStatusAndTenantId(processDefinition.getId(), StatusProcessDeployment.ACTIVE, processInstance.getTenant().getId())
+                .orElse(processDeploymentRepository
+                        .findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(processDefinition.getId())
+                        .orElseThrow());
 
         processInstance.setUsername(SecurityUtils.getCurrentUserLogin().orElseThrow());
         processInstance.setCamundaProcessDefinitionId(processDeployment.getCamundaProcessDefinitionId());
@@ -121,11 +124,9 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        if (processInstanceDTO.getTemporaryProcessInstance() != null){
-            synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-            synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-            temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
-        }
+        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -160,11 +161,10 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        if (processInstanceDTO.getTemporaryProcessInstance() != null){
-            synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-            synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-            temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
-        }
+        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
