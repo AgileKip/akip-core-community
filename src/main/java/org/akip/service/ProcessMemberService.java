@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,16 +46,15 @@ public class ProcessMemberService {
 
 
     public ProcessMemberDTO save(Long processId, ProcessMemberDTO processMemberDTO) {
-        log.debug("Request to save ProcessMember : {}{}", processId, processMemberDTO.getUser());
+        log.debug("Request to save ProcessMember : {}{}", processId, processMemberDTO.getUsername());
         processMemberDTO.setProcessDefinition(processDefinitionRepository.findById(processId).get());
         ProcessMember processMember = processMemberMapper.toEntity(processMemberDTO);
         ProcessMember processMemberToSaved = processMemberRepository.save(processMember);
         return processMemberMapper.toDto(processMemberToSaved);
     }
 
-    @Transactional(readOnly = true)
-    public List<ProcessMember> findProcessMemberByUser(String user){
-        return processMemberRepository.findProcessMembersByUser(user);
+    public List<String> getProcessRolesByUsername(String username){
+        return processMemberRepository.findProcessRolesWithDefinitionIdPrefixByUsername(username);
     }
 
     public void delete(Long ProcessId, Long ProcessMemberId) {

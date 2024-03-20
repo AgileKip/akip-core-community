@@ -3,9 +3,7 @@ package org.akip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.camunda.CamundaConstants;
 import org.akip.delegate.RedoableDelegate;
-import org.akip.domain.ProcessMember;
 import org.akip.domain.TaskInstance;
-import org.akip.domain.TenantMember;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
@@ -140,29 +138,29 @@ public class TaskInstanceService {
 
     /***
      * Check whether the current user can claim this task according to the candidate group list
-     * @param candidateGroups candidateGroups
+     * @param computedCandidateGroups candidateGroups
      */
-    private void checkCurrentUserPermission(List<String> candidateGroups) {
+    private void checkCurrentUserPermission(List<String> computedCandidateGroups) {
 
-        List<ProcessMember> processMembers = processMemberService.findProcessMemberByUser(SecurityUtils.getCurrentUserLogin().get());
-        List<TenantMember> tenantMembers = tenantMemberService.findTenantMembersByUsername(SecurityUtils.getCurrentUserLogin().get());
+        List<String> authorities = new ArrayList<>();
 
-        if (candidateGroups.isEmpty()) {
+//        authorities.addAll(SecurityUtils.getAuthorities(), processMemberService.getAllProcessRolesByUsername(SecurityUtils.getCurrentUserLogin()), tenantMemberService.getAllTenantRolesByUsername(SecurityUtils.getCurrentUserLogin()));
+
+        if (computedCandidateGroups.isEmpty()) {
             return;
         }
 
-        if (candidateGroups.contains(ANONYMOUS_USER)) {
+        if (computedCandidateGroups.contains(ANONYMOUS_USER)) {
             return;
         }
 
-        List<String> authoritiesCurrentUser = SecurityUtils.getComputedAuthorities(processMembers, tenantMembers);
-        for (String authority : authoritiesCurrentUser) {
-            if (candidateGroups.contains(authority)) {
+        for (String authority : authorities) {
+            if (computedCandidateGroups.contains(authority)) {
                 return;
             }
         }
 
-        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", candidateGroups));
+        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", computedCandidateGroups));
     }
 
     public void complete(TaskInstanceDTO taskInstanceDTO) {

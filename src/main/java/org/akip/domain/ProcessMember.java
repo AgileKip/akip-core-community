@@ -24,20 +24,20 @@ public class ProcessMember implements Serializable {
     private Long id;
 
     @Column
-    private String user;
+    private String username;
 
     @ManyToOne
     private ProcessDefinition processDefinition;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "process_member_process_role",
             joinColumns = { @JoinColumn(name = "process_member_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "process_role_id", referencedColumnName = "id") }
     )
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @BatchSize(size = 10)
+    @BatchSize(size = 20)
     private List<ProcessRole> processRoles = new ArrayList<>();
 
     public Long getId() {
@@ -48,12 +48,12 @@ public class ProcessMember implements Serializable {
         this.id = id;
     }
 
-    public String getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public ProcessDefinition getProcessDefinition() {

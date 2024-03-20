@@ -4,9 +4,7 @@ import com.owse.searchFramework.*;
 import com.owse.searchFramework.enumeration.FilterType;
 import org.akip.dao.filter.AssigneeAndCandidateGroupFilter;
 import org.akip.dao.filter.TenantFilter;
-import org.akip.domain.ProcessMember;
 import org.akip.domain.TaskInstance;
-import org.akip.domain.TenantMember;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.repository.TenantMemberRepository;
@@ -50,13 +48,16 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         tenantsCurrentUserFilter.setId("tenantObject");
         tenantsCurrentUserFilter.setValues(tenantMemberRepository.findTenantByTenantMemberUsername(SecurityUtils.getCurrentUserLogin().get()));
 
-        List<ProcessMember> processMembers = processMemberService.findProcessMemberByUser(SecurityUtils.getCurrentUserLogin().get());
-        List<TenantMember> tenantMembers = tenantMemberService.findTenantMembersByUsername(SecurityUtils.getCurrentUserLogin().get());
+        List<String> authorities = new ArrayList<>();
+
+        authorities.addAll(SecurityUtils.getAuthorities());
+        authorities.addAll(processMemberService.getProcessRolesByUsername(SecurityUtils.getCurrentUserLogin().get()));
+        authorities.addAll(tenantMemberService.getTenantRolesByUsername(SecurityUtils.getCurrentUserLogin().get()));
 
         AssigneeAndCandidateGroupFilter assigneeAndCandidateGroupFilter = new AssigneeAndCandidateGroupFilter();
         assigneeAndCandidateGroupFilter.setId("assigneeAndCandidateGroupFilter");
         assigneeAndCandidateGroupFilter.setAssignee(SecurityUtils.getCurrentUserLogin().get());
-        assigneeAndCandidateGroupFilter.setValues(SecurityUtils.getComputedAuthorities(processMembers, tenantMembers));
+        assigneeAndCandidateGroupFilter.setValues(authorities);
 
         EnumFilter userTaskFilter = new EnumFilter();
         userTaskFilter.setId("type");

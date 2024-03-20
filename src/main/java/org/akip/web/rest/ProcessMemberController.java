@@ -49,7 +49,7 @@ public class ProcessMemberController {
 
     @PostMapping("/process/{processId}/member")
     public ResponseEntity<ProcessMemberDTO> createProcessMember(@PathVariable("processId") Long processId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
-        log.debug("REST request to save ProcessMember : {}{}", processId, processMember.getUser());
+        log.debug("REST request to save ProcessMember : {}{}", processId, processMember.getUsername());
         ProcessMemberDTO result = processMemberService.save(processId, processMember);
         return ResponseEntity
             .created(new URI("/api/process-members/" + result.getId()))
@@ -59,7 +59,7 @@ public class ProcessMemberController {
 
     @PostMapping("/process/{processId}/member/save")
     public ResponseEntity<ProcessMemberDTO> save(@PathVariable Long processId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
-        log.debug("REST request to save ProcessMember : {}", processMember.getUser());
+        log.debug("REST request to save ProcessMember : {}", processMember.getUsername());
         ProcessMemberDTO result = processMemberService.save(processId, processMember);
         return ResponseEntity
                 .ok()

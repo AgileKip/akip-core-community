@@ -2,8 +2,8 @@ package org.akip.repository;
 
 import org.akip.domain.ProcessMember;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +12,6 @@ public interface ProcessMemberRepository extends JpaRepository<ProcessMember, Lo
 
     List<ProcessMember> findByProcessDefinitionId(Long id);
 
-    @Transactional
-    List<ProcessMember> findProcessMembersByUser(String user);
+    @Query("SELECT CONCAT(pm.processDefinition.bpmnProcessDefinitionId, '.', pr.name) FROM ProcessMember pm JOIN pm.processRoles pr WHERE pm.username = ?1")
+    List<String> findProcessRolesWithDefinitionIdPrefixByUsername(String username);
 }

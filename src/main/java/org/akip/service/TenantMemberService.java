@@ -42,17 +42,16 @@ public class TenantMemberService {
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
-    public List<TenantMember> findTenantMembersByUsername(String username){
-        return tenantMemberRepository.findTenantMembersByUsername(username);
-    }
-
-
     public TenantMemberDTO save(Long tenantId, TenantMemberDTO tenantMemberDTO) {
         log.debug("Request to save TentantMember : {}{}", tenantId, tenantMemberDTO.getUsername());
         tenantMemberDTO.setTenant(new TenantDTO(tenantId));
         TenantMember tenantMember = tenantMemberMapper.toEntity(tenantMemberDTO);
         tenantMember = tenantMemberRepository.save(tenantMember);
         return tenantMemberMapper.toDto(tenantMember);
+    }
+
+    public List<String> getTenantRolesByUsername(String username){
+        return tenantMemberRepository.findTenantRolesWithDefinitionIdPrefixByUsername(username);
     }
 
     public void delete(Long tenantId, Long tenantMemberId) {

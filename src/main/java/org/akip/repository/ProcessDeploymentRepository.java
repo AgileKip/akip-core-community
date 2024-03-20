@@ -28,7 +28,7 @@ public interface ProcessDeploymentRepository extends JpaRepository<ProcessDeploy
     Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(Long processDefinitionId);
 
     @Query("from ProcessDeployment where processDefinition.id = ?1 and tenant.id = ?2 and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE")
-    Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusIsActiveAndTenantId(Long processDefinitionId, Long tenantId);
+    ProcessDeployment findByProcessDefinitionIdAndStatusIsActiveAndTenantId(Long processDefinitionId, Long tenantId);
 
     Optional<ProcessDeployment> findProcessDeploymentByProcessDefinitionIdAndStatusAndTenantId(Long processDefinitionId, StatusProcessDeployment status, Long tenantId);
 
