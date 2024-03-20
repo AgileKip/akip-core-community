@@ -371,7 +371,7 @@ public class ProcessInstanceService {
                 SecurityUtils.getCurrentUserLogin().get(),
                 processInstance.getProcessDefinition().getBpmnProcessDefinitionId()
         );
-        if (!processDefinitionSubscription.get().getNotifyAll()) {
+        if (processDefinitionSubscription.isEmpty() || !processDefinitionSubscription.get().getNotifyAll()) {
             return;
         }
         ProcessInstanceSubscriptionDTO processInstanceSubscription = new ProcessInstanceSubscriptionDTO();
