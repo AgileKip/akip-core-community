@@ -48,4 +48,5 @@ public final class SecurityUtils {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
     }
+
 }
