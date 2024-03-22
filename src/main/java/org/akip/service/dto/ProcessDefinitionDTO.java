@@ -1,6 +1,7 @@
 package org.akip.service.dto;
 
 import org.akip.camunda.form.CamundaFormFieldDef;
+import org.akip.domain.enumeration.ProcessType;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 
 import javax.persistence.Lob;
@@ -27,6 +28,8 @@ public class ProcessDefinitionDTO implements Serializable {
     private Boolean canBeManuallyStarted;
 
     private List<CamundaFormFieldDef> startFormFields;
+
+    private ProcessType processType;
 
     private KipAppDTO kipApp;
 
@@ -84,6 +87,14 @@ public class ProcessDefinitionDTO implements Serializable {
 
     public void setStartFormFields(List<CamundaFormFieldDef> startFormFields) {
         this.startFormFields = startFormFields;
+    }
+
+    public ProcessType getProcessType() {
+        return processType;
+    }
+
+    public void setProcessType(ProcessType processType) {
+        this.processType = processType;
     }
 
     public KipAppDTO getKipApp() {

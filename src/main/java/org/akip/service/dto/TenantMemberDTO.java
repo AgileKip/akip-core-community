@@ -1,6 +1,10 @@
 package org.akip.service.dto;
 
+import org.akip.domain.TenantRole;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -13,6 +17,8 @@ public class TenantMemberDTO implements Serializable {
     private String username;
 
     private TenantDTO tenant;
+
+    private List<TenantRole> tenantRoles = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -36,6 +42,14 @@ public class TenantMemberDTO implements Serializable {
 
     public void setTenant(TenantDTO tenant) {
         this.tenant = tenant;
+    }
+
+    public List<TenantRole> getTenantRoles() {
+        return tenantRoles;
+    }
+
+    public void setTenantRoles(List<TenantRole> tenantRoles) {
+        this.tenantRoles = tenantRoles;
     }
 
     @Override

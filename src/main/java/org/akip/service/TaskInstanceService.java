@@ -7,7 +7,6 @@ import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
-import org.akip.exception.ClaimNotAllowedException;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.TaskInstanceRepository;
 import org.akip.security.SecurityUtils;
@@ -43,6 +42,10 @@ public class TaskInstanceService {
 
     private final ProcessInstanceMapper processInstanceMapper;
 
+    private final ProcessMemberService processMemberService;
+
+    private final TenantMemberService tenantMemberService;
+
     private final TaskInstanceRepository taskInstanceRepository;
 
     private final TaskInstanceMapper taskInstanceMapper;
@@ -58,13 +61,15 @@ public class TaskInstanceService {
     private static final String ANONYMOUS_USER = "anonymousUser";
 
     public TaskInstanceService(
-            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, TaskInstanceRepository taskInstanceRepository,
+            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, ProcessMemberService processMemberService, TenantMemberService tenantMemberService, TaskInstanceRepository taskInstanceRepository,
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
             NoteService noteService, EntityManager entityManager,
             BeanFactory beanFactory) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
+        this.processMemberService = processMemberService;
+        this.tenantMemberService = tenantMemberService;
         this.taskInstanceRepository = taskInstanceRepository;
         this.taskInstanceMapper = taskInstanceMapper;
         this.taskService = taskService;
@@ -114,7 +119,7 @@ public class TaskInstanceService {
         Optional<TaskInstance> optionalTaskInstance = taskInstanceRepository.findById(id);
         if (optionalTaskInstance.isPresent()) {
             TaskInstance taskInstance = optionalTaskInstance.get();
-            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getCandidateGroups()));
+            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getComputedCandidateGroups()));
 
             taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
             taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
@@ -133,25 +138,29 @@ public class TaskInstanceService {
 
     /***
      * Check whether the current user can claim this task according to the candidate group list
-     * @param candidateGroups candidateGroups
+     * @param computedCandidateGroups candidateGroups
      */
-    private void checkCurrentUserPermission(List<String> candidateGroups) {
-        if (candidateGroups.isEmpty()) {
+    private void checkCurrentUserPermission(List<String> computedCandidateGroups) {
+
+        List<String> authorities = new ArrayList<>();
+
+//        authorities.addAll(SecurityUtils.getAuthorities(), processMemberService.getAllProcessRolesByUsername(SecurityUtils.getCurrentUserLogin()), tenantMemberService.getAllTenantRolesByUsername(SecurityUtils.getCurrentUserLogin()));
+
+        if (computedCandidateGroups.isEmpty()) {
             return;
         }
 
-        if (candidateGroups.contains(ANONYMOUS_USER)) {
+        if (computedCandidateGroups.contains(ANONYMOUS_USER)) {
             return;
         }
 
-        List<String> authoritiesCurrentUser = SecurityUtils.getAuthorities();
-        for (String authority : authoritiesCurrentUser) {
-            if (candidateGroups.contains(authority)) {
+        for (String authority : authorities) {
+            if (computedCandidateGroups.contains(authority)) {
                 return;
             }
         }
 
-        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", candidateGroups));
+        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", computedCandidateGroups));
     }
 
     public void complete(TaskInstanceDTO taskInstanceDTO) {

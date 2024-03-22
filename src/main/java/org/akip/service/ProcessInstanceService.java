@@ -16,7 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -95,11 +98,16 @@ public class ProcessInstanceService {
                 .orElseThrow();
         processInstance.setProcessDefinition(processDefinition);
 
-        ProcessDeployment processDeployment = processDeploymentRepository
-                .findByProcessDefinitionIdAndStatusIsActiveAndTenantId(processDefinition.getId(), processInstance.getTenant().getId())
-                .orElse(processDeploymentRepository
-                        .findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(processDefinition.getId())
-                        .orElseThrow());
+        Optional<ProcessDeployment> optionalProcessDeployment = processDeploymentRepository
+                .findByProcessDefinitionIdAndStatusIsActiveAndTenantId(processDefinition.getId(), processInstance.getTenant().getId());
+
+        ProcessDeployment processDeployment = new ProcessDeployment();
+
+        if (optionalProcessDeployment.isPresent()){
+            processDeployment = optionalProcessDeployment.get();
+        } else {
+            processDeployment = processDeploymentRepository.findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(processDefinition.getId()).orElseThrow();
+        }
 
         processInstance.setUsername(SecurityUtils.getCurrentUserLogin().orElseThrow());
         processInstance.setCamundaProcessDefinitionId(processDeployment.getCamundaProcessDefinitionId());
@@ -223,11 +231,16 @@ public class ProcessInstanceService {
                 .findByBpmnProcessDefinitionId(bpmnProcessDefinitionId)
                 .orElseThrow();
 
-        ProcessDeployment processDeployment = processDeploymentRepository
-                .findByProcessDefinitionIdAndStatusIsActiveAndTenantId(processDefinition.getId(), tenant.getId())
-                .orElse(processDeploymentRepository
-                        .findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(processDefinition.getId())
-                        .orElseThrow());
+        Optional<ProcessDeployment> optionalProcessDeployment = processDeploymentRepository
+                .findByProcessDefinitionIdAndStatusIsActiveAndTenantId(processDefinition.getId(), tenant.getId());
+
+        ProcessDeployment processDeployment = new ProcessDeployment();
+
+        if (optionalProcessDeployment.isPresent()){
+            processDeployment = optionalProcessDeployment.get();
+        } else {
+            processDeployment = processDeploymentRepository.findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(processDefinition.getId()).orElseThrow();
+        }
 
         ProcessInstance processInstance = new ProcessInstance();
         processInstance.setProcessDefinition(processDefinition);

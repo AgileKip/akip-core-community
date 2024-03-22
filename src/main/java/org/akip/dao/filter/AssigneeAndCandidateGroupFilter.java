@@ -20,9 +20,9 @@ public class AssigneeAndCandidateGroupFilter extends ListFilter {
 		hql.append("  ) ");
 		hql.append(" and ");
 		hql.append("  ( ");
-		hql.append("    entity.candidateGroups is null ");
+		hql.append("    entity.computedCandidateGroups is null ");
 		for (Object authority:getValues()) {
-			hql.append(" or trim(lower( entity.candidateGroups )) like '%," + authority.toString().toLowerCase() + ",%' ");
+			hql.append(" or trim(lower( entity.computedCandidateGroups )) like '%," + authority.toString().toLowerCase() + ",%' ");
 		}
         hql.append("  ) ");
 		return hql.toString();
