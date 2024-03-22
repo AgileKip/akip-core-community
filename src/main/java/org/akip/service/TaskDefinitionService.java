@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class TaskDefinitionService {
 
-    private final Logger log = LoggerFactory.getLogger(ProcessInstanceService.class);
+    private final Logger log = LoggerFactory.getLogger(TaskDefinitionService.class);
 
     private final TaskDefinitionMapper taskDefinitionMapper;
 
@@ -32,41 +32,22 @@ public class TaskDefinitionService {
         return taskDefinitionRepository.findByBpmnProcessDefinitionId(bpmnProcessDefinitionId);
         }
 
-    public TaskDefinitionDTO findTaskByBpmnProcessDefinitionIdAndTaskId(String bpmnProcessDefinitionId, String taskDefinitionId){
-        return taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(bpmnProcessDefinitionId, taskDefinitionId).orElseThrow());
+    public Optional<TaskDefinitionDTO> findByBpmnProcessDefinitionIdAndTaskId(String bpmnProcessDefinitionId, String taskDefinitionId) {
+        return taskDefinitionRepository
+                .findByBpmnProcessDefinitionIdAndTaskId(bpmnProcessDefinitionId, taskDefinitionId)
+                .map(taskDefinitionMapper::toDto);
     }
 
-    public TaskDefinitionDTO findTaskDefinitionById(Long id){
+    public TaskDefinitionDTO findById(Long id){
         return taskDefinitionMapper.toDto(taskDefinitionRepository.findById(id).orElseThrow());
     }
 
     public TaskDefinitionDTO save(TaskDefinitionDTO taskDefinitionDTO){
-        taskDefinitionDTO.setFormVersion(calculeFormVersion(taskDefinitionDTO));
-        if (taskDefinitionDTO.getDynamicFormsIsEnable()){
-            taskDefinitionDTO.setDynamicFormsIsEnable(false);
-        }
         return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinitionMapper.toEntity(taskDefinitionDTO)));
-    }
-
-    public String calculeFormVersion(TaskDefinitionDTO taskDefinitionDTO){
-        if (taskDefinitionDTO.getFormSchema() == null){
-            return "0";
-        }
-        if (taskDefinitionDTO.getId() != null) {
-            TaskDefinition taskDefinition = taskDefinitionRepository.findById(taskDefinitionDTO.getId()).get();
-            if (taskDefinitionDTO.getFormVersion() != null && !taskDefinitionDTO.getFormSchema().equals(taskDefinition.getFormSchema())){
-                return String.valueOf(Integer.parseInt(taskDefinitionDTO.getFormVersion())+1);
-            }
-            return String.valueOf(Integer.parseInt(taskDefinitionDTO.getFormVersion()));
-        }
-        return "1";
     }
 
     public void delete(Long id){
         log.debug("Request to delete TaskDefinition : {}", id);
         taskDefinitionRepository.deleteById(id);
-    }
-    public List<TaskDefinitionDTO> findAll(){
-        return taskDefinitionMapper.toDto(taskDefinitionRepository.findAll());
     }
 }

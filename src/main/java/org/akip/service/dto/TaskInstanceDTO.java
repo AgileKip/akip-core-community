@@ -1,6 +1,5 @@
 package org.akip.service.dto;
 
-import org.akip.camunda.form.CamundaFormFieldDef;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 
@@ -56,8 +55,6 @@ public class TaskInstanceDTO implements Serializable {
     private String connectorName;
 
     private String connectorConfigName;
-
-    private List<CamundaFormFieldDef> formFields;
 
     private ProcessDefinitionDTO processDefinition;
 
@@ -223,14 +220,6 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setConnectorConfigName(String connectorConfigName) {
         this.connectorConfigName = connectorConfigName;
-    }
-
-    public List<CamundaFormFieldDef> getFormFields() {
-        return formFields;
-    }
-
-    public void setFormFields(List<CamundaFormFieldDef> formFields) {
-        this.formFields = formFields;
     }
 
     public ProcessDefinitionDTO getProcessDefinition() {

@@ -1,7 +1,7 @@
-package org.akip.camunda.form;
+package org.akip.camunda.form7;
 
 
-public class CamundaFormFieldValidationConstraintDef {
+public class CamundaForm7FieldValidationConstraintDef {
 
     protected String name;
     protected Object configuration;

@@ -10,13 +10,12 @@ import tech.jhipster.web.util.HeaderUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class TaskDefinitionController {
 
-    private final Logger log = LoggerFactory.getLogger(ProcessDefinitionController.class);
+    private final Logger log = LoggerFactory.getLogger(TaskDefinitionController.class);
     private final TaskDefinitionService taskDefinitionService;
 
     public TaskDefinitionController(TaskDefinitionService taskDefinitionService) {
@@ -26,14 +25,9 @@ public class TaskDefinitionController {
     @GetMapping("/task-definition/{id}")
     public TaskDefinitionDTO find(@PathVariable Long id) {
         log.debug("REST request to get TaskDefinition of the TaskDefinitionId : {} ", id);
-        return taskDefinitionService.findTaskDefinitionById(id);
+        return taskDefinitionService.findById(id);
     }
 
-    @GetMapping("/task-definition")
-    public List<TaskDefinitionDTO> findAll() {
-        log.debug("REST request to find all TaskDefinition");
-        return taskDefinitionService.findAll();
-    }
     @DeleteMapping("/task-definition/{id}")
     public ResponseEntity<Void> deleteTaskDefinition(@PathVariable("id") Long id) {
         log.debug("REST request to delete ProcessDefinition : {}", id);

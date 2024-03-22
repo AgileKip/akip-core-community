@@ -1,10 +1,5 @@
 package org.akip.service.mapper;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.akip.camunda.form.CamundaFormFieldDef;
 import org.akip.domain.TaskInstance;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -21,16 +16,14 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity {@link TaskInstance} and its DTO {@link TaskInstanceDTO}.
  */
-@Mapper(componentModel = "spring", uses = { ProcessDefinitionMapper.class, ProcessInstanceMapper.class, TaskDefinitionMapper.class, CamundaFormFieldDefMapper.class })
+@Mapper(componentModel = "spring", uses = { ProcessDefinitionMapper.class, ProcessInstanceMapper.class, TaskDefinitionMapper.class })
 public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskInstance> {
-
-    ObjectMapper objectMapper = new ObjectMapper();
 
     final String delimiter = ",";
 
     @Mapping(target = "processDefinition", source = "processDefinition", qualifiedByName = "name")
     @Mapping(target = "processInstance", source = "processInstance", qualifiedByName = "businessKey")
-    @Mapping(target = "taskDefinition", source = "taskDefinition", qualifiedByName = "name")
+    @Mapping(target = "taskDefinition", source = "taskDefinition")
     TaskInstanceDTO toDto(TaskInstance s);
 
     @Named("loadTaskContext")

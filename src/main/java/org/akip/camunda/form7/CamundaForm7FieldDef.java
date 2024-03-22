@@ -1,4 +1,4 @@
-package org.akip.camunda.form;
+package org.akip.camunda.form7;
 
 
 import java.util.ArrayList;
@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CamundaFormFieldDef {
+public class CamundaForm7FieldDef {
 
     protected String id;
     protected String label;
     protected String type;
     protected Object defaultValue;
-    protected List<CamundaFormFieldValidationConstraintDef> validationConstraints = new ArrayList();
+    protected List<CamundaForm7FieldValidationConstraintDef> validationConstraints = new ArrayList();
     protected Map<String, String> values = new HashMap();
     protected Map<String, String> properties = new HashMap();
 
@@ -48,11 +48,11 @@ public class CamundaFormFieldDef {
         this.defaultValue = defaultValue;
     }
 
-    public List<CamundaFormFieldValidationConstraintDef> getValidationConstraints() {
+    public List<CamundaForm7FieldValidationConstraintDef> getValidationConstraints() {
         return validationConstraints;
     }
 
-    public void setValidationConstraints(List<CamundaFormFieldValidationConstraintDef> validationConstraints) {
+    public void setValidationConstraints(List<CamundaForm7FieldValidationConstraintDef> validationConstraints) {
         this.validationConstraints = validationConstraints;
     }
 

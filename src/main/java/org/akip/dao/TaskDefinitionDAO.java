@@ -6,7 +6,6 @@ import com.owse.searchFramework.ResultColumn;
 import com.owse.searchFramework.StringFilterDef;
 import com.owse.searchFramework.enumeration.FilterType;
 import org.akip.domain.TaskDefinition;
-import org.akip.service.TaskDefinitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,11 +19,8 @@ class TaskDefinitionDAO extends AbstractDAO<TaskDefinitionSearchDTO> {
 
     private final Logger log = LoggerFactory.getLogger(TaskDefinitionDAO.class);
 
-    private final TaskDefinitionService taskDefinitionService;
-
-    TaskDefinitionDAO(EntityManager entityManager, TaskDefinitionService taskDefinitionService) {
+    TaskDefinitionDAO(EntityManager entityManager) {
         super(entityManager, TaskDefinition.class, TaskDefinitionSearchDTO.class);
-        this.taskDefinitionService = taskDefinitionService;
     }
 
     @Override

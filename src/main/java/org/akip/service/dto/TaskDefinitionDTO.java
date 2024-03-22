@@ -27,19 +27,22 @@ public class TaskDefinitionDTO implements Serializable {
 
     private Integer priority;
 
-    private String formBuilder;
-
-    private String formVersion;
-
-    private String formSchema;
-
-    private boolean dynamicFormsIsEnable;
-
     private Map<String, String> props;
 
-    private Map<String, String> formFields;
-
     private String bpmnProcessDefinitionId;
+
+    private Boolean dynamicFormIsEnabled;
+
+    private FormDefinitionDTO formDefinition;
+
+    public TaskDefinitionDTO() {
+    }
+
+    public TaskDefinitionDTO(String bpmnProcessDefinitionId, String taskId){
+        this.bpmnProcessDefinitionId = bpmnProcessDefinitionId;
+        this.taskId = taskId;
+    }
+
 
     public Long getId() {
         return id;
@@ -47,6 +50,14 @@ public class TaskDefinitionDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     public String getName() {
@@ -89,22 +100,6 @@ public class TaskDefinitionDTO implements Serializable {
         this.candidateGroups = candidateGroups;
     }
 
-    public Map<String, String> getProps() {
-        return props;
-    }
-
-    public void setProps(Map<String, String> props) {
-        this.props = props;
-    }
-
-    public String getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
-
     public Integer getPriority() {
         return priority;
     }
@@ -113,12 +108,12 @@ public class TaskDefinitionDTO implements Serializable {
         this.priority = priority;
     }
 
-    public Map<String, String> getFormFields() {
-        return formFields;
+    public Map<String, String> getProps() {
+        return props;
     }
 
-    public void setFormFields(Map<String, String> formFields) {
-        this.formFields = formFields;
+    public void setProps(Map<String, String> props) {
+        this.props = props;
     }
 
     public String getBpmnProcessDefinitionId() {
@@ -129,36 +124,20 @@ public class TaskDefinitionDTO implements Serializable {
         this.bpmnProcessDefinitionId = bpmnProcessDefinitionId;
     }
 
-    public String getFormBuilder() {
-        return formBuilder;
+    public Boolean getDynamicFormIsEnabled() {
+        return dynamicFormIsEnabled;
     }
 
-    public void setFormBuilder(String formBuilder) {
-        this.formBuilder = formBuilder;
+    public void setDynamicFormIsEnabled(Boolean dynamicFormIsEnabled) {
+        this.dynamicFormIsEnabled = dynamicFormIsEnabled;
     }
 
-    public String getFormVersion() {
-        return formVersion;
+    public FormDefinitionDTO getFormDefinition() {
+        return formDefinition;
     }
 
-    public void setFormVersion(String formVersion) {
-        this.formVersion = formVersion;
-    }
-
-    public String getFormSchema() {
-        return formSchema;
-    }
-
-    public void setFormSchema(String formSchema) {
-        this.formSchema = formSchema;
-    }
-
-    public boolean getDynamicFormsIsEnable() {
-        return dynamicFormsIsEnable;
-    }
-
-    public void setDynamicFormsIsEnable(boolean dynamicFormsIsEnable) {
-        this.dynamicFormsIsEnable = dynamicFormsIsEnable;
+    public void setFormDefinition(FormDefinitionDTO formDefinition) {
+        this.formDefinition = formDefinition;
     }
 
     @Override
