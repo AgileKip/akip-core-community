@@ -4,18 +4,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.akip.camunda.form.CamundaFormFieldDef;
+import org.akip.camunda.form7.CamundaForm7FieldDef;
 import org.mapstruct.Mapper;
 
 import java.util.Collections;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {})
-public interface CamundaFormFieldDefMapper {
+public interface CamundaForm7FieldDefMapper {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    default String listFormFieldToString(List<CamundaFormFieldDef> formFields) throws JsonProcessingException {
+    default String listFormFieldToString(List<CamundaForm7FieldDef> formFields) throws JsonProcessingException {
         if (formFields == null) {
             return null;
         }
@@ -23,11 +23,11 @@ public interface CamundaFormFieldDefMapper {
         return objectMapper.writeValueAsString(formFields);
     }
 
-    default List<CamundaFormFieldDef> stringToListFormField(String s) throws JsonProcessingException {
+    default List<CamundaForm7FieldDef> stringToListFormField(String s) throws JsonProcessingException {
         if (s == null) {
             return Collections.emptyList();
         }
 
-        return objectMapper.readValue(s, new TypeReference<List<CamundaFormFieldDef>>() {});
+        return objectMapper.readValue(s, new TypeReference<List<CamundaForm7FieldDef>>() {});
     }
 }

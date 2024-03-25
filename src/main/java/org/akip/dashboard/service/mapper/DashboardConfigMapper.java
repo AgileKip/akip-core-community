@@ -2,7 +2,6 @@ package org.akip.dashboard.service.mapper;
 
 import org.akip.dashboard.domain.DashboardConfig;
 import org.akip.dashboard.service.dto.DashboardConfigDTO;
-import org.akip.service.mapper.CamundaFormFieldDefMapper;
 import org.akip.service.mapper.EntityMapper;
 import org.akip.service.mapper.ProcessDefinitionMapper;
 import org.mapstruct.*;
