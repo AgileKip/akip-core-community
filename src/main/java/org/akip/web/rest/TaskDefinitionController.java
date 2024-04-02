@@ -29,8 +29,8 @@ public class TaskDefinitionController {
     }
 
     @DeleteMapping("/task-definition/{id}")
-    public ResponseEntity<Void> deleteTaskDefinition(@PathVariable("id") Long id) {
-        log.debug("REST request to delete ProcessDefinition : {}", id);
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        log.debug("REST request to delete TaskDefinition : {}", id);
         taskDefinitionService.delete(id);
         return ResponseEntity
                 .noContent()

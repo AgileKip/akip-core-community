@@ -14,4 +14,6 @@ public interface TaskDefinitionRepository extends JpaRepository<TaskDefinition, 
 
     Optional<TaskDefinition> findByBpmnProcessDefinitionIdAndTaskId(String bpmnProcessDefinitionId, String taskId);
 
+    Optional<TaskDefinition> findByFormDefinitionId(Long id);
+
 }

@@ -1,6 +1,10 @@
 package org.akip.service;
 
+import org.akip.domain.ProcessDefinition;
+import org.akip.domain.TaskDefinition;
 import org.akip.repository.FormDefinitionRepository;
+import org.akip.repository.ProcessDefinitionRepository;
+import org.akip.repository.TaskDefinitionRepository;
 import org.akip.service.dto.FormDefinitionDTO;
 import org.akip.service.mapper.FormDefinitionMapper;
 import org.slf4j.Logger;
@@ -18,10 +22,16 @@ public class FormDefinitionService {
 
     private final FormDefinitionRepository formDefinitionRepository;
 
+    private final ProcessDefinitionRepository processDefinitionRepository;
+
+    private final TaskDefinitionRepository taskDefinitionRepository;
+
     private final FormDefinitionMapper formDefinitionMapper;
 
-    public FormDefinitionService(FormDefinitionRepository formDefinitionRepository, FormDefinitionMapper formDefinitionMapper) {
+    public FormDefinitionService(FormDefinitionRepository formDefinitionRepository, ProcessDefinitionRepository processDefinitionRepository, TaskDefinitionRepository taskDefinitionRepository, FormDefinitionMapper formDefinitionMapper) {
         this.formDefinitionRepository = formDefinitionRepository;
+        this.processDefinitionRepository = processDefinitionRepository;
+        this.taskDefinitionRepository = taskDefinitionRepository;
         this.formDefinitionMapper = formDefinitionMapper;
     }
 
@@ -38,9 +48,45 @@ public class FormDefinitionService {
         return formDefinitionRepository.findByTaskDefinitionId(taskDefinitionId).map(formDefinitionMapper::toDto);
     }
 
+    public FormDefinitionDTO saveWithProcessDefinition(Long processDefinitionId, FormDefinitionDTO formDefinitionDTO){
+        calculateFormVersion(formDefinitionDTO);
+        FormDefinitionDTO formDefinitionSaved = formDefinitionMapper.toDto(formDefinitionRepository.save(formDefinitionMapper.toEntity(formDefinitionDTO)));
+        Optional<ProcessDefinition> processDefinition = processDefinitionRepository.findById(processDefinitionId);
+        if (processDefinition.isPresent()){
+            processDefinition.get().setStartFormDefinition(formDefinitionMapper.toEntity(formDefinitionSaved));
+        }
+        return formDefinitionSaved;
+    }
+
     public FormDefinitionDTO save(FormDefinitionDTO formDefinitionDTO){
         calculateFormVersion(formDefinitionDTO);
         return formDefinitionMapper.toDto(formDefinitionRepository.save(formDefinitionMapper.toEntity(formDefinitionDTO)));
+    }
+
+    public FormDefinitionDTO saveWithTaskDefinition(Long taskDefinitionId, FormDefinitionDTO formDefinitionDTO){
+        calculateFormVersion(formDefinitionDTO);
+        FormDefinitionDTO formDefinitionSaved = formDefinitionMapper.toDto(formDefinitionRepository.save(formDefinitionMapper.toEntity(formDefinitionDTO)));
+        Optional<TaskDefinition> taskDefinition = taskDefinitionRepository.findById(taskDefinitionId);
+        if (taskDefinition.isPresent()){
+            taskDefinition.get().setFormDefinition(formDefinitionMapper.toEntity(formDefinitionSaved));
+        }
+        return formDefinitionSaved;
+    }
+
+    public void delete(Long id){
+        Optional<ProcessDefinition> processDefinition = processDefinitionRepository.findByStartFormDefinitionId(id);
+        if (processDefinition.isPresent()){
+            processDefinition.get().setStartFormDefinition(null);
+            processDefinitionRepository.save(processDefinition.get());
+        }
+
+        Optional<TaskDefinition> taskDefinition = taskDefinitionRepository.findByFormDefinitionId(id);
+        if (taskDefinition.isPresent()){
+            taskDefinition.get().setFormDefinition(null);
+            taskDefinitionRepository.save(taskDefinition.get());
+        }
+
+        formDefinitionRepository.deleteById(id);
     }
 
     public void calculateFormVersion(FormDefinitionDTO formDefinition){
