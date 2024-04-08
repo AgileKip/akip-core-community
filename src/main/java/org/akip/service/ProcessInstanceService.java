@@ -120,13 +120,18 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        if (processInstanceDTO.getTemporaryProcessInstance() != null){
-            synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-            synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-            temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
-        }
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO, processInstance);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
+    }
+
+    private void synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(ProcessInstanceDTO processInstanceDTO, ProcessInstance processInstance) {
+        if (processInstanceDTO.getTemporaryProcessInstance() == null) {
+            return;
+        }
+        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
     }
 
     private ProcessInstanceDTO createWithoutTenant(ProcessInstanceDTO processInstanceDTO) {
@@ -159,11 +164,7 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        if (processInstanceDTO.getTemporaryProcessInstance() != null){
-            synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-            synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-            temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
-        }
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO, processInstance);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
