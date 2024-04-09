@@ -1,6 +1,6 @@
 package org.akip.web.rest;
 
-import org.akip.service.CamundaSignalService;
+import org.akip.service.ProcessSignalService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/signal")
-public class CamundaSignalController {
+@RequestMapping("/api/process-signal")
+public class ProcessSignalController {
 
-    private final Logger log = LoggerFactory.getLogger(CamundaSignalController.class);
+    private final Logger log = LoggerFactory.getLogger(ProcessSignalController.class);
 
-    private final CamundaSignalService camundaSignalService;
+    private final ProcessSignalService camundaSignalService;
 
-    public CamundaSignalController(CamundaSignalService camundaSignalService) {
+    public ProcessSignalController(ProcessSignalService camundaSignalService) {
         this.camundaSignalService = camundaSignalService;
     }
 
@@ -28,7 +28,7 @@ public class CamundaSignalController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/send-signal-to-process-instance/{processInstanceId}/{signalName}")
+    @GetMapping("/send-signal-to-process-instance/{signalName}/{processInstanceId}")
     public ResponseEntity<Void> sendSignalToProcessInstance(@PathVariable String signalName, @PathVariable String processInstanceId) {
         log.debug("Sending Signal {} to Process Instance: {}", signalName, processInstanceId);
         camundaSignalService.sendSignalToProcessInstance(signalName, processInstanceId);

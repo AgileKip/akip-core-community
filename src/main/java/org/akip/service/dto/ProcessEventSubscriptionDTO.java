@@ -8,10 +8,10 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * A DTO for representing the "EventSubscription" entity from camunda.
+ * A DTO for representing the "ProcessEventSubscription" entity.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CamundaEventSubscriptionDTO implements Serializable, EventSubscription {
+public class ProcessEventSubscriptionDTO implements Serializable, EventSubscription {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,7 +24,7 @@ public class CamundaEventSubscriptionDTO implements Serializable, EventSubscript
     private Date created;
     private String tenantId;
 
-    public CamundaEventSubscriptionDTO(
+    public ProcessEventSubscriptionDTO(
         String id,
         String eventType,
         String eventName,
@@ -44,7 +44,7 @@ public class CamundaEventSubscriptionDTO implements Serializable, EventSubscript
         this.tenantId = tenantId;
     }
 
-    public CamundaEventSubscriptionDTO() {}
+    public ProcessEventSubscriptionDTO() {}
 
     @Override
     public String getId() {
@@ -119,11 +119,11 @@ public class CamundaEventSubscriptionDTO implements Serializable, EventSubscript
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CamundaEventSubscriptionDTO)) {
+        if (!(o instanceof ProcessEventSubscriptionDTO)) {
             return false;
         }
 
-        CamundaEventSubscriptionDTO camundaEventSubscriptionDTO = (CamundaEventSubscriptionDTO) o;
+        ProcessEventSubscriptionDTO camundaEventSubscriptionDTO = (ProcessEventSubscriptionDTO) o;
         if (this.id == null) {
             return false;
         }
@@ -138,7 +138,7 @@ public class CamundaEventSubscriptionDTO implements Serializable, EventSubscript
     // prettier-ignore
     @Override
     public String toString() {
-        return "CamundaJobDTO{" +
+        return "ProcessEventSubscriptionDTO{" +
             "id=" + getId() +
             "processInstanceId=" + getProcessInstanceId() +
             "eventType=" + getEventType() +

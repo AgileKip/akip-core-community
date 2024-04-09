@@ -4,10 +4,10 @@ import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CamundaSignalService {
+public class ProcessSignalService {
     private final RuntimeService runtimeService;
 
-    public CamundaSignalService(RuntimeService runtimeService) {
+    public ProcessSignalService(RuntimeService runtimeService) {
         this.runtimeService = runtimeService;
     }
 

@@ -1,17 +1,16 @@
 package org.akip.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.camunda.bpm.engine.history.HistoricActivityInstance;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 /**
- * A DTO for representing the "HistoricActivityInstance" entity from camunda.
+ * A DTO for representing the ProcessHistoricalActivity.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CamundaHistoryActivityDTO implements Serializable, HistoricActivityInstance {
+public class ProcessHistoricalActivityDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String id;
@@ -24,7 +23,7 @@ public class CamundaHistoryActivityDTO implements Serializable, HistoricActivity
     private Date endTime;
     private String tenantId;
 
-    public CamundaHistoryActivityDTO(String id, String activityType, String activityName, String executionId, String processInstanceId, String activityId, Date startTime, Date endTime, String tenantId) {
+    public ProcessHistoricalActivityDTO(String id, String activityType, String activityName, String executionId, String processInstanceId, String activityId, Date startTime, Date endTime, String tenantId) {
         this.id = id;
         this.activityType = activityType;
         this.activityName = activityName;
@@ -36,7 +35,7 @@ public class CamundaHistoryActivityDTO implements Serializable, HistoricActivity
         this.tenantId = tenantId;
     }
 
-    public CamundaHistoryActivityDTO() {}
+    public ProcessHistoricalActivityDTO() {}
 
     public void setId(String id) {
         this.id = id;
@@ -74,107 +73,86 @@ public class CamundaHistoryActivityDTO implements Serializable, HistoricActivity
         this.tenantId = tenantId;
     }
 
-    @Override
     public String getId() {
         return id;
     }
 
-    @Override
     public String getParentActivityInstanceId() {
         return null;
     }
 
-    @Override
     public String getActivityType() {
         return activityType;
     }
 
-    @Override
     public String getProcessDefinitionKey() {
         return null;
     }
 
-    @Override
     public String getProcessDefinitionId() {
         return null;
     }
 
-    @Override
     public String getRootProcessInstanceId() {
         return null;
     }
 
-    @Override
     public String getActivityName() {
         return activityName;
     }
 
-    @Override
     public String getExecutionId() {
         return executionId;
     }
 
-    @Override
     public String getTaskId() {
         return null;
     }
 
-    @Override
     public String getCalledProcessInstanceId() {
         return null;
     }
 
-    @Override
     public String getCalledCaseInstanceId() {
         return null;
     }
 
-    @Override
     public String getProcessInstanceId() {
         return processInstanceId;
     }
 
-    @Override
     public String getActivityId() {
         return activityId;
     }
 
-    @Override
     public Date getStartTime() {
         return startTime;
     }
 
-    @Override
     public Date getEndTime() {
         return endTime;
     }
 
-    @Override
     public Long getDurationInMillis() {
         return null;
     }
 
-    @Override
     public boolean isCompleteScope() {
         return false;
     }
 
-    @Override
     public boolean isCanceled() {
         return false;
     }
 
-    @Override
     public String getTenantId() {
         return tenantId;
     }
 
-    @Override
     public Date getRemovalTime() {
         return null;
     }
 
-    @Override
     public String getAssignee() {
         return null;
     }
@@ -184,11 +162,11 @@ public class CamundaHistoryActivityDTO implements Serializable, HistoricActivity
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CamundaHistoryActivityDTO)) {
+        if (!(o instanceof ProcessHistoricalActivityDTO)) {
             return false;
         }
 
-        CamundaHistoryActivityDTO camundahistoryActivityDTO = (CamundaHistoryActivityDTO) o;
+        ProcessHistoricalActivityDTO camundahistoryActivityDTO = (ProcessHistoricalActivityDTO) o;
         if (this.id == null) {
             return false;
         }
@@ -203,7 +181,7 @@ public class CamundaHistoryActivityDTO implements Serializable, HistoricActivity
     // prettier-ignore
     @Override
     public String toString() {
-        return "CamundaJobDTO{" +
+        return "ProcessHistoricalActivityDTO{" +
             "id=" + getId() +
             "processInstanceId=" + getProcessInstanceId() +
             "activityType=" + getActivityType() +

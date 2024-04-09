@@ -1,27 +1,20 @@
 package org.akip.service.mapper;
 
-import org.akip.service.dto.CamundaEventSubscriptionDTO;
+import org.akip.service.dto.ProcessEventSubscriptionDTO;
 import org.camunda.bpm.engine.runtime.EventSubscription;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
- * Mapper for the DTO {@link CamundaEventSubscriptionDTO}.
+ * Mapper for the DTO {@link ProcessEventSubscriptionDTO}.
  */
 @Component
-public class CamundaEventSubscriptionsMapper {
+public class ProcessEventSubscriptionsMapper {
 
-    public List<CamundaEventSubscriptionDTO> mapToCamundaEventSubscriptionsDTO(List<EventSubscription> eventSubscriptions) {
-        return eventSubscriptions.stream().map(this::mapToCamundaEventSubscriptionsDTO).collect(Collectors.toList());
-    }
-
-    public CamundaEventSubscriptionDTO mapToCamundaEventSubscriptionsDTO(EventSubscription eventSubscription) {
+    public ProcessEventSubscriptionDTO camundaEventSubscriptionToProcessEventSubscriptionDTO(EventSubscription eventSubscription) {
         if (eventSubscription == null) {
             return null;
         } else {
-            return new CamundaEventSubscriptionDTO(
+            return new ProcessEventSubscriptionDTO(
                 eventSubscription.getId(),
                 eventSubscription.getEventType(),
                 eventSubscription.getEventName(),
