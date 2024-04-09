@@ -120,9 +120,7 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO, processInstance);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -157,9 +155,7 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO, processInstance);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -352,29 +348,13 @@ public class ProcessInstanceService {
         );
     }
 
-//    TODO: This method should implement any type of pagination.
-//          Otherwise it may retrieve a huge amount of data
-//    public List<ProcessInstanceDTO> findByProcessDefinition(String idOrBpmnProcessDefinitionId) {
-//        ProcessDefinitionDTO processDefinitionDTO = processDefinitionService
-//            .findByIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
-//            .orElseThrow();
-//        return processInstanceRepository
-//            .findByProcessDefinitionId(processDefinitionDTO.getId())
-//            .stream()
-//            .map(processInstanceMapper::toDto)
-//            .collect(Collectors.toList());
-//    }
-
-    //    TODO: This method should implement any type of pagination.
-    //          Otherwise it may retrieve a huge amount of data
-//    @Transactional(readOnly = true)
-//    public List<ProcessInstanceDTO> findAll() {
-//        log.debug("Request to get all ProcessInstances");
-//        return processInstanceRepository
-//            .findAll()
-//            .stream()
-//            .map(processInstanceMapper::toDto)
-//            .collect(Collectors.toCollection(LinkedList::new));
-//    }
+    private void synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(ProcessInstanceDTO processInstanceDTO, ProcessInstance processInstance) {
+        if (processInstanceDTO.getTemporaryProcessInstance() == null) {
+            return;
+        }
+        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+    }
 
 }
