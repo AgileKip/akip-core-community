@@ -25,9 +25,7 @@ public class TaskCompletedEventListener {
     @Async
     @EventListener
     public void onApplicationEvent(TaskCompletedEvent event) throws InterruptedException {
-        log.info("Iniciando o metodo onApplicationEvent na thread: " + Thread.currentThread().getName());
         TaskInstanceDTO completedTask = event.getTaskInstance();
         subscriptionService.taskCompletedEventNotify(completedTask.getProcessInstance());
-        log.info("Finalizando o metodo onApplicationEvent na thread: " + Thread.currentThread().getName());
     }
 }

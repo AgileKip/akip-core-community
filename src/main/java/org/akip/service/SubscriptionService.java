@@ -1,11 +1,14 @@
 package org.akip.service;
 
 
+import org.akip.domain.ProcessInstance;
 import org.akip.domain.ProcessInstanceSubscription;
+import org.akip.domain.enumeration.ProcessInstanceNotificationType;
 import org.akip.repository.ProcessInstanceSubscriptionRepository;
 import org.akip.resolver.AkipUserDTO;
 import org.akip.resolver.UserResolver;
 import org.akip.service.dto.ProcessInstanceDTO;
+import org.akip.service.mapper.ProcessInstanceMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,22 +20,28 @@ public class SubscriptionService {
     private final ProcessInstanceMailService processInstanceMailService;
 
     private final ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository;
+
     private final UserResolver userRepository;
 
+    private final ProcessInstanceNotificationService processInstanceNotificationService;
+
+    private final ProcessInstanceMapper processInstanceMapper;
+
     public SubscriptionService(
-        AkipMailService mailService,
-        ProcessInstanceMailService processInstanceMailService,
-        ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository,
-        UserResolver userRepository
+            ProcessInstanceMailService processInstanceMailService,
+            ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository,
+            UserResolver userRepository, ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceMapper processInstanceMapper
     ) {
         this.processInstanceMailService = processInstanceMailService;
         this.processInstanceSubscriptionRepository = processInstanceSubscriptionRepository;
         this.userRepository = userRepository;
+        this.processInstanceNotificationService = processInstanceNotificationService;
+        this.processInstanceMapper = processInstanceMapper;
     }
 
-    public void taskCompletedEventNotify(ProcessInstanceDTO processInstance) {
+    public void taskCompletedEventNotify(ProcessInstanceDTO processInstanceDTO) {
         List<ProcessInstanceSubscription> processInstanceSubscriptions = processInstanceSubscriptionRepository.findAllByProcessInstanceId(
-            processInstance.getId()
+            processInstanceDTO.getId()
         );
 
         List<ProcessInstanceSubscription> processInstanceNotifyTask = processInstanceSubscriptions
@@ -54,6 +63,8 @@ public class SubscriptionService {
                 "mail/taskCompletedEventEmail",
                 "email.taskCompletedEvent.title"
             );
+            ProcessInstance processInstance = processInstanceMapper.toEntity(processInstanceDTO);
+            processInstanceNotificationService.save(processInstance, ProcessInstanceNotificationType.TASKCOMPLETED, user.getLogin());
         }
     }
 
@@ -80,6 +91,11 @@ public class SubscriptionService {
                 processInstanceNotifyNotes.get(0).getProcessInstance(),
                 "mail/noteAddedEventEmail",
                 "email.noteAddedEvent.title"
+            );
+            processInstanceNotificationService.save(
+                    processInstanceNotifyNotes.get(0).getProcessInstance(),
+                    ProcessInstanceNotificationType.NOTEADDED,
+                    user.getLogin()
             );
         }
     }
@@ -108,6 +124,11 @@ public class SubscriptionService {
                 "mail/noteChangedEventEmail",
                 "email.noteChangedEvent.title"
             );
+            processInstanceNotificationService.save(
+                    processInstanceNotifyNotes.get(0).getProcessInstance(),
+                    ProcessInstanceNotificationType.NOTEEDITED,
+                    user.getLogin()
+            );
         }
     }
 
@@ -134,6 +155,11 @@ public class SubscriptionService {
                 processInstanceNotifyNotes.get(0).getProcessInstance(),
                 "mail/noteRemovedEventEmail",
                 "email.noteRemovedEvent.title"
+            );
+            processInstanceNotificationService.save(
+                    processInstanceNotifyNotes.get(0).getProcessInstance(),
+                    ProcessInstanceNotificationType.NOTEREMOVED,
+                    user.getLogin()
             );
         }
     }
@@ -162,6 +188,11 @@ public class SubscriptionService {
                 "mail/attachmentAddedEventEmail",
                 "email.attachmentAddedEvent.title"
             );
+            processInstanceNotificationService.save(
+                    processInstanceNotifyAttachments.get(0).getProcessInstance(),
+                    ProcessInstanceNotificationType.ATTACHMENTADDED,
+                    user.getLogin()
+            );
         }
     }
 
@@ -188,6 +219,11 @@ public class SubscriptionService {
                 processInstanceNotifyAttachments.get(0).getProcessInstance(),
                 "mail/attachmentChangedEventEmail",
                 "email.attachmentChangedEvent.title"
+            );
+            processInstanceNotificationService.save(
+                    processInstanceNotifyAttachments.get(0).getProcessInstance(),
+                    ProcessInstanceNotificationType.ATTACHMENTEDITED,
+                    user.getLogin()
             );
         }
     }
@@ -216,6 +252,11 @@ public class SubscriptionService {
                 "mail/attachmentRemovedEventEmail",
                 "email.attachmentRemovedEvent.title"
             );
+            processInstanceNotificationService.save(
+                    processInstanceNotifyAttachments.get(0).getProcessInstance(),
+                    ProcessInstanceNotificationType.ATTACHMENTREMOVED,
+                    user.getLogin()
+            );
         }
     }
 
@@ -240,7 +281,7 @@ public class SubscriptionService {
             processInstanceMailService.sendEmailFromTemplate(
                 user,
                 processInstanceNotifyChats.get(0).getProcessInstance(),
-                "mail/subscriberAttachmentEmail",
+                "mail/subscriberChatEmail",
                 "email.subscriptionChat.title"
             );
         }

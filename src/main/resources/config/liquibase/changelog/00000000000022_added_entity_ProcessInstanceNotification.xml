@@ -10,35 +10,26 @@
         Added the entity ProcessInstanceSubscription.
     -->
     <changeSet id="20240221000001-1" author="daniel">
-        <createTable tableName="process_instance_subscription">
+        <createTable tableName="process_instance_notification">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="subscriber_type" type="varchar(255)">
+            <column name="title" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="subscriber_id" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="status" type="varchar(255)">
+            <column name="description" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="date" type="date">
                 <constraints nullable="true" />
             </column>
-            <column name="notify_all" type="boolean">
+            <column name="status" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="notify_tasks" type="boolean">
+            <column name="event_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="notify_attachments" type="boolean">
-                <constraints nullable="true" />
-            </column>
-            <column name="notify_notes" type="boolean">
-                <constraints nullable="true" />
-            </column>
-            <column name="notify_chats" type="boolean">
+            <column name="subscriber_id" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="process_instance_id" type="bigint">

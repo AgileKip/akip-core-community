@@ -33,6 +33,7 @@
     <include file="config/liquibase/changelog/00000000000018_added_entity_TemporaryProcessInstance.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000020_added_entity_ProcessInstanceSubscription.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000021_added_entity_ProcessDefinitionSubscription.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000022_added_entity_ProcessInstanceNotification.xml" relativeToChangelogFile="false"/>
 
     <include file="config/liquibase/changelog/00000000000004_added_entity_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000005_added_entity_constraints_ProcessDeployment.xml" relativeToChangelogFile="false"/>

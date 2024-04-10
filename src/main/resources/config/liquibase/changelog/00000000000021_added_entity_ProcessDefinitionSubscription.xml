@@ -9,7 +9,7 @@
     <!--
         Added the entity ProcessDefinitionSubscription.
     -->
-    <changeSet id="20240311000001-1" author="jhipster">
+    <changeSet id="20240311000001-1" author="daniel">
         <createTable tableName="process_definition_subscription">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>

@@ -48,7 +48,7 @@ public class ProcessInstanceSubscriptionService {
      * @return the persisted entity.
      */
     public ProcessInstanceSubscriptionDTO save(Long processInstanceId, ProcessInstanceSubscriptionDTO processInstanceSubscriptionDTO) {
-        log.debug("Request to save ProcessInstanceSubscription : {}", processInstanceSubscriptionDTO);
+        log.debug("Request to save ProcessInstanceSubscription : {} {}", processInstanceSubscriptionDTO, processInstanceSubscriptionDTO);
         ProcessInstanceSubscription processInstanceSubscription = processInstanceSubscriptionMapper.toEntity(
             processInstanceSubscriptionDTO
         );
