@@ -21,7 +21,7 @@ public class SubscriptionService {
 
     private final ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository;
 
-    private final UserResolver userRepository;
+    private final UserResolver userResolver;
 
     private final ProcessInstanceNotificationService processInstanceNotificationService;
 
@@ -30,11 +30,11 @@ public class SubscriptionService {
     public SubscriptionService(
             ProcessInstanceMailService processInstanceMailService,
             ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository,
-            UserResolver userRepository, ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceMapper processInstanceMapper
+            UserResolver userResolver, ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceMapper processInstanceMapper
     ) {
         this.processInstanceMailService = processInstanceMailService;
         this.processInstanceSubscriptionRepository = processInstanceSubscriptionRepository;
-        this.userRepository = userRepository;
+        this.userResolver = userResolver;
         this.processInstanceNotificationService = processInstanceNotificationService;
         this.processInstanceMapper = processInstanceMapper;
     }
@@ -54,7 +54,7 @@ public class SubscriptionService {
             .map(ProcessInstanceSubscription::getSubscriberId)
             .collect(Collectors.toList());
 
-        List<AkipUserDTO> users = userRepository.getUsersByLogins(userLoginList);
+        List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
 
         for (AkipUserDTO user : users) {
             processInstanceMailService.sendEmailFromTemplate(
@@ -83,7 +83,7 @@ public class SubscriptionService {
             .map(ProcessInstanceSubscription::getSubscriberId)
             .collect(Collectors.toList());
 
-        List<AkipUserDTO> users = userRepository.getUsersByLogins(userLoginList);
+        List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
 
         for (AkipUserDTO user : users) {
             processInstanceMailService.sendEmailFromTemplate(
@@ -115,7 +115,7 @@ public class SubscriptionService {
             .map(ProcessInstanceSubscription::getSubscriberId)
             .collect(Collectors.toList());
 
-        List<AkipUserDTO> users = userRepository.getUsersByLogins(userLoginList);
+        List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
 
         for (AkipUserDTO user : users) {
             processInstanceMailService.sendEmailFromTemplate(
@@ -147,7 +147,7 @@ public class SubscriptionService {
             .map(ProcessInstanceSubscription::getSubscriberId)
             .collect(Collectors.toList());
 
-        List<AkipUserDTO> users = userRepository.getUsersByLogins(userLoginList);
+        List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
 
         for (AkipUserDTO user : users) {
             processInstanceMailService.sendEmailFromTemplate(
@@ -179,7 +179,7 @@ public class SubscriptionService {
             .map(ProcessInstanceSubscription::getSubscriberId)
             .collect(Collectors.toList());
 
-        List<AkipUserDTO> users = userRepository.getUsersByLogins(userLoginList);
+        List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
 
         for (AkipUserDTO user : users) {
             processInstanceMailService.sendEmailFromTemplate(
@@ -211,7 +211,7 @@ public class SubscriptionService {
             .map(ProcessInstanceSubscription::getSubscriberId)
             .collect(Collectors.toList());
 
-        List<AkipUserDTO> users = userRepository.getUsersByLogins(userLoginList);
+        List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
 
         for (AkipUserDTO user : users) {
             processInstanceMailService.sendEmailFromTemplate(
@@ -243,7 +243,7 @@ public class SubscriptionService {
             .map(ProcessInstanceSubscription::getSubscriberId)
             .collect(Collectors.toList());
 
-        List<AkipUserDTO> users = userRepository.getUsersByLogins(userLoginList);
+        List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
 
         for (AkipUserDTO user : users) {
             processInstanceMailService.sendEmailFromTemplate(
@@ -275,7 +275,7 @@ public class SubscriptionService {
             .map(ProcessInstanceSubscription::getSubscriberId)
             .collect(Collectors.toList());
 
-        List<AkipUserDTO> users = userRepository.getUsersByLogins(userLoginList);
+        List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
 
         for (AkipUserDTO user : users) {
             processInstanceMailService.sendEmailFromTemplate(
