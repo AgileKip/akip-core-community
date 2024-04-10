@@ -367,26 +367,33 @@ public class ProcessInstanceService {
     }
 
     public void createSubscription(ProcessInstanceDTO processInstance) {
-        Optional<ProcessDefinitionSubscription> processDefinitionSubscription = processDefinitionSubscriptionRepository.findBySubscriberIdAndBpmnProcessDefinitionId(
-                SecurityUtils.getCurrentUserLogin().get(),
+        List<ProcessDefinitionSubscription> processDefinitionSubscriptions = processDefinitionSubscriptionRepository.findByBpmnProcessDefinitionId(
                 processInstance.getProcessDefinition().getBpmnProcessDefinitionId()
         );
-        if (processDefinitionSubscription.isEmpty() || !processDefinitionSubscription.get().getNotifyAll()) {
+
+        if (processDefinitionSubscriptions.isEmpty()) {
             return;
         }
-        ProcessInstanceSubscriptionDTO processInstanceSubscription = new ProcessInstanceSubscriptionDTO();
-        processInstanceSubscription.setSubscriberType(processDefinitionSubscription.get().getSubscriberType());
-        processInstanceSubscription.setSubscriberId(processDefinitionSubscription.get().getSubscriberId());
-        processInstanceSubscription.setStatus(ProcessInstanceSubscriptionStatus.ACTIVE);
-        processInstanceSubscription.setDate(processDefinitionSubscription.get().getDate());
-        processInstanceSubscription.setNotifyAll(processDefinitionSubscription.get().getNotifyAll());
-        processInstanceSubscription.setNotifyTasks(processDefinitionSubscription.get().getNotifyTasks());
-        processInstanceSubscription.setNotifyNotes(processDefinitionSubscription.get().getNotifyNotes());
-        processInstanceSubscription.setNotifyAttachments(processDefinitionSubscription.get().getNotifyAttachments());
-        processInstanceSubscription.setNotifyChats(processDefinitionSubscription.get().getNotifyChats());
-        processInstanceSubscription.setProcessInstance(processInstance);
 
-        processInstanceSubscriptionService.save(processInstanceSubscription);
+        for (ProcessDefinitionSubscription processDefinitionSubscription : processDefinitionSubscriptions) {
+            if (!processDefinitionSubscription.getNotifyAll()) {
+                return;
+            }
+
+            ProcessInstanceSubscriptionDTO processInstanceSubscription = new ProcessInstanceSubscriptionDTO();
+            processInstanceSubscription.setSubscriberType(processDefinitionSubscription.getSubscriberType());
+            processInstanceSubscription.setSubscriberId(processDefinitionSubscription.getSubscriberId());
+            processInstanceSubscription.setStatus(ProcessInstanceSubscriptionStatus.ACTIVE);
+            processInstanceSubscription.setDate(processDefinitionSubscription.getDate());
+            processInstanceSubscription.setNotifyAll(processDefinitionSubscription.getNotifyAll());
+            processInstanceSubscription.setNotifyTasks(processDefinitionSubscription.getNotifyTasks());
+            processInstanceSubscription.setNotifyNotes(processDefinitionSubscription.getNotifyNotes());
+            processInstanceSubscription.setNotifyAttachments(processDefinitionSubscription.getNotifyAttachments());
+            processInstanceSubscription.setNotifyChats(processDefinitionSubscription.getNotifyChats());
+            processInstanceSubscription.setProcessInstance(processInstance);
+
+            processInstanceSubscriptionService.save(processInstanceSubscription);
+        }
     }
 
 //    TODO: This method should implement any type of pagination.
