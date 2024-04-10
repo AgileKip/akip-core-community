@@ -1,6 +1,6 @@
 package org.akip.service;
 
-import org.akip.camunda.form7.CamundaForm7Service;
+import org.akip.form.camundaForm7.CamundaForm7Service;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.akip.repository.ProcessDefinitionRepository;

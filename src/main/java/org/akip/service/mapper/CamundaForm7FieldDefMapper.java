@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.akip.camunda.form7.CamundaForm7FieldDef;
+import org.akip.form.camundaForm7.CamundaForm7FieldDef;
 import org.mapstruct.Mapper;
 
 import java.util.Collections;

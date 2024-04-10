@@ -46,6 +46,20 @@ public class TaskDefinitionService {
         return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinitionMapper.toEntity(taskDefinitionDTO)));
     }
 
+    public TaskDefinitionDTO update(TaskDefinitionDTO taskDefinitionDTO){
+        TaskDefinition taskDefinition = taskDefinitionRepository.findById(taskDefinitionDTO.getId()).orElseThrow();
+        taskDefinition.setTaskId(taskDefinitionDTO.getTaskId());
+        taskDefinition.setTaskId(taskDefinitionDTO.getBpmnProcessDefinitionId());
+        taskDefinition.setName(taskDefinitionDTO.getName());
+        return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinition));
+    }
+
+    public TaskDefinitionDTO updateDoc(TaskDefinitionDTO taskDefinitionDTO){
+        TaskDefinition taskDefinition = taskDefinitionRepository.findById(taskDefinitionDTO.getId()).orElseThrow();
+        taskDefinition.setDocumentation(taskDefinitionDTO.getDocumentation());
+        return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinition));
+    }
+
     public void delete(Long id){
         log.debug("Request to delete TaskDefinition : {}", id);
         taskDefinitionRepository.deleteById(id);

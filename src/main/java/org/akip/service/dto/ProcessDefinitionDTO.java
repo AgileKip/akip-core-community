@@ -1,11 +1,9 @@
 package org.akip.service.dto;
 
-import org.akip.camunda.form7.CamundaForm7FieldDef;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 
 import javax.persistence.Lob;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 /**

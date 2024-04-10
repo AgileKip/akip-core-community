@@ -64,9 +64,9 @@ public class FormDefinitionController {
         log.debug("REST request to save FormDefinition : {} ", formDefinitionDTO);
         FormDefinitionDTO result = formDefinitionService.saveWithTaskDefinition(taskDefinitionId, formDefinitionDTO);
         return ResponseEntity
-                .noContent()
+                .ok()
                 .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildCreateMessage(result.getName()), formDefinitionDTO.getName()))
-                .build();
+                .body(result);
     }
 
     @PostMapping("/form-definition/create/process-definition/{processDefinitionId}")
@@ -74,9 +74,9 @@ public class FormDefinitionController {
         log.debug("REST request to save FormDefinition : {} ", formDefinitionDTO);
         FormDefinitionDTO result = formDefinitionService.saveWithProcessDefinition(processDefinitionId, formDefinitionDTO);
         return ResponseEntity
-                .noContent()
+                .ok()
                 .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildCreateMessage(result.getName()), formDefinitionDTO.getName()))
-                .build();
+                .body(result);
     }
 
     @PutMapping("/form-definition")

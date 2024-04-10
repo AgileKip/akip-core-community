@@ -47,10 +47,20 @@ public class TaskDefinitionController {
                 .body(result);
     }
 
-    @PostMapping("/task-definition/update")
+    @PutMapping("/task-definition")
     public ResponseEntity<TaskDefinitionDTO> update(@RequestBody TaskDefinitionDTO taskDefinitionDTO) throws URISyntaxException {
-        log.debug("REST request to save TaskDefinition : {} ", taskDefinitionDTO);
-        TaskDefinitionDTO result = taskDefinitionService.save(taskDefinitionDTO);
+        log.debug("REST request to update Task Definition : {} ", taskDefinitionDTO);
+        TaskDefinitionDTO result = taskDefinitionService.update(taskDefinitionDTO);
+        return ResponseEntity
+                .created(new URI("/api/task-definition/" + result.getBpmnProcessDefinitionId() + "/" + result.getTaskId()))
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildUpdateMessage(result.getTaskId()), taskDefinitionDTO.getTaskId()))
+                .body(result);
+    }
+
+    @PutMapping("/task-definition/doc")
+    public ResponseEntity<TaskDefinitionDTO> updateDoc(@RequestBody TaskDefinitionDTO taskDefinitionDTO) throws URISyntaxException {
+        log.debug("REST request to update Task Definition Documentation : {} ", taskDefinitionDTO);
+        TaskDefinitionDTO result = taskDefinitionService.updateDoc(taskDefinitionDTO);
         return ResponseEntity
                 .created(new URI("/api/task-definition/" + result.getBpmnProcessDefinitionId() + "/" + result.getTaskId()))
                 .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildUpdateMessage(result.getTaskId()), taskDefinitionDTO.getTaskId()))

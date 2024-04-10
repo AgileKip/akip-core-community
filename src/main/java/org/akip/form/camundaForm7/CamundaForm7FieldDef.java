@@ -1,4 +1,4 @@
-package org.akip.camunda.form7;
+package org.akip.form.camundaForm7;
 
 
 import java.util.ArrayList;

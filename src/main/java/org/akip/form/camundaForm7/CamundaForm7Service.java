@@ -1,7 +1,9 @@
-package org.akip.camunda.form7;
+package org.akip.form.camundaForm7;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.camunda.CamundaConstants;
+import org.akip.domain.FormDefinition;
+import org.akip.repository.FormDefinitionRepository;
 import org.akip.service.FormDefinitionService;
 import org.akip.service.dto.FormDefinitionDTO;
 import org.akip.service.dto.ProcessDefinitionDTO;
@@ -16,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,10 +27,13 @@ public class CamundaForm7Service {
 
     private final Logger log = LoggerFactory.getLogger(CamundaForm7Service.class);
 
+    private final FormDefinitionRepository formDefinitionRepository;
+
     private final CamundaForm7FieldDefMapper camundaForm7FieldDefMapper;
 
     private final FormDefinitionService formDefinitionService;
-    public CamundaForm7Service(CamundaForm7FieldDefMapper camundaForm7FieldDefMapper, FormDefinitionService formDefinitionService) {
+    public CamundaForm7Service(FormDefinitionRepository formDefinitionRepository, CamundaForm7FieldDefMapper camundaForm7FieldDefMapper, FormDefinitionService formDefinitionService) {
+        this.formDefinitionRepository = formDefinitionRepository;
         this.camundaForm7FieldDefMapper = camundaForm7FieldDefMapper;
         this.formDefinitionService = formDefinitionService;
     }
@@ -146,6 +152,14 @@ public class CamundaForm7Service {
             );
         }
         return camundaFormFieldDef;
+    }
+
+    public List<CamundaForm7FieldDef> getCamundaForm7(Long formDefinitionId) throws JsonProcessingException {
+        FormDefinition formDefinition = formDefinitionRepository.findById(formDefinitionId).orElse(null);
+        if (formDefinition == null) {
+            return null;
+        }
+        return camundaForm7FieldDefMapper.stringToListFormField(formDefinition.getFormSchema());
     }
 
 
