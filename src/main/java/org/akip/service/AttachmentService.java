@@ -4,6 +4,7 @@ import org.akip.domain.Attachment;
 import org.akip.domain.AttachmentEntity;
 import org.akip.exception.BadRequestErrorException;
 import org.akip.minio.IDocumentStorageService;
+import org.akip.publisher.PublisherEvent;
 import org.akip.repository.AttachmentEntityRepository;
 import org.akip.repository.AttachmentRepository;
 import org.akip.service.dto.AttachmentDTO;
@@ -42,15 +43,18 @@ public class AttachmentService {
 
     private List<IAttachmentValidator> attachmentValidators = new ArrayList<>();
 
+    private final PublisherEvent publisherEvent;
+
     public AttachmentService(
-        ApplicationContext applicationContext,
-        AttachmentRepository attachmentRepository,
-        AttachmentEntityRepository attachmentEntityRepository,
-        AttachmentMapper attachmentMapper
+            ApplicationContext applicationContext,
+            AttachmentRepository attachmentRepository,
+            AttachmentEntityRepository attachmentEntityRepository,
+            AttachmentMapper attachmentMapper, PublisherEvent publisherEvent
     ) {
         this.attachmentRepository = attachmentRepository;
         this.attachmentEntityRepository = attachmentEntityRepository;
         this.attachmentMapper = attachmentMapper;
+        this.publisherEvent = publisherEvent;
 
 //        List<IDocumentStorageService> documentStorageServices = applicationContext.getBeanNamesForType(IDocumentStorageService.class);
 
@@ -87,6 +91,7 @@ public class AttachmentService {
 
     public AttachmentDTO create(AttachmentDTO attachmentDTO) {
         log.debug("Request to create Attachment : {}", attachmentDTO);
+        publisherEvent.publishAttachmentAddedEvent(this, attachmentDTO);
         Attachment attachment = attachmentRepository.save(attachmentMapper.toEntity(attachmentDTO));
         documentStorageService.put(MINIO_ENTITY_NAME, attachment.getUploadedDate(), MINIO_ENTITY_NAME + attachment.getId(), attachmentDTO.getBytes());
         linkAttachmentToEntities(attachment, attachmentDTO);
@@ -95,6 +100,7 @@ public class AttachmentService {
 
     public AttachmentDTO update(AttachmentDTO attachmentDTO) {
         log.debug("Request to update Attachment : {}", attachmentDTO);
+        publisherEvent.publishAttachmentChangedEvent(this, attachmentDTO);
         Attachment attachment = attachmentRepository.save(attachmentMapper.toEntity(attachmentDTO));
         if (attachmentDTO.getBytes() != null) {
             // In the update, the bytes could be null.
@@ -154,6 +160,7 @@ public class AttachmentService {
     public void delete(Long attachmentId) {
         log.debug("Request to delete Attachment : {}", attachmentId);
         AttachmentDTO attachmentDTO = attachmentMapper.toDto(attachmentRepository.getOne(attachmentId));
+        publisherEvent.publishAttachmentRemovedEvent(this, attachmentDTO);
         attachmentEntityRepository.deleteByAttachmentId(attachmentId);
         attachmentRepository.deleteById(attachmentId);
         documentStorageService.delete(MINIO_ENTITY_NAME, attachmentDTO.getUploadedDate(), MINIO_ENTITY_NAME + attachmentDTO.getId());

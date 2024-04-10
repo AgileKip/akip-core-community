@@ -2,6 +2,7 @@ package org.akip.service;
 
 import org.akip.domain.Note;
 import org.akip.domain.NoteEntity;
+import org.akip.publisher.PublisherEvent;
 import org.akip.repository.NoteEntityRepository;
 import org.akip.repository.NoteRepository;
 import org.akip.service.dto.NoteDTO;
@@ -36,12 +37,15 @@ public class NoteService {
 
     private List<INoteValidator> noteValidators = new ArrayList<>();
 
+	private final PublisherEvent publisherEvent;
 
-	public NoteService(NoteRepository noteRepository, NoteEntityRepository noteEntityRepository, NoteMapper noteMapper) {
+
+	public NoteService(NoteRepository noteRepository, NoteEntityRepository noteEntityRepository, NoteMapper noteMapper, PublisherEvent publisherEvent) {
 		this.noteRepository = noteRepository;
 		this.noteEntityRepository = noteEntityRepository;
 		this.noteMapper = noteMapper;
-	}
+        this.publisherEvent = publisherEvent;
+    }
 
 	public NoteDTO save(NoteDTO noteDTO) {
 		if (noteDTO.getId() == null) {
@@ -52,6 +56,7 @@ public class NoteService {
 
 	public NoteDTO create(NoteDTO noteDTO) {
 		log.debug("Request to create Note : {}", noteDTO);
+		publisherEvent.publishNoteAddedEvent(this, noteDTO);
 		Note note = noteRepository.save(noteMapper.toEntity(noteDTO));
 		linkNoteToEntities(note, noteDTO);
 		return noteMapper.toDto(note);
@@ -59,6 +64,7 @@ public class NoteService {
 
 	public NoteDTO update(NoteDTO noteDTO) {
 		log.debug("Request to update Note : {}", noteDTO);
+		publisherEvent.publishNoteChangedEvent(this, noteDTO);
 		Note note = noteRepository.save(noteMapper.toEntity(noteDTO));
 		linkNoteToEntities(note, noteDTO);
 		return noteMapper.toDto(note);
@@ -91,6 +97,8 @@ public class NoteService {
 
 	public void delete(Long noteId) {
 		log.debug("Request to delete Note : {}", noteId);
+		NoteDTO noteDTO = noteMapper.toDto(noteRepository.getOne(noteId));
+		publisherEvent.publishNoteRemovedEvent(this, noteDTO);
 		noteEntityRepository.deleteByNoteId(noteId);
 		noteRepository.deleteById(noteId);
 	}
