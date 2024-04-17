@@ -58,7 +58,7 @@ class AkipTaskInstanceRankingContextPrioritySLABindingBuilder {
         if (!entityName || !entityId) {
             return binding
         }
-        def processEntityLoadedFromDB = loadObjectFromDB(processEntity)
+        def processEntityLoadedFromDB = loadObjectFromDB(entityName, entityId)
         binding.setVariable(CamundaConstants.PROCESS_ENTITY, processEntityLoadedFromDB)
         return binding;
     }

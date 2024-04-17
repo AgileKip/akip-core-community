@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -232,6 +233,12 @@ public class AkipTaskInstanceRankingContextPrioritySLAAlgorithm implements AkipT
 
     private void buildFinalRanking(List<TaskInstanceSearchDTO> tasks) {
         tasks.forEach(this::buildFinalRanking);
+
+        int[] i = { 1 };
+        tasks.stream()
+                .sorted(Comparator.comparing(TaskInstanceSearchDTO::getRank)
+                .reversed())
+                .forEach(taskInstanceSearchDTO -> taskInstanceSearchDTO.setRankInteger(i[0]++));
     }
 
     private void buildFinalRanking(TaskInstanceSearchDTO task) {

@@ -43,6 +43,9 @@ public class TaskInstanceSearchDTO {
 
     private Map<String, String> props;
     private BigDecimal rank;
+
+    private Integer rankInteger;
+
     private Map<String, Object> rankData = new LinkedHashMap<>();
 
     public TaskInstanceSearchDTO() {
@@ -311,6 +314,14 @@ public class TaskInstanceSearchDTO {
 
     public void setRank(BigDecimal rank) {
         this.rank = rank;
+    }
+
+    public Integer getRankInteger() {
+        return rankInteger;
+    }
+
+    public void setRankInteger(Integer rankInteger) {
+        this.rankInteger = rankInteger;
     }
 
     public Map<String, Object> getRankData() {
