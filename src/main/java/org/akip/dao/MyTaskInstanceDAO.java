@@ -5,6 +5,8 @@ import com.owse.searchFramework.enumeration.FilterType;
 import org.akip.dao.filter.AssigneeAndCandidateGroupFilter;
 import org.akip.dao.filter.TenantFilter;
 import org.akip.domain.TaskInstance;
+import org.akip.domain.enumeration.CanadaProvince;
+import org.akip.domain.enumeration.Department;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.recsys.AkipTaskInstanceRakingAlgorithmInterface;
@@ -20,6 +22,7 @@ import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("myTaskInstance")
 class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
@@ -33,6 +36,8 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
     private final BeanFactory beanFactory;
 
     private Boolean sortedByRank = false;
+
+    private Boolean sortedByRankInteger = false;
 
     MyTaskInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService, TenantMemberRepository tenantMemberRepository, BeanFactory beanFactory) {
         super(entityManager, TaskInstance.class, TaskInstanceSearchDTO.class);
@@ -79,6 +84,8 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         getHqlFields().put("tenantObject", new HQLField("tenant.id","tenant.name"));
         getHqlFields().put("tenant", new HQLField("tenant.name"));
         getHqlFields().put("camundaDeploymentId", new HQLField("processInstance.camundaDeploymentId"));
+        getHqlFields().put("province", new HQLField("quotationProcess.quotation.province"));
+        getHqlFields().put("department", new HQLField("quotationProcess.quotation.department.name"));
 
         getJoinDefs().add(new JoinDef()
                 .join("left outer join entity.processInstance.tenant as tenant")
@@ -87,6 +94,11 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         getJoinDefs().add(new JoinDef()
                 .join("left outer join entity.processDefinition.kipApp as kipApp")
                 .activeByDefault(true));
+
+        getJoinDefs().add(new JoinDef()
+                .join("left outer join QuotationProcess as quotationProcess with quotationProcess.processInstance.id = entity.processInstance.id")
+                .addRelatedFilter("province")
+                .addRelatedFilter("department"));
     }
 
     @Override
@@ -142,6 +154,18 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         nameFilterDef.setId("name");
         nameFilterDef.setFilterType(FilterType.DEFAULT);
         filters.add(nameFilterDef);
+
+        StringListFilterDef provinceFilterDef = new StringListFilterDef();
+        provinceFilterDef.setId("province");
+        provinceFilterDef.setFilterType(FilterType.DEFAULT);
+        provinceFilterDef.setOptions(Arrays.stream(CanadaProvince.values()).collect(Collectors.toList()));
+        filters.add(provinceFilterDef);
+
+        StringListFilterDef departmentFilterDef = new StringListFilterDef();
+        departmentFilterDef.setId("department");
+        departmentFilterDef.setFilterType(FilterType.DEFAULT);
+        departmentFilterDef.setOptions(Arrays.stream(Department.values()).collect(Collectors.toList()));
+        filters.add(departmentFilterDef);
 
         DatetimeFilterDef createDateFilterDef = new DatetimeFilterDef();
         createDateFilterDef.setId("createDate");
@@ -323,9 +347,17 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         resultColumnRank.setId("rank");
         resultColumnRank.setTitle("Rank");
         resultColumnRank.setDtoField("rank");
-        resultColumnRank.setVisible(true);
+        resultColumnRank.setVisible(false);
         resultColumnRank.setType("String");
         resultColumns.add(resultColumnRank);
+
+        ResultColumn resultColumnRankInteger = new ResultColumn();
+        resultColumnRankInteger.setId("rankInteger");
+        resultColumnRankInteger.setTitle("Rank");
+        resultColumnRankInteger.setDtoField("rankInteger");
+        resultColumnRankInteger.setVisible(true);
+        resultColumnRankInteger.setType("String");
+        resultColumns.add(resultColumnRankInteger);
 
         ResultColumn resultColumnRankData = new ResultColumn();
         resultColumnRankData.setId("rankData");
@@ -374,7 +406,8 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
     public void handleRequestBeforeSearch(PageableSearchRequest searchRequest) {
         HashMap<String, Object> sortedByMap = (HashMap<String, Object>) searchRequest.getSortedBy();
         sortedByRank = sortedByMap.get("id").equals("rank");
-        if (sortedByRank) {
+        sortedByRankInteger = sortedByMap.get("id").equals("rankInteger");
+        if (sortedByRank || sortedByRankInteger) {
             sortedByMap.put("id", "id");
         }
         super.handleRequestBeforeSearch(searchRequest);
@@ -393,12 +426,22 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         rakingAlgorithm.buildRanking(searchResult.getList());
 
         if (sortedByRank) {
-            HashMap<String, Object> sortedByMap = (HashMap<String, Object>) searchResult.getSortedBy();
+            HashMap<String, Object> sortedByMap = ((HashMap<String, Object>) searchResult.getSortedBy());
             sortedByMap.put("id", "rank");
             if (Boolean.TRUE.equals(sortedByMap.get("reverse"))) {
                 searchResult.getList().sort(Comparator.comparing(TaskInstanceSearchDTO::getRank).reversed());
             } else {
                 searchResult.getList().sort(Comparator.comparing(TaskInstanceSearchDTO::getRank));
+            }
+        }
+
+        if (sortedByRankInteger) {
+            HashMap<String, Object> sortedByMap = (HashMap<String, Object>) searchResult.getSortedBy();
+            sortedByMap.put("id", "rankInteger");
+            if (Boolean.TRUE.equals(sortedByMap.get("reverse"))) {
+                searchResult.getList().sort(Comparator.comparingInt(TaskInstanceSearchDTO::getRankInteger).reversed());
+            } else {
+                searchResult.getList().sort(Comparator.comparingInt(TaskInstanceSearchDTO::getRankInteger));
             }
         }
     }
