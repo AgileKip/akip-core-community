@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.camunda.CamundaConstants;
 import org.akip.llm.chatgpt.ChatGPTService;
 import org.akip.repository.ProcessInstanceRepository;
+import org.akip.service.dto.IProcessEntity;
 import org.akip.service.dto.ProcessInstanceDTO;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -39,8 +40,32 @@ public class AkipLlmDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        ProcessInstanceDTO processInstance = (ProcessInstanceDTO) delegateExecution.getVariable(CamundaConstants.PROCESS_INSTANCE);
+        if (delegateExecution.getVariable(CamundaConstants.PROCESS_ENTITY) == null) {
+            executeWithProcessInstance(delegateExecution);
+        }
+        executeWithProcessEntity(delegateExecution);
+        this.log.debug("###########################################################################");
+    }
 
+    public void executeWithProcessEntity(DelegateExecution delegateExecution) throws Exception {
+        this.log.debug("############ Execution AkipLlmDelegate with a processEntity ################");
+        IProcessEntity processEntity = (IProcessEntity) delegateExecution.getVariable(CamundaConstants.PROCESS_ENTITY);
+        LlmRequestDTO llmRequest = new LlmRequestDTO();
+        llmRequest.setPromptConfigurationName((String) promptConfigurationName.getValue(delegateExecution));
+        llmRequest.setContext(new HashMap<>());
+        llmRequest.getContext().put(CamundaConstants.PROCESS_ENTITY, processEntity);
+        LlmResponseDTO chatResponse = chatGPTService.complete(llmRequest);
+        if (processEntity.getProcessInstance().getData().isEmpty()) {
+            processEntity.getProcessInstance().setData(new HashMap<>());
+        }
+        processEntity.getProcessInstance().getData().put((String) resultVariable.getValue(delegateExecution), chatResponse.getContent());
+        delegateExecution.setVariable(CamundaConstants.PROCESS_ENTITY, processEntity);
+        synchronizeProcessInstance(processEntity.getProcessInstance());
+    }
+
+    public void executeWithProcessInstance(DelegateExecution delegateExecution) throws Exception {
+        this.log.debug("############ Execution AkipLlmDelegate with a processInstance ###############");
+        ProcessInstanceDTO processInstance = (ProcessInstanceDTO) delegateExecution.getVariable(CamundaConstants.PROCESS_INSTANCE);
         LlmRequestDTO llmRequest = new LlmRequestDTO();
         llmRequest.setPromptConfigurationName((String) promptConfigurationName.getValue(delegateExecution));
         llmRequest.setContext(new HashMap<>());
@@ -49,12 +74,13 @@ public class AkipLlmDelegate implements JavaDelegate {
         processInstance.getData().put((String) resultVariable.getValue(delegateExecution), chatResponse.getContent());
         delegateExecution.setVariable(CamundaConstants.PROCESS_INSTANCE, processInstance);
         synchronizeProcessInstance(processInstance);
-        this.log.debug("###########################################################");
 
     }
+
 
     private void synchronizeProcessInstance(ProcessInstanceDTO processInstance) throws JsonProcessingException {
         String dataAsString = processInstanceMapper.mapToString(processInstance.getData());
         processInstanceRepository.updateDataById(dataAsString, processInstance.getId());
     }
+
 }
