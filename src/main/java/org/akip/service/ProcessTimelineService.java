@@ -17,19 +17,19 @@ public class ProcessTimelineService {
     @Autowired
     private ProcessTimelineExpressionService expressionService;
 
-    public ProcessTimelineDTO buildTimeline(String bpmnProcessDefinitionId, IProcessEntity processEntity) {
+    public ProcessTimelineDTO buildTimeline(String bpmnProcessDefinitionId, ProcessInstanceDTO processInstance, List<String> authorities) {
         List<ProcessTimelineDefinitionDTO> processTimelineDefinitions = processTimelineDefinitionService.getByBpmnProcessDefinitionId(
             bpmnProcessDefinitionId
         );
 
-        ProcessTimelineDefinitionDTO processTimelineDefinition = findTimelineDefinition(processEntity, processTimelineDefinitions);
+        ProcessTimelineDefinitionDTO processTimelineDefinition = findTimelineDefinition(processInstance, processTimelineDefinitions, authorities);
 
-        return calculateTimeline(processEntity.getProcessInstance(), processTimelineDefinition);
+        return calculateTimeline(processInstance, processTimelineDefinition);
     }
 
     public ProcessTimelineDTO buildTimeline(String bpmnProcessDefinitionId, ProcessInstanceDTO processInstance) {
         List<ProcessTimelineDefinitionDTO> processTimelineDefinitions = processTimelineDefinitionService.getByBpmnProcessDefinitionId(
-            bpmnProcessDefinitionId
+                bpmnProcessDefinitionId
         );
 
         ProcessTimelineDefinitionDTO processTimelineDefinition = findTimelineDefinition(processInstance, processTimelineDefinitions);
@@ -39,7 +39,37 @@ public class ProcessTimelineService {
 
     private ProcessTimelineDefinitionDTO findTimelineDefinition(
         Object processInstanceOrProcessEntity,
-        List<ProcessTimelineDefinitionDTO> processTimelineDefinitions
+        List<ProcessTimelineDefinitionDTO> processTimelineDefinitions,
+        List<String> authorities
+    ) {
+        if (processTimelineDefinitions.isEmpty()) {
+            throw new RuntimeException("No timeline found");
+        }
+
+        for (ProcessTimelineDefinitionDTO timelineDefinition : processTimelineDefinitions) {
+            if (authorities == null || authorities.isEmpty()) {
+                break;
+            }
+            for (String authority:authorities) {
+                if (timelineDefinition.getName().toLowerCase().contains(authority.toLowerCase())) {
+                    return timelineDefinition;
+                }
+            }
+//            if (
+//                timelineDefinition.getConditionExpression() != null &&
+//                expressionService.evaluateTimeline(processInstanceOrProcessEntity, timelineDefinition.getConditionExpression())
+//
+//            ) {
+//                return timelineDefinition;
+//            }
+        }
+
+        return processTimelineDefinitions.get(0);
+    }
+
+    private ProcessTimelineDefinitionDTO findTimelineDefinition(
+            Object processInstanceOrProcessEntity,
+            List<ProcessTimelineDefinitionDTO> processTimelineDefinitions
     ) {
         if (processTimelineDefinitions.isEmpty()) {
             throw new RuntimeException("No timeline found");
@@ -49,6 +79,7 @@ public class ProcessTimelineService {
             if (
                 timelineDefinition.getConditionExpression() != null &&
                 expressionService.evaluateTimeline(processInstanceOrProcessEntity, timelineDefinition.getConditionExpression())
+
             ) {
                 return timelineDefinition;
             }

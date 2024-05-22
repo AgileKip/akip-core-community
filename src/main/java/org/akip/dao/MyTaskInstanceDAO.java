@@ -169,7 +169,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
 
         DatetimeFilterDef createDateFilterDef = new DatetimeFilterDef();
         createDateFilterDef.setId("createDate");
-        createDateFilterDef.setFilterType(FilterType.ADVANCED);
+        createDateFilterDef.setFilterType(FilterType.DEFAULT);
         filters.add(createDateFilterDef);
 
         DatetimeFilterDef startTimeFilterDef = new DatetimeFilterDef();
@@ -339,7 +339,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         resultColumnProps.setId("props");
         resultColumnProps.setTitle("Props");
         resultColumnProps.setDtoField("props");
-        resultColumnProps.setVisible(true);
+        resultColumnProps.setVisible(false);
         resultColumnProps.setType("Custom");
         resultColumns.add(resultColumnProps);
 
@@ -363,7 +363,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         resultColumnRankData.setId("rankData");
         resultColumnRankData.setTitle("Rank Data");
         resultColumnRankData.setDtoField("rankData");
-        resultColumnRankData.setVisible(true);
+        resultColumnRankData.setVisible(false);
         resultColumnRankData.setType("Custom");
         resultColumns.add(resultColumnRankData);
 
