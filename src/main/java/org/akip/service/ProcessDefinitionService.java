@@ -220,6 +220,10 @@ public class ProcessDefinitionService {
         taskDefinition.setCandidateGroups(userTask.getCamundaCandidateGroups());
         taskDefinition.setCandidateUsers(userTask.getCamundaCandidateUsers());
 
+        if (StringUtils.isBlank(taskDefinition.getDocumentation())) {
+            taskDefinition.setDocumentation(userTask.getDocumentations().iterator().next().getTextContent());
+        }
+
         /**
          * If the form definition comes in the BPMN, we consider it a CamundaForm7Builder.
          * Other builders are configured in the TaskDefinition edit view.

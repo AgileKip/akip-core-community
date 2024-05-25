@@ -57,14 +57,16 @@ public class TaskDefinitionController {
                 .body(result);
     }
 
-    @PutMapping("/task-definition/doc")
-    public ResponseEntity<TaskDefinitionDTO> updateDoc(@RequestBody TaskDefinitionDTO taskDefinitionDTO) throws URISyntaxException {
-        log.debug("REST request to update Task Definition Documentation : {} ", taskDefinitionDTO);
-        TaskDefinitionDTO result = taskDefinitionService.updateDoc(taskDefinitionDTO);
-        return ResponseEntity
-                .created(new URI("/api/task-definition/" + result.getBpmnProcessDefinitionId() + "/" + result.getTaskId()))
-                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildUpdateMessage(result.getTaskId()), taskDefinitionDTO.getTaskId()))
-                .body(result);
+    @GetMapping("/task-definition/{id}/documentation")
+    public String getDocumentation(@PathVariable("id") Long id) {
+        log.debug("REST request to Task Definition Documentation : {} ", id);
+        return taskDefinitionService.findDocumentationById(id);
+    }
+
+    @PutMapping("/task-definition/{id}/documentation")
+    public void updateDocumentation(@PathVariable("id") Long id, @RequestBody TaskDefinitionDTO taskDefinition) {
+        log.debug("REST request to update Task Definition Documentation : {} ", id);
+        taskDefinitionService.updateDocumentation(taskDefinition.getDocumentation(), id);
     }
 
     private String buildCreateMessage(String taskDefinitionId) {

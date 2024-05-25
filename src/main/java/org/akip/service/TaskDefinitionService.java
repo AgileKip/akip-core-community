@@ -42,6 +42,10 @@ public class TaskDefinitionService {
         return taskDefinitionMapper.toDto(taskDefinitionRepository.findById(id).orElseThrow());
     }
 
+    public String findDocumentationById(Long id){
+        return taskDefinitionRepository.findDocumentationById(id).orElseThrow();
+    }
+
     public TaskDefinitionDTO save(TaskDefinitionDTO taskDefinitionDTO){
         return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinitionMapper.toEntity(taskDefinitionDTO)));
     }
@@ -49,15 +53,14 @@ public class TaskDefinitionService {
     public TaskDefinitionDTO update(TaskDefinitionDTO taskDefinitionDTO){
         TaskDefinition taskDefinition = taskDefinitionRepository.findById(taskDefinitionDTO.getId()).orElseThrow();
         taskDefinition.setTaskId(taskDefinitionDTO.getTaskId());
-        taskDefinition.setTaskId(taskDefinitionDTO.getBpmnProcessDefinitionId());
+        taskDefinition.setBpmnProcessDefinitionId(taskDefinitionDTO.getBpmnProcessDefinitionId());
         taskDefinition.setName(taskDefinitionDTO.getName());
         return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinition));
     }
 
-    public TaskDefinitionDTO updateDoc(TaskDefinitionDTO taskDefinitionDTO){
-        TaskDefinition taskDefinition = taskDefinitionRepository.findById(taskDefinitionDTO.getId()).orElseThrow();
-        taskDefinition.setDocumentation(taskDefinitionDTO.getDocumentation());
-        return taskDefinitionMapper.toDto(taskDefinitionRepository.save(taskDefinition));
+    public void updateDocumentation(String documentation, Long id){
+        log.debug("Request to update documentation of TaskDefinition : {}", id);
+        taskDefinitionRepository.updateDocumentationById(documentation, id);
     }
 
     public void delete(Long id){
