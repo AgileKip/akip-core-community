@@ -3,11 +3,12 @@
 * 0.1.10 (WIP)
   * Including RecSys
 
-* 0.1.9
+* 0.1.9 (WIP)
+  * Fixing bugs (#82)
   * Including TaskDefinition entity
   * Including FormDefinition entity
   * Including support for CamundaForm8
-  * Including in the ProcessInstance page sections Event Subscriptions and History Activities  
+  * Including sections Process Event Subscription and Process Historical Activities in the Process Instance view  
 
 * 0.1.8
   * Including new field type: AkipTextareaChatGptField
