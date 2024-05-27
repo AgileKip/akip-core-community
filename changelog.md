@@ -5,6 +5,7 @@
 
 * 0.1.9
   * Including TaskDefinition entity
+  * Including support for CamundaForm8
   * Including in the ProcessInstance page sections Event Subscriptions and History Activities  
 
 * 0.1.8
