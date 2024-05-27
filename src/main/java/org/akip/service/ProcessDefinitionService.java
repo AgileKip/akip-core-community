@@ -1,21 +1,20 @@
 package org.akip.service;
 
-import org.akip.camunda.form.CamundaFormFieldDef;
-import org.akip.camunda.form.CamundaFormFieldValidationConstraintDef;
+import org.akip.form.camundaForm7.CamundaForm7Service;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.repository.ProcessDeploymentRepository;
+import org.akip.service.dto.FormDefinitionDTO;
 import org.akip.service.dto.ProcessDefinitionDTO;
+import org.akip.service.dto.TaskDefinitionDTO;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.akip.service.mapper.ProcessDefinitionMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.bpmn.instance.StartEvent;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
-import org.camunda.bpm.model.bpmn.instance.camunda.*;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +32,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class ProcessDefinitionService {
 
-    private static final String ENTITY_NAME = "processDefinition";
-
     private final Logger log = LoggerFactory.getLogger(ProcessDefinitionService.class);
 
     private final ProcessDefinitionRepository processDefinitionRepository;
@@ -43,13 +40,22 @@ public class ProcessDefinitionService {
 
     private final ProcessDeploymentRepository processDeploymentRepository;
 
+    private final TaskDefinitionService taskDefinitionService;
+
+    private final CamundaForm7Service camundaForm7Service;
+
+
     public ProcessDefinitionService(
-        ProcessDefinitionRepository processDefinitionRepository,
-        ProcessDefinitionMapper processDefinitionMapper,
-        ProcessDeploymentRepository processDeploymentRepository) {
+            ProcessDefinitionRepository processDefinitionRepository,
+            ProcessDefinitionMapper processDefinitionMapper,
+            ProcessDeploymentRepository processDeploymentRepository,
+            TaskDefinitionService taskDefinitionService,
+            CamundaForm7Service camundaForm7Service) {
         this.processDefinitionRepository = processDefinitionRepository;
         this.processDefinitionMapper = processDefinitionMapper;
         this.processDeploymentRepository = processDeploymentRepository;
+        this.taskDefinitionService = taskDefinitionService;
+        this.camundaForm7Service = camundaForm7Service;
     }
 
     public ProcessDefinition createOrUpdateProcessDefinition(BpmnModelInstance bpmnModelInstance) {
@@ -78,12 +84,7 @@ public class ProcessDefinitionService {
         return process;
     }
 
-    private StartEvent extracStartEventFromModel(BpmnModelInstance modelInstance) {
-        ModelElementType startEventType = modelInstance.getModel().getType(StartEvent.class);
-        StartEvent startEvent = (StartEvent) modelInstance.getModelElementsByType(startEventType).iterator().next();
 
-        return startEvent;
-    }
 
     private ProcessDefinition createProcessDefinition(Process process, BpmnModelInstance bpmnModelInstance) {
         ProcessDefinitionDTO processDefinition = new ProcessDefinitionDTO();
@@ -95,9 +96,18 @@ public class ProcessDefinitionService {
             processDefinition.setDescription(process.getDocumentations().iterator().next().getRawTextContent());
         }
 
-        processDefinition.setStartFormFields(extractFormFields(bpmnModelInstance));
+        /**
+         * If the start form definition comes in the BPMN, we consider it a CamundaForm7Builder.
+         * Other builders are configured in the ProcessDefinition edit view.
+         */
 
-        return processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
+        setupCamundaForm7(processDefinition, bpmnModelInstance);
+
+        ProcessDefinition processDefinitionSaved = processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
+
+        extractAndSaveTaskDefinitions(bpmnModelInstance, processDefinitionSaved);
+
+        return processDefinitionSaved;
     }
 
     private ProcessDefinition updateProcessDefinition(Process process, BpmnModelInstance bpmnModelInstance) {
@@ -109,9 +119,13 @@ public class ProcessDefinitionService {
             processDefinition.setDescription(process.getDocumentations().iterator().next().getRawTextContent());
         }
 
-        processDefinition.setStartFormFields(extractFormFields(bpmnModelInstance));
+        setupCamundaForm7(processDefinition, bpmnModelInstance);
 
-        return processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
+        ProcessDefinition processDefinitionUpdated = processDefinitionRepository.save(processDefinitionMapper.toEntity(processDefinition));
+
+        extractAndSaveTaskDefinitions(bpmnModelInstance, processDefinitionUpdated);
+
+        return processDefinitionUpdated;
     }
 
     /**
@@ -154,62 +168,7 @@ public class ProcessDefinitionService {
         processDefinitionRepository.deleteById(id);
     }
 
-    public List<CamundaFormFieldDef> extractFormFields(BpmnModelInstance bpmnModelInstance) {
-        StartEvent startEvent = extracStartEventFromModel(bpmnModelInstance);
-        if (startEvent.getExtensionElements() == null
-        ||
-                startEvent.getExtensionElements()
-                .getElementsQuery()
-                .filterByType(CamundaFormData.class)
-                .list()
-                .isEmpty()) {
-            return Collections.emptyList();
-        }
-        return startEvent
-                .getExtensionElements()
-                .getElementsQuery()
-                .filterByType(CamundaFormData.class)
-                .singleResult()
-                .getCamundaFormFields()
-                .stream()
-                .map(this::toCamundaFormFieldDef)
-                .collect(Collectors.toList());
-    }
 
-    private CamundaFormFieldDef toCamundaFormFieldDef(CamundaFormField formField) {
-        CamundaFormFieldDef camundaFormFieldDef = new CamundaFormFieldDef();
-        camundaFormFieldDef.setId(formField.getCamundaId());
-        camundaFormFieldDef.setLabel(formField.getCamundaLabel());
-        camundaFormFieldDef.setType(formField.getCamundaType());
-        if (formField.getCamundaValues() != null) {
-            camundaFormFieldDef.setValues(formField.getCamundaValues().stream().collect(Collectors.toMap(CamundaValue::getCamundaId, CamundaValue::getCamundaName)));
-        }
-
-        if (formField.getCamundaDefaultValue() != null) {
-            camundaFormFieldDef.setDefaultValue(formField.getCamundaDefaultValue());
-        }
-        if (formField.getCamundaValidation() != null) {
-            camundaFormFieldDef.setValidationConstraints(
-                    formField.getCamundaValidation().getCamundaConstraints().stream().map(this::toCamundaFormFieldValidationConstraintDef).collect(Collectors.toList())
-            );
-        }
-
-        if (formField.getCamundaProperties() != null) {
-            camundaFormFieldDef.setProperties(
-                    formField.getCamundaProperties().getCamundaProperties().stream().collect(Collectors.toMap(CamundaProperty::getCamundaId, CamundaProperty::getCamundaValue))
-            );
-        }
-        return camundaFormFieldDef;
-    }
-
-    private CamundaFormFieldValidationConstraintDef toCamundaFormFieldValidationConstraintDef(
-            CamundaConstraint camundaConstraint
-    ) {
-        CamundaFormFieldValidationConstraintDef camundaFormFieldValidationConstraintDef = new CamundaFormFieldValidationConstraintDef();
-        camundaFormFieldValidationConstraintDef.setName(camundaConstraint.getCamundaName());
-        camundaFormFieldValidationConstraintDef.setConfiguration(camundaConstraint.getCamundaConfig());
-        return camundaFormFieldValidationConstraintDef;
-    }
 
     public List<TaskInstanceDTO> getBpmnUserTasks(String bpmnProcessDefinitionId) {
 
@@ -239,5 +198,67 @@ public class ProcessDefinitionService {
                 )
                 .collect(Collectors.toList());
     }
+
+    private void extractAndSaveTaskDefinitions(BpmnModelInstance bpmnModelInstance, ProcessDefinition processDefinition){
+
+        bpmnModelInstance
+                .getModelElementsByType(UserTask.class)
+                .forEach(
+                        userTask -> {
+                            createAndSaveTaskDefinition(processDefinition, userTask);
+                        }
+                );
+
+    }
+
+    private void createAndSaveTaskDefinition(ProcessDefinition processDefinition, UserTask userTask) {
+        TaskDefinitionDTO taskDefinition = taskDefinitionService
+                .findByBpmnProcessDefinitionIdAndTaskId(processDefinition.getBpmnProcessDefinitionId(), userTask.getId())
+                .orElse(new TaskDefinitionDTO(processDefinition.getBpmnProcessDefinitionId(), userTask.getId()));
+        taskDefinition.setName(userTask.getName());
+        taskDefinition.setAssignee(userTask.getCamundaAssignee());
+        taskDefinition.setCandidateGroups(userTask.getCamundaCandidateGroups());
+        taskDefinition.setCandidateUsers(userTask.getCamundaCandidateUsers());
+
+        if (StringUtils.isBlank(taskDefinition.getDocumentation())) {
+            taskDefinition.setDocumentation(userTask.getDocumentations().iterator().next().getTextContent());
+        }
+
+        /**
+         * If the form definition comes in the BPMN, we consider it a CamundaForm7Builder.
+         * Other builders are configured in the TaskDefinition edit view.
+         */
+        setupCamundaForm7(taskDefinition, userTask);
+
+        taskDefinitionService.save(taskDefinition);
+    }
+
+    private void setupCamundaForm7(ProcessDefinitionDTO processDefinition, BpmnModelInstance bpmnModelInstance) {
+        Optional<FormDefinitionDTO> optionalFormDefinition = camundaForm7Service.createOrUpdateStartFormDefinition(processDefinition, bpmnModelInstance);
+        if (optionalFormDefinition.isEmpty()) {
+            processDefinition.setStartFormIsEnabled(Boolean.FALSE);
+            processDefinition.setStartFormDefinition(null);
+            return;
+        }
+        processDefinition.setStartFormIsEnabled(Boolean.TRUE);
+        processDefinition.setStartFormDefinition(optionalFormDefinition.get());
+    }
+
+    private void setupCamundaForm7(TaskDefinitionDTO taskDefinition, UserTask userTask) {
+        Optional<FormDefinitionDTO> optionalFormDefinition = camundaForm7Service.createOrUpdateTaskFormDefinition(taskDefinition, userTask);
+        if (optionalFormDefinition.isEmpty()) {
+            taskDefinition.setDynamicFormIsEnabled(Boolean.FALSE);
+            return;
+        }
+        taskDefinition.setDynamicFormIsEnabled(Boolean.TRUE);
+        taskDefinition.setFormDefinition(optionalFormDefinition.get());
+    }
+
+
+
+
+
+
+
 
 }
