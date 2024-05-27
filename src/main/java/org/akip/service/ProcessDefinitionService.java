@@ -13,6 +13,7 @@ import org.akip.service.mapper.ProcessDefinitionMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.xml.type.ModelElementType;
@@ -137,10 +138,10 @@ public class ProcessDefinitionService {
     public List<ProcessDefinitionDTO> findAll() {
         log.debug("Request to get all ProcessDefinitions");
         return processDefinitionRepository
-            .findAll()
-            .stream()
-            .map(processDefinitionMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
+                .findAll()
+                .stream()
+                .map(processDefinitionMapper::toDto)
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -167,7 +168,6 @@ public class ProcessDefinitionService {
         log.debug("Request to delete ProcessDefinition : {}", id);
         processDefinitionRepository.deleteById(id);
     }
-
 
 
     public List<TaskInstanceDTO> getBpmnUserTasks(String bpmnProcessDefinitionId) {
@@ -197,6 +197,28 @@ public class ProcessDefinitionService {
                         }
                 )
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getBpmnSignalEvents(String camundaDeploymentId) {
+
+        BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(
+                new ByteArrayInputStream(
+                        processDeploymentRepository
+                                .findByCamundaDeploymentId(camundaDeploymentId)
+                                .get()
+                                .getSpecificationFile()
+                )
+        );
+
+        List<String> signals = new ArrayList<>();
+        for (IntermediateCatchEvent intermediateCatchEvent : bpmnModelInstance
+                .getModelElementsByType(IntermediateCatchEvent.class)) {
+            SignalEventDefinition signalEventDefinition = intermediateCatchEvent.getChildElementsByType(SignalEventDefinition.class).iterator().next();
+            String signalName = signalEventDefinition.getSignal().getName();
+            signals.add(signalName);
+        }
+
+        return signals;
     }
 
     private void extractAndSaveTaskDefinitions(BpmnModelInstance bpmnModelInstance, ProcessDefinition processDefinition){
@@ -253,12 +275,5 @@ public class ProcessDefinitionService {
         taskDefinition.setDynamicFormIsEnabled(Boolean.TRUE);
         taskDefinition.setFormDefinition(optionalFormDefinition.get());
     }
-
-
-
-
-
-
-
 
 }
