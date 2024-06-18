@@ -242,7 +242,7 @@ public class ProcessDefinitionService {
         taskDefinition.setCandidateGroups(userTask.getCamundaCandidateGroups());
         taskDefinition.setCandidateUsers(userTask.getCamundaCandidateUsers());
 
-        if (StringUtils.isBlank(taskDefinition.getDocumentation())) {
+        if (!userTask.getDocumentations().isEmpty() && StringUtils.isBlank(taskDefinition.getDocumentation())) {
             taskDefinition.setDocumentation(userTask.getDocumentations().iterator().next().getTextContent());
         }
 
