@@ -6,7 +6,6 @@ import org.akip.domain.enumeration.StatusProcessDefinition;
 
 import javax.persistence.Lob;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -27,7 +26,9 @@ public class ProcessDefinitionDTO implements Serializable {
 
     private Boolean canBeManuallyStarted;
 
-    private List<CamundaFormFieldDef> startFormFields;
+    private Boolean startFormIsEnabled;
+
+    private FormDefinitionDTO startFormDefinition;
 
     private ProcessType processType;
 
@@ -81,12 +82,20 @@ public class ProcessDefinitionDTO implements Serializable {
         this.canBeManuallyStarted = canBeManuallyStarted;
     }
 
-    public List<CamundaFormFieldDef> getStartFormFields() {
-        return startFormFields;
+    public Boolean getStartFormIsEnabled() {
+        return startFormIsEnabled;
     }
 
-    public void setStartFormFields(List<CamundaFormFieldDef> startFormFields) {
-        this.startFormFields = startFormFields;
+    public void setStartFormIsEnabled(Boolean startFormIsEnabled) {
+        this.startFormIsEnabled = startFormIsEnabled;
+    }
+
+    public FormDefinitionDTO getStartFormDefinition() {
+        return startFormDefinition;
+    }
+
+    public void setStartFormDefinition(FormDefinitionDTO startFormDefinition) {
+        this.startFormDefinition = startFormDefinition;
     }
 
     public ProcessType getProcessType() {

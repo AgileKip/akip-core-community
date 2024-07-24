@@ -42,10 +42,18 @@
     <include file="config/liquibase/changelog/00000000000027_added_constraints_ProcessMember.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000028_added_entity_ProcessMemberProcessRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000029_added_entity_TenantMemberTenantRole.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000030_added_entity_FormDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000031_alter_entity_ProcessDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000032_added_entity_TaskDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000033_alter_entity_TaskInstance.xml" relativeToChangelogFile="false"/>
+
     <include file="config/liquibase/changelog/00000000000004_added_entity_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000005_added_entity_constraints_ProcessDeployment.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000007_added_entity_constraints_ProcessInstance.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000009_added_entity_constraints_TaskInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000034_added_new_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000035_added_new_constraints_TaskDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000036_added_new_constraints_TaskInstance.xml" relativeToChangelogFile="false"/>
 
     <include file="config/liquibase/changelog/00000000001001_added_entity_DashboardConfig.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000001002_added_entity_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>
@@ -54,8 +62,5 @@
     <include file="config/liquibase/changelog/00000000002001_added_entity_AkipEmailConnectorConfig.xml" relativeToChangelogFile="false"/>
 
     <include file="config/liquibase/changelog/00000000003001_added_entity_AkipPromptConfiguration.xml" relativeToChangelogFile="false"/>
-
-
-
 
 </databaseChangeLog>

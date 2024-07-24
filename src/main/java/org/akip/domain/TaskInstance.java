@@ -7,6 +7,8 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A TaskInstance.
@@ -87,13 +89,11 @@ public class TaskInstance implements Serializable {
     @Column(name = "connector_config_name")
     private String connectorConfigName;
 
-    @Lob
-    @Type(type = "org.hibernate.type.TextType")
-    @Column(name = "form_fields")
-    private String formFields;
-
     @ManyToOne
     private ProcessDefinition processDefinition;
+
+    @ManyToOne
+    private TaskDefinition taskDefinition;
 
     @ManyToOne
     @JoinColumn(name = "camundaProcessInstanceId", referencedColumnName = "camunda_process_instance_id")
@@ -373,19 +373,6 @@ public class TaskInstance implements Serializable {
         this.connectorConfigName = connectorConfigName;
     }
 
-    public String getFormFields() {
-        return formFields;
-    }
-
-    public TaskInstance formFields(String formFields) {
-        this.formFields = formFields;
-        return this;
-    }
-
-    public void setFormFields(String formFields) {
-        this.formFields = formFields;
-    }
-
     public ProcessDefinition getProcessDefinition() {
         return this.processDefinition;
     }
@@ -412,6 +399,19 @@ public class TaskInstance implements Serializable {
         this.processInstance = processInstance;
     }
 
+    public TaskDefinition getTaskDefinition() {
+        return taskDefinition;
+    }
+
+    public TaskInstance processInstance(TaskDefinition taskDefinition) {
+        this.setTaskDefinition(taskDefinition);
+        return this;
+    }
+
+    public void setTaskDefinition(TaskDefinition taskDefinition) {
+        this.taskDefinition = taskDefinition;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -435,10 +435,10 @@ public class TaskInstance implements Serializable {
     @Override
     public String toString() {
         return "TaskInstance{" +
-            "id=" + getId() +
-            ", taskId='" + getTaskId() + "'" +
-            ", name='" + getName() + "'" +
-            ", status='" + getStatus() + "'" +
-            "}";
+                "id=" + getId() +
+                ", taskId='" + getTaskId() + "'" +
+                ", name='" + getName() + "'" +
+                ", status='" + getStatus() + "'" +
+                "}";
     }
 }
