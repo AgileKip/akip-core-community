@@ -23,12 +23,12 @@ public class NoteChangedEventListener implements ApplicationListener<NoteChanged
     public void onApplicationEvent(NoteChangedEvent event) {
         NoteDTO noteChangedEvent = event.getNote();
         if (noteChangedEvent.getEntityName().equals("processInstance")) {
-            subscriptionService.noteChangedEventNotify(noteChangedEvent.getEntityId());
+            subscriptionService.notifyChangedNote(noteChangedEvent.getEntityId());
             return;
         }
         for (NoteEntityDTO otherEntity : noteChangedEvent.getOtherEntities()) {
             if (otherEntity.getEntityName().equals("processInstance")) {
-                subscriptionService.attachmentAddedEventNotify(noteChangedEvent.getEntityId());
+                subscriptionService.notifyAddedAttachment(noteChangedEvent.getEntityId());
                 return;
             }
         }

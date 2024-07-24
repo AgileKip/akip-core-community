@@ -120,11 +120,6 @@ public class ProcessInstanceNotificationDTO implements Serializable {
         return "ProcessInstanceNotificationDTO{" +
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", date='" + getDate() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", eventType='" + getEventType() + "'" +
-            ", subscriberId='" + getSubscriberId() + "'" +
             "}";
     }
 }

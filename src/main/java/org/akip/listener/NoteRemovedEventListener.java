@@ -23,12 +23,12 @@ public class NoteRemovedEventListener implements ApplicationListener<NoteRemoved
     public void onApplicationEvent(NoteRemovedEvent event) {
         NoteDTO noteRemovedEvent = event.getNote();
         if (noteRemovedEvent.getEntityName().equals("processInstance")) {
-            subscriptionService.noteRemovedEventNotify(noteRemovedEvent.getEntityId());
+            subscriptionService.notifyRemovedNote(noteRemovedEvent.getEntityId());
             return;
         }
         for (NoteEntityDTO otherEntity : noteRemovedEvent.getOtherEntities()) {
             if (otherEntity.getEntityName().equals("processInstance")) {
-                subscriptionService.attachmentAddedEventNotify(noteRemovedEvent.getEntityId());
+                subscriptionService.notifyAddedAttachment(noteRemovedEvent.getEntityId());
                 return;
             }
         }

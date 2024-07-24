@@ -62,7 +62,7 @@ public class ProcessInstanceNotificationService {
     public void save(ProcessInstance processInstance, ProcessInstanceNotificationType notificationType, String subscriberId) {
         ProcessInstanceNotification processInstanceNotification = new ProcessInstanceNotification();
 
-        if (notificationType == ProcessInstanceNotificationType.TASKCOMPLETED) {
+        if (notificationType == ProcessInstanceNotificationType.TASK_COMPLETED) {
             processInstanceNotification.setTitle("Completed Task Notification");
             processInstanceNotification.setDescription(
                 "A completed task from the " +
@@ -71,7 +71,7 @@ public class ProcessInstanceNotificationService {
                 processInstance.getBusinessKey()
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.NOTEADDED) {
+        if (notificationType == ProcessInstanceNotificationType.NOTE_ADDED) {
             processInstanceNotification.setTitle("Note Added Notification");
             processInstanceNotification.setDescription(
                 "A new note has been added to the process " +
@@ -80,7 +80,7 @@ public class ProcessInstanceNotificationService {
                 processInstance.getBusinessKey()
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.NOTEEDITED) {
+        if (notificationType == ProcessInstanceNotificationType.NOTE_EDITED) {
             processInstanceNotification.setTitle("Note Edited Notification");
             processInstanceNotification.setDescription(
                     "A note in the process " +
@@ -90,7 +90,7 @@ public class ProcessInstanceNotificationService {
                             ", which you signed, has been edited."
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.NOTEREMOVED) {
+        if (notificationType == ProcessInstanceNotificationType.NOTE_REMOVED) {
             processInstanceNotification.setTitle("Note Removed Notification");
             processInstanceNotification.setDescription(
                     "A note in the process " +
@@ -100,7 +100,7 @@ public class ProcessInstanceNotificationService {
                             ", which you signed, has been removed."
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.ATTACHMENTADDED) {
+        if (notificationType == ProcessInstanceNotificationType.ATTACHMENT_ADDED) {
             processInstanceNotification.setTitle("Attachment Added Notification");
             processInstanceNotification.setDescription(
                 "A new attachment has been added to the process " +
@@ -109,7 +109,7 @@ public class ProcessInstanceNotificationService {
                 processInstance.getBusinessKey()
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.ATTACHMENTEDITED) {
+        if (notificationType == ProcessInstanceNotificationType.ATTACHMENT_EDITED) {
             processInstanceNotification.setTitle("Attachment Edited Notification");
             processInstanceNotification.setDescription(
                     "An attachment in the process " +
@@ -119,7 +119,7 @@ public class ProcessInstanceNotificationService {
                             ", which you signed, has been edited"
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.ATTACHMENTREMOVED) {
+        if (notificationType == ProcessInstanceNotificationType.ATTACHMENT_REMOVED) {
             processInstanceNotification.setTitle("Attachment Removed Notification");
             processInstanceNotification.setDescription(
                     "An attachment in the process " +

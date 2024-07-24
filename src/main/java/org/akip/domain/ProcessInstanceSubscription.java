@@ -223,13 +223,6 @@ public class ProcessInstanceSubscription implements Serializable {
             "id=" + getId() +
             ", subscriberType='" + getSubscriberType() + "'" +
             ", subscriberId='" + getSubscriberId() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", date='" + getDate() + "'" +
-            ", notifyAll='" + getNotifyAll() + "'" +
-            ", notifyTasks='" + getNotifyTasks() + "'" +
-            ", notifyAttachments='" + getNotifyAttachments() + "'" +
-            ", notifyNotes='" + getNotifyNotes() + "'" +
-            ", notifyChats='" + getNotifyChats() + "'" +
             "}";
     }
 }

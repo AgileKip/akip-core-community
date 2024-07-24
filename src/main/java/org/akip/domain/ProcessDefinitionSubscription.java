@@ -230,15 +230,7 @@ public class ProcessDefinitionSubscription implements Serializable {
     public String toString() {
         return "ProcessDefinitionSubscription{" +
             "id=" + getId() +
-            ", subscriberType='" + getSubscriberType() + "'" +
             ", subscriberId='" + getSubscriberId() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", date='" + getDate() + "'" +
-            ", notifyAll='" + getNotifyAll() + "'" +
-            ", notifyTasks='" + getNotifyTasks() + "'" +
-            ", notifyAttachments='" + getNotifyAttachments() + "'" +
-            ", notifyNotes='" + getNotifyNotes() + "'" +
-            ", notifyChats='" + getNotifyChats() + "'" +
             "}";
     }
 }

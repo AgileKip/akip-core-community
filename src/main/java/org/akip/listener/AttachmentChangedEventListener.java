@@ -23,12 +23,12 @@ public class AttachmentChangedEventListener implements ApplicationListener<Attac
     public void onApplicationEvent(AttachmentChangedEvent event) {
         AttachmentDTO attachmentChangedEvent = event.getAttachment();
         if (attachmentChangedEvent.getEntityName().equals("processInstance")) {
-            subscriptionService.attachmentChangedEventNotify(attachmentChangedEvent.getEntityId());
+            subscriptionService.notifyChangedAttachment(attachmentChangedEvent.getEntityId());
             return;
         }
         for (AttachmentEntityDTO otherEntity : attachmentChangedEvent.getOtherEntities()) {
             if (otherEntity.getEntityName().equals("processInstance")) {
-                subscriptionService.attachmentAddedEventNotify(attachmentChangedEvent.getEntityId());
+                subscriptionService.notifyAddedAttachment(attachmentChangedEvent.getEntityId());
                 return;
             }
         }

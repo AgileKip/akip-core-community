@@ -174,11 +174,6 @@ public class ProcessInstanceNotification implements Serializable {
         return "ProcessInstanceNotification{" +
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", date='" + getDate() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", eventType='" + getEventType() + "'" +
-            ", subscriberId='" + getSubscriberId() + "'" +
             "}";
     }
 }

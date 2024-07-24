@@ -23,12 +23,12 @@ public class AttachmentRemovedEventListener implements ApplicationListener<Attac
     public void onApplicationEvent(AttachmentRemovedEvent event) {
         AttachmentDTO attachmentRemovedEvent = event.getAttachment();
         if (attachmentRemovedEvent.getEntityName().equals("processInstance")) {
-            subscriptionService.attachmentAddedEventNotify(attachmentRemovedEvent.getEntityId());
+            subscriptionService.notifyRemovedAttachment(attachmentRemovedEvent.getEntityId());
             return;
         }
         for (AttachmentEntityDTO otherEntity : attachmentRemovedEvent.getOtherEntities()) {
             if (otherEntity.getEntityName().equals("processInstance")) {
-                subscriptionService.attachmentAddedEventNotify(attachmentRemovedEvent.getEntityId());
+                subscriptionService.notifyRemovedAttachment(attachmentRemovedEvent.getEntityId());
                 return;
             }
         }
