@@ -1,17 +1,11 @@
 package org.akip.camunda;
 
-import org.akip.camunda.form.CamundaFormFieldDef;
-import org.akip.camunda.form.CamundaFormFieldValidationConstraintDef;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.ProcessDeployment;
 import org.akip.domain.enumeration.ProcessType;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
-import org.akip.repository.ProcessDefinitionRepository;
-import org.akip.repository.ProcessDeploymentRepository;
-import org.akip.repository.ProcessRoleRepository;
-import org.akip.repository.TenantRoleRepository;
-import org.akip.repository.TaskDefinitionRepository;
+import org.akip.repository.*;
 import org.akip.service.TaskInstanceService;
 import org.akip.service.dto.ProcessDefinitionDTO;
 import org.akip.service.dto.ProcessInstanceDTO;
@@ -23,6 +17,9 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class CamundaTaskCreateListener implements TaskListener {
@@ -33,9 +30,9 @@ public class CamundaTaskCreateListener implements TaskListener {
 
     private final ProcessDefinitionMapper processDefinitionMapper;
 
-    private final TaskDefinitionRepository taskDefinitionRepository;
-
     private final TaskDefinitionMapper taskDefinitionMapper;
+
+    private final TaskDefinitionRepository taskDefinitionRepository;
 
     private final ProcessRoleRepository processRoleRepository;
 
@@ -46,8 +43,11 @@ public class CamundaTaskCreateListener implements TaskListener {
     public CamundaTaskCreateListener(
             TaskInstanceService taskInstanceService,
             ProcessDefinitionRepository processDefinitionRepository,
-            ProcessDefinitionMapper processDefinitionMapper, TaskDefinitionRepository taskDefinitionRepository, TaskDefinitionMapper taskDefinitionMapper
-            ProcessRoleRepository processRoleRepository, ProcessDeploymentRepository processDeploymentRepository, TenantRoleRepository tenantRoleRepository
+            ProcessDefinitionMapper processDefinitionMapper,
+            TaskDefinitionRepository taskDefinitionRepository, TaskDefinitionMapper taskDefinitionMapper,
+            ProcessRoleRepository processRoleRepository,
+            ProcessDeploymentRepository processDeploymentRepository,
+            TenantRoleRepository tenantRoleRepository
     ) {
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
