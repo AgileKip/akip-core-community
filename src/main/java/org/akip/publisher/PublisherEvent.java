@@ -16,38 +16,38 @@ public class PublisherEvent {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public void publishCompleteTaskEvent(Object source, TaskInstanceDTO taskInstance) {
-        TaskCompletedEvent event = new TaskCompletedEvent(source, taskInstance);
+    public void publishEventCompleteTask(Object source, TaskInstanceDTO taskInstance) {
+        EventCompletedTask event = new EventCompletedTask(source, taskInstance);
         applicationEventPublisher.publishEvent(event);
     }
 
-    public void publishNoteAddedEvent(Object source, NoteDTO note) {
-        NoteAddedEvent event = new NoteAddedEvent(source, note);
+    public void publishEventAddedNote(Object source, NoteDTO note) {
+        EventAddedNote event = new EventAddedNote(source, note);
         applicationEventPublisher.publishEvent(event);
     }
 
-    public void publishNoteChangedEvent(Object source, NoteDTO note) {
-        NoteChangedEvent event = new NoteChangedEvent(source, note);
+    public void publishEventChangedNote(Object source, NoteDTO note) {
+        EventChangedNote event = new EventChangedNote(source, note);
         applicationEventPublisher.publishEvent(event);
     }
 
-    public void publishNoteRemovedEvent(Object source, NoteDTO note) {
-        NoteRemovedEvent event = new NoteRemovedEvent(source, note);
+    public void publishEventRemovedNote(Object source, NoteDTO note) {
+        EventRemovedNote event = new EventRemovedNote(source, note);
         applicationEventPublisher.publishEvent(event);
     }
 
-    public void publishAttachmentAddedEvent(Object source, AttachmentDTO attachment) {
-        AttachmentAddedEvent event = new AttachmentAddedEvent(source, attachment);
+    public void publishEventAddedAttachment(Object source, AttachmentDTO attachment) {
+        EventAddedAttachment event = new EventAddedAttachment(source, attachment);
         applicationEventPublisher.publishEvent(event);
     }
 
-    public void publishAttachmentChangedEvent(Object source, AttachmentDTO attachment) {
-        AttachmentChangedEvent event = new AttachmentChangedEvent(source, attachment);
+    public void publishEventChangedAttachment(Object source, AttachmentDTO attachment) {
+        EventChangedAttachment event = new EventChangedAttachment(source, attachment);
         applicationEventPublisher.publishEvent(event);
     }
 
-    public void publishAttachmentRemovedEvent(Object source, AttachmentDTO attachment) {
-        AttachmentRemovedEvent event = new AttachmentRemovedEvent(source, attachment);
+    public void publishEventRemovedAttachment(Object source, AttachmentDTO attachment) {
+        EventRemovedAttachment event = new EventRemovedAttachment(source, attachment);
         applicationEventPublisher.publishEvent(event);
     }
 }

@@ -91,7 +91,7 @@ public class AttachmentService {
 
     public AttachmentDTO create(AttachmentDTO attachmentDTO) {
         log.debug("Request to create Attachment : {}", attachmentDTO);
-        publisherEvent.publishAttachmentAddedEvent(this, attachmentDTO);
+        publisherEvent.publishEventAddedAttachment(this, attachmentDTO);
         Attachment attachment = attachmentRepository.save(attachmentMapper.toEntity(attachmentDTO));
         documentStorageService.put(MINIO_ENTITY_NAME, attachment.getUploadedDate(), MINIO_ENTITY_NAME + attachment.getId(), attachmentDTO.getBytes());
         linkAttachmentToEntities(attachment, attachmentDTO);
@@ -100,7 +100,7 @@ public class AttachmentService {
 
     public AttachmentDTO update(AttachmentDTO attachmentDTO) {
         log.debug("Request to update Attachment : {}", attachmentDTO);
-        publisherEvent.publishAttachmentChangedEvent(this, attachmentDTO);
+        publisherEvent.publishEventChangedAttachment(this, attachmentDTO);
         Attachment attachment = attachmentRepository.save(attachmentMapper.toEntity(attachmentDTO));
         if (attachmentDTO.getBytes() != null) {
             // In the update, the bytes could be null.
@@ -160,7 +160,7 @@ public class AttachmentService {
     public void delete(Long attachmentId) {
         log.debug("Request to delete Attachment : {}", attachmentId);
         AttachmentDTO attachmentDTO = attachmentMapper.toDto(attachmentRepository.getOne(attachmentId));
-        publisherEvent.publishAttachmentRemovedEvent(this, attachmentDTO);
+        publisherEvent.publishEventRemovedAttachment(this, attachmentDTO);
         attachmentEntityRepository.deleteByAttachmentId(attachmentId);
         attachmentRepository.deleteById(attachmentId);
         documentStorageService.delete(MINIO_ENTITY_NAME, attachmentDTO.getUploadedDate(), MINIO_ENTITY_NAME + attachmentDTO.getId());

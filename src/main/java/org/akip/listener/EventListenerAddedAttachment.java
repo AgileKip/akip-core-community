@@ -1,5 +1,6 @@
 package org.akip.listener;
 
+
 import org.akip.event.*;
 import org.akip.service.SubscriptionService;
 import org.akip.service.dto.AttachmentDTO;
@@ -10,25 +11,25 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AttachmentChangedEventListener implements ApplicationListener<AttachmentChangedEvent> {
+public class EventListenerAddedAttachment implements ApplicationListener<EventAddedAttachment> {
 
     private final SubscriptionService subscriptionService;
 
     @Autowired
-    public AttachmentChangedEventListener(SubscriptionService subscriptionService) {
+    public EventListenerAddedAttachment(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
     }
 
     @Async
-    public void onApplicationEvent(AttachmentChangedEvent event) {
-        AttachmentDTO attachmentChangedEvent = event.getAttachment();
-        if (attachmentChangedEvent.getEntityName().equals("processInstance")) {
-            subscriptionService.notifyChangedAttachment(attachmentChangedEvent.getEntityId());
+    public void onApplicationEvent(EventAddedAttachment event) {
+        AttachmentDTO attachmentAddedEvent = event.getAttachment();
+        if (attachmentAddedEvent.getEntityName().equals("processInstance")) {
+            subscriptionService.notifyAddedAttachment(attachmentAddedEvent.getEntityId());
             return;
         }
-        for (AttachmentEntityDTO otherEntity : attachmentChangedEvent.getOtherEntities()) {
+        for (AttachmentEntityDTO otherEntity : attachmentAddedEvent.getOtherEntities()) {
             if (otherEntity.getEntityName().equals("processInstance")) {
-                subscriptionService.notifyAddedAttachment(attachmentChangedEvent.getEntityId());
+                subscriptionService.notifyAddedAttachment(attachmentAddedEvent.getEntityId());
                 return;
             }
         }

@@ -10,25 +10,25 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NoteRemovedEventListener implements ApplicationListener<NoteRemovedEvent> {
+public class EventListenerChangedNote implements ApplicationListener<EventChangedNote> {
 
     private final SubscriptionService subscriptionService;
 
     @Autowired
-    public NoteRemovedEventListener(SubscriptionService subscriptionService) {
+    public EventListenerChangedNote(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
     }
 
     @Async
-    public void onApplicationEvent(NoteRemovedEvent event) {
-        NoteDTO noteRemovedEvent = event.getNote();
-        if (noteRemovedEvent.getEntityName().equals("processInstance")) {
-            subscriptionService.notifyRemovedNote(noteRemovedEvent.getEntityId());
+    public void onApplicationEvent(EventChangedNote event) {
+        NoteDTO noteChangedEvent = event.getNote();
+        if (noteChangedEvent.getEntityName().equals("processInstance")) {
+            subscriptionService.notifyChangedNote(noteChangedEvent.getEntityId());
             return;
         }
-        for (NoteEntityDTO otherEntity : noteRemovedEvent.getOtherEntities()) {
+        for (NoteEntityDTO otherEntity : noteChangedEvent.getOtherEntities()) {
             if (otherEntity.getEntityName().equals("processInstance")) {
-                subscriptionService.notifyAddedAttachment(noteRemovedEvent.getEntityId());
+                subscriptionService.notifyAddedAttachment(noteChangedEvent.getEntityId());
                 return;
             }
         }

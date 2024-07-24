@@ -10,17 +10,17 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NoteAddedEventListener implements ApplicationListener<NoteAddedEvent> {
+public class EventListenerAddedNote implements ApplicationListener<EventAddedNote> {
 
     private final SubscriptionService subscriptionService;
 
     @Autowired
-    public NoteAddedEventListener(SubscriptionService subscriptionService) {
+    public EventListenerAddedNote(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
     }
 
     @Async
-    public void onApplicationEvent(NoteAddedEvent event) {
+    public void onApplicationEvent(EventAddedNote event) {
         NoteDTO noteAddedEvent = event.getNote();
         if (noteAddedEvent.getEntityName().equals("processInstance")) {
             subscriptionService.notifyAddedNote(noteAddedEvent.getEntityId());

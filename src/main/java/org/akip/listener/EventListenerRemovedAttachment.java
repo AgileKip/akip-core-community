@@ -10,17 +10,17 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AttachmentRemovedEventListener implements ApplicationListener<AttachmentRemovedEvent> {
+public class EventListenerRemovedAttachment implements ApplicationListener<EventRemovedAttachment> {
 
     private final SubscriptionService subscriptionService;
 
     @Autowired
-    public AttachmentRemovedEventListener(SubscriptionService subscriptionService) {
+    public EventListenerRemovedAttachment(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
     }
 
     @Async
-    public void onApplicationEvent(AttachmentRemovedEvent event) {
+    public void onApplicationEvent(EventRemovedAttachment event) {
         AttachmentDTO attachmentRemovedEvent = event.getAttachment();
         if (attachmentRemovedEvent.getEntityName().equals("processInstance")) {
             subscriptionService.notifyRemovedAttachment(attachmentRemovedEvent.getEntityId());

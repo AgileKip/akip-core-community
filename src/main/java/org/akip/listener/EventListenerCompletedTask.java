@@ -11,20 +11,20 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskCompletedEventListener {
+public class EventListenerCompletedTask {
 
-    private final Logger log = LoggerFactory.getLogger(TaskCompletedEventListener.class);
+    private final Logger log = LoggerFactory.getLogger(EventListenerCompletedTask.class);
 
     private final SubscriptionService subscriptionService;
 
     @Autowired
-    public TaskCompletedEventListener(SubscriptionService subscriptionService) {
+    public EventListenerCompletedTask(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
     }
 
     @Async
     @EventListener
-    public void onApplicationEvent(TaskCompletedEvent event) throws InterruptedException {
+    public void onApplicationEvent(EventCompletedTask event) throws InterruptedException {
         TaskInstanceDTO completedTask = event.getTaskInstance();
         subscriptionService.notifyCompletedTask(completedTask.getProcessInstance().getId());
     }
