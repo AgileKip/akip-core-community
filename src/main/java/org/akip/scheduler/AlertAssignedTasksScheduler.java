@@ -22,14 +22,14 @@ public class AlertAssignedTasksScheduler {
     @Autowired
     private AlertUserService alertUserService;
 
-    private final String CRON_NAME = "alertUserAssignedTasks";
+    private static final String CRONNAME = "alertUserAssignedTasks";
 
     @Scheduled(cron = ("${akip.alert-user-assigned-tasks-notify.cron-expression}"))
     public void alertUserAssignedTasks() {
-        String identifier = jobExecutionTrackingEventControl.generateJobExecutionTrackingIdentifier(CRON_NAME);
+        String identifier = jobExecutionTrackingEventControl.generateJobExecutionTrackingIdentifier(CRONNAME);
         HashMap<String, String> descriptions = new HashMap<>();
         try {
-            jobExecutionTrackingEventControl.start(identifier, CRON_NAME);
+            jobExecutionTrackingEventControl.start(identifier, CRONNAME);
 
             log.debug("Open task alert emails are being sent to Users");
             alertUserService.alertUserAssignedTasks(descriptions);

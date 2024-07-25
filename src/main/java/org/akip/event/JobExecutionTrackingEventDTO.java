@@ -1,6 +1,5 @@
 package org.akip.event;
 
-import javax.persistence.Lob;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,6 @@ public class JobExecutionTrackingEventDTO implements Serializable {
 
     private String status;
 
-    @Lob
     private Map<String, String> descriptions = new HashMap<>();
 
     public JobExecutionTrackingEventDTO(String identifier, String status, Map<String, String> descriptions) {
@@ -87,7 +85,6 @@ public class JobExecutionTrackingEventDTO implements Serializable {
             "cronName='" + getCronName() + "'" +
             ", identifier='" + getIdentifier() + "'" +
             ", status='" + getStatus() + "'" +
-            ", descriptions='" + getDescriptions() + "'" +
             "}";
     }
 }
