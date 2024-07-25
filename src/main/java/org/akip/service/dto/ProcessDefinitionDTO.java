@@ -1,6 +1,5 @@
 package org.akip.service.dto;
 
-import org.akip.camunda.form.CamundaFormFieldDef;
 import org.akip.domain.enumeration.ProcessType;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 
