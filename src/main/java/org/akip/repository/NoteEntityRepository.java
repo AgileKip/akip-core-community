@@ -4,6 +4,7 @@ import org.akip.domain.NoteEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,6 +14,8 @@ import java.util.Optional;
 public interface NoteEntityRepository extends JpaRepository<NoteEntity, Long> {
 
 	Optional<NoteEntity> findByEntityNameAndEntityIdAndNoteId(String entityName, Long entityId, Long noteId);
+
+	List<NoteEntity> findNoteEntityByNote_Id(Long noteId);
 
 	void deleteByNoteId(Long noteId);
 

@@ -56,17 +56,17 @@ public class NoteService {
 
 	public NoteDTO create(NoteDTO noteDTO) {
 		log.debug("Request to create Note : {}", noteDTO);
-		publisherEvent.publishEventAddedNote(this, noteDTO);
 		Note note = noteRepository.save(noteMapper.toEntity(noteDTO));
 		linkNoteToEntities(note, noteDTO);
+		publisherEvent.publishEventAddedNote(this, noteMapper.toDto(note));
 		return noteMapper.toDto(note);
 	}
 
 	public NoteDTO update(NoteDTO noteDTO) {
 		log.debug("Request to update Note : {}", noteDTO);
-		publisherEvent.publishEventChangedNote(this, noteDTO);
 		Note note = noteRepository.save(noteMapper.toEntity(noteDTO));
 		linkNoteToEntities(note, noteDTO);
+		publisherEvent.publishEventChangedNote(this, noteDTO);
 		return noteMapper.toDto(note);
 	}
 
@@ -98,8 +98,8 @@ public class NoteService {
 	public void delete(Long noteId) {
 		log.debug("Request to delete Note : {}", noteId);
 		NoteDTO noteDTO = noteMapper.toDto(noteRepository.getOne(noteId));
-		publisherEvent.publishEventRemovedNote(this, noteDTO);
 		noteEntityRepository.deleteByNoteId(noteId);
+		publisherEvent.publishEventRemovedNote(this, noteDTO);
 		noteRepository.deleteById(noteId);
 	}
     

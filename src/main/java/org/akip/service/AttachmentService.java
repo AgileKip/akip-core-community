@@ -91,16 +91,15 @@ public class AttachmentService {
 
     public AttachmentDTO create(AttachmentDTO attachmentDTO) {
         log.debug("Request to create Attachment : {}", attachmentDTO);
-        publisherEvent.publishEventAddedAttachment(this, attachmentDTO);
         Attachment attachment = attachmentRepository.save(attachmentMapper.toEntity(attachmentDTO));
         documentStorageService.put(MINIO_ENTITY_NAME, attachment.getUploadedDate(), MINIO_ENTITY_NAME + attachment.getId(), attachmentDTO.getBytes());
         linkAttachmentToEntities(attachment, attachmentDTO);
+        publisherEvent.publishEventAddedAttachment(this, attachmentMapper.toDto(attachment));
         return attachmentMapper.toDto(attachment);
     }
 
     public AttachmentDTO update(AttachmentDTO attachmentDTO) {
         log.debug("Request to update Attachment : {}", attachmentDTO);
-        publisherEvent.publishEventChangedAttachment(this, attachmentDTO);
         Attachment attachment = attachmentRepository.save(attachmentMapper.toEntity(attachmentDTO));
         if (attachmentDTO.getBytes() != null) {
             // In the update, the bytes could be null.
@@ -113,6 +112,7 @@ public class AttachmentService {
             );
         }
         linkAttachmentToEntities(attachment, attachmentDTO);
+        publisherEvent.publishEventChangedAttachment(this, attachmentDTO);
         return attachmentMapper.toDto(attachment);
     }
 
@@ -160,9 +160,9 @@ public class AttachmentService {
     public void delete(Long attachmentId) {
         log.debug("Request to delete Attachment : {}", attachmentId);
         AttachmentDTO attachmentDTO = attachmentMapper.toDto(attachmentRepository.getOne(attachmentId));
-        publisherEvent.publishEventRemovedAttachment(this, attachmentDTO);
         attachmentEntityRepository.deleteByAttachmentId(attachmentId);
         attachmentRepository.deleteById(attachmentId);
+        publisherEvent.publishEventRemovedAttachment(this, attachmentDTO);
         documentStorageService.delete(MINIO_ENTITY_NAME, attachmentDTO.getUploadedDate(), MINIO_ENTITY_NAME + attachmentDTO.getId());
     }
 
