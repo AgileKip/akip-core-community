@@ -202,7 +202,9 @@ public class TaskInstanceService {
 
         List<String> authorities = new ArrayList<>();
 
-//        authorities.addAll(SecurityUtils.getAuthorities(), processMemberService.getAllProcessRolesByUsername(SecurityUtils.getCurrentUserLogin()), tenantMemberService.getAllTenantRolesByUsername(SecurityUtils.getCurrentUserLogin()));
+        authorities.addAll(SecurityUtils.getAuthorities());
+        authorities.addAll(processMemberService.getProcessRolesByUsername(SecurityUtils.getCurrentUserLogin().get()));
+        authorities.addAll(tenantMemberService.getTenantRolesByUsername(SecurityUtils.getCurrentUserLogin().get()));
 
         if (computedCandidateGroups.isEmpty()) {
             return;

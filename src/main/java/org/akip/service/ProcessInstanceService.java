@@ -365,9 +365,9 @@ public class ProcessInstanceService {
         if (processInstanceDTO.getTemporaryProcessInstance() == null) {
             return;
         }
-        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+//        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+//        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+//        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
     }
 
 }

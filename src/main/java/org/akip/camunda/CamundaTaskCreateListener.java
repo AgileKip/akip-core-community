@@ -86,6 +86,10 @@ public class CamundaTaskCreateListener implements TaskListener {
                 delegateTask.getProcessDefinitionId().split(":")[0]
         );
 
+        if (taskInstanceDTO.getCandidateGroups().isEmpty()){
+            taskInstanceDTO.getCandidateGroups().add("*");
+        }
+
         taskInstanceDTO.getComputedCandidateGroups().addAll(calculateCandidateGroups(optionalProcessDefinition.get(), taskInstanceDTO.getCandidateGroups()));
 
         ProcessInstanceDTO processInstance = new ProcessInstanceDTO();

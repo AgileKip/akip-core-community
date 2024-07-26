@@ -25,6 +25,9 @@ public interface TenantMemberRepository extends JpaRepository<TenantMember, Long
     @Query("SELECT CONCAT(tm.tenant.identifier, '.', tr.name) FROM TenantMember tm JOIN tm.tenantRoles tr WHERE tm.username = ?1")
     List<String> findTenantRolesWithDefinitionIdPrefixByUsername(String username);
 
+    @Query("SELECT CONCAT(tm.tenant.identifier, '.*') FROM TenantMember tm WHERE tm.username = ?1")
+    List<String> findTenantWildcardPrefixByUsername (String username);
+
     List<TenantMember> findTenantMembersByTenantId(Long id);
 
 }

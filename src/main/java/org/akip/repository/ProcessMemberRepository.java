@@ -14,4 +14,8 @@ public interface ProcessMemberRepository extends JpaRepository<ProcessMember, Lo
 
     @Query("SELECT CONCAT(pm.processDefinition.bpmnProcessDefinitionId, '.', pr.name) FROM ProcessMember pm JOIN pm.processRoles pr WHERE pm.username = ?1")
     List<String> findProcessRolesWithDefinitionIdPrefixByUsername(String username);
+
+    @Query("SELECT CONCAT(pm.processDefinition.bpmnProcessDefinitionId, '.*') FROM ProcessMember pm WHERE pm.username = ?1")
+    List<String> findProcessWildcardPrefixByUsername (String username);
+
 }

@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,8 +55,11 @@ public class ProcessMemberService {
         return processMemberMapper.toDto(processMemberToSaved);
     }
 
-    public List<String> getProcessRolesByUsername(String username){
-        return processMemberRepository.findProcessRolesWithDefinitionIdPrefixByUsername(username);
+    public List<String> getProcessRolesByUsername(String username) {
+        List<String> processRoles = new ArrayList<>();
+        processRoles.addAll(processMemberRepository.findProcessRolesWithDefinitionIdPrefixByUsername(username));
+        processRoles.addAll(processMemberRepository.findProcessWildcardPrefixByUsername(username));
+        return processRoles;
     }
 
     public void delete(Long ProcessId, Long ProcessMemberId) {
