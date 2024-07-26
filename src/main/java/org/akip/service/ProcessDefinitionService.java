@@ -1,5 +1,6 @@
 package org.akip.service;
 
+import org.akip.exception.BadRequestErrorException;
 import org.akip.form.camundaForm7.CamundaForm7Service;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.enumeration.StatusProcessDefinition;
@@ -60,7 +61,7 @@ public class ProcessDefinitionService {
     }
 
     public ProcessDefinition createOrUpdateProcessDefinition(BpmnModelInstance bpmnModelInstance) {
-        Process process = extracAndValidProcessFromModel(bpmnModelInstance);
+        Process process = extractAndValidProcessFromModel(bpmnModelInstance);
         Optional<ProcessDefinition> optionalProcessDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(process.getId());
 
         if (optionalProcessDefinition.isPresent()) {
@@ -70,16 +71,16 @@ public class ProcessDefinitionService {
         return createProcessDefinition(process, bpmnModelInstance);
     }
 
-    private Process extracAndValidProcessFromModel(BpmnModelInstance modelInstance) {
+    private Process extractAndValidProcessFromModel(BpmnModelInstance modelInstance) {
         ModelElementType processType = modelInstance.getModel().getType(Process.class);
         Process process = (Process) modelInstance.getModelElementsByType(processType).iterator().next();
 
         if (!process.isExecutable()) {
-            throw new RuntimeException("Model is not executable");
+            throw new BadRequestErrorException("Model is not executable");
         }
 
         if (StringUtils.isBlank(process.getName())) {
-            throw new RuntimeException("Process name is not provided");
+            throw new BadRequestErrorException("Process name is not provided");
         }
 
         return process;
