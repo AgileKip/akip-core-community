@@ -24,17 +24,17 @@ public class JobExecutionTrackingEventControl {
     }
 
     @Transactional
-    public void completeWithError(String identifier, String error, HashMap<String, String> descriptions) {
-        descriptions.put(JobExecutionTrackingConstants.ERROR, error);
+    public void completeWithError(String identifier, String error, HashMap<String, String> summary) {
+        summary.put(JobExecutionTrackingConstants.ERROR, error);
         applicationEventPublisher.publishEvent(
-            new JobExecutionTrackingEventComplete(identifier, JobExecutionTrackingConstants.STATUS_COMPLETE_ERROR, descriptions)
+            new JobExecutionTrackingEventComplete(identifier, JobExecutionTrackingConstants.STATUS_COMPLETE_ERROR, summary)
         );
     }
 
     @Transactional
-    public void completeWithSuccess(String identifier, HashMap<String, String> descriptions) {
+    public void completeWithSuccess(String identifier, HashMap<String, String> summary) {
         applicationEventPublisher.publishEvent(
-            new JobExecutionTrackingEventComplete(identifier, JobExecutionTrackingConstants.STATUS_COMPLETE_SUCCESS, descriptions)
+            new JobExecutionTrackingEventComplete(identifier, JobExecutionTrackingConstants.STATUS_COMPLETE_SUCCESS, summary)
         );
     }
 

@@ -37,7 +37,7 @@ public class JobExecutionTrackingEventCompleteListener {
             .map(jobExecutionTrackingMapper::toDto)
             .get();
         jobExecutionTracking.setStatus(jobExecutionTrackingEvent.getStatus());
-        jobExecutionTracking.setDescriptions(jobExecutionTrackingEvent.getDescriptions());
+        jobExecutionTracking.setSummary(jobExecutionTrackingEvent.getSummary());
         jobExecutionTrackingRepository.save(jobExecutionTrackingMapper.toEntity(jobExecutionTracking));
     }
 }

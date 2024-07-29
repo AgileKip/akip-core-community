@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 
 @Service
-@ConditionalOnProperty(value = "akip.notify-user-open-tasks.enabled", matchIfMissing = true, havingValue = "true")
+@ConditionalOnProperty(value = "akip.notify-user-assigned-tasks.enabled", matchIfMissing = true, havingValue = "true")
 public class NotifyAssignedTasksScheduler {
     private final Logger log = LoggerFactory.getLogger(NotifyAssignedTasksScheduler.class);
 

@@ -14,12 +14,12 @@ public class JobExecutionTrackingEventDTO implements Serializable {
 
     private String status;
 
-    private Map<String, String> descriptions = new HashMap<>();
+    private Map<String, String> summary = new HashMap<>();
 
-    public JobExecutionTrackingEventDTO(String identifier, String status, Map<String, String> descriptions) {
+    public JobExecutionTrackingEventDTO(String identifier, String status, Map<String, String> summary) {
         this.identifier = identifier;
         this.status = status;
-        this.descriptions = descriptions;
+        this.summary = summary;
     }
 
     public JobExecutionTrackingEventDTO(String identifier, String cronName) {
@@ -53,8 +53,8 @@ public class JobExecutionTrackingEventDTO implements Serializable {
         this.status = status;
     }
 
-    public Map<String, String> getDescriptions() {
-        return descriptions;
+    public Map<String, String> getSummary() {
+        return summary;
     }
 
     @Override

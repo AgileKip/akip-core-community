@@ -101,8 +101,7 @@ public class AkipMailService {
     }
 
     @Async
-    public void sendUserAssignedTasksMail(AkipUserDTO user, Map<String, Object> variables) {
-        log.debug("Sending password reset email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user , "mail/alertUserAssignedTasksEmail", "akip.email.alertUserAssignedTasks.title", variables);
+    public void sendNotifyUserAssignedTasksMail(AkipUserDTO user, Map<String, Object> variables) {
+        sendEmailFromTemplate(user , "mail/notifyUserAssignedTasksMail", "akip.email.notifyUserAssignedTasksMail.title", variables);
     }
 }

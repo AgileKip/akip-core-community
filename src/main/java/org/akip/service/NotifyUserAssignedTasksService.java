@@ -48,7 +48,7 @@ public class NotifyUserAssignedTasksService {
                 .collect(Collectors.toList());
 
             variables.put("tasks", userTasks);
-            mailService.sendUserAssignedTasksMail(user, variables);
+            mailService.sendNotifyUserAssignedTasksMail(user, variables);
             summary.put("sentEmailsTo", "Sent Emails To "+user.getEmail()+": " + userTasks.size());
         }
     }
