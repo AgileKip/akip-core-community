@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class AlertUserService {
+public class NotifyUserAssignedTasksService {
 
     private final AkipMailService mailService;
 
@@ -21,14 +21,13 @@ public class AlertUserService {
 
     private final UserResolver userResolver;
 
-    public AlertUserService(AkipMailService mailService, TaskInstanceRepository taskInstanceRepository, UserResolver userResolver) {
+    public NotifyUserAssignedTasksService(AkipMailService mailService, TaskInstanceRepository taskInstanceRepository, UserResolver userResolver) {
         this.mailService = mailService;
         this.taskInstanceRepository = taskInstanceRepository;
         this.userResolver = userResolver;
     }
 
-    public void alertUserAssignedTasks(HashMap<String, String> descriptions){
-        int sentEmails = 0;
+    public void notify(HashMap<String, String> summary){
         Map<String, Object> variables = new HashMap<>();
 
         List<TaskInstance> tasksAssigned = taskInstanceRepository.findByStatus(StatusTaskInstance.ASSIGNED);
@@ -50,8 +49,7 @@ public class AlertUserService {
 
             variables.put("tasks", userTasks);
             mailService.sendUserAssignedTasksMail(user, variables);
-            sentEmails++;
+            summary.put("sentEmailsTo", "Sent Emails To "+user.getEmail()+": " + userTasks.size());
         }
-        descriptions.put("sentEmails", "Sent Emails: " + sentEmails);
     }
 }

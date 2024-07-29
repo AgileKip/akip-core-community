@@ -19,10 +19,10 @@ import java.util.Map;
 public interface JobExecutionTrackingMapper extends EntityMapper<JobExecutionTrackingDTO, JobExecutionTracking> {
     ObjectMapper mapper = new ObjectMapper();
 
-    @Mapping(source = "description", target = "descriptions", qualifiedByName = "toHashMapStringDescription")
+    @Mapping(source = "summary", target = "summary", qualifiedByName = "toHashMapStringDescription")
     JobExecutionTrackingDTO toDto(JobExecutionTracking jobExecutionTracking);
 
-    @Mapping(source = "descriptions", target = "description", qualifiedByName = "toStringHashMapDescription")
+    @Mapping(source = "summary", target = "summary", qualifiedByName = "toStringHashMapDescription")
     JobExecutionTracking toEntity(JobExecutionTrackingDTO jobExecutionTrackingDTO);
 
     @Named("toHashMapStringDescription")

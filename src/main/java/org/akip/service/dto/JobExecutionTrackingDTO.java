@@ -27,7 +27,7 @@ public class JobExecutionTrackingDTO implements Serializable {
     private String status = JobExecutionTrackingConstants.STATUS_RUNNING;
 
     @Lob
-    private Map<String, String> descriptions = new HashMap<>();
+    private Map<String, String> summary = new HashMap<>();
 
     public JobExecutionTrackingDTO(String identifier, String cronName) {
         this.identifier = identifier;
@@ -84,12 +84,12 @@ public class JobExecutionTrackingDTO implements Serializable {
         this.status = status;
     }
 
-    public Map<String, String> getDescriptions() {
-        return descriptions;
+    public Map<String, String> getSummary() {
+        return summary;
     }
 
-    public void setDescriptions(Map<String, String> descriptions) {
-        this.descriptions = descriptions;
+    public void setSummary(Map<String, String> summary) {
+        this.summary = summary;
     }
 
     @Override
@@ -123,7 +123,7 @@ public class JobExecutionTrackingDTO implements Serializable {
             ", startDate='" + getStartDate() + "'" +
             ", endDate='" + getEndDate() + "'" +
             ", status='" + getStatus() + "'" +
-            ", description='" + getDescriptions() + "'" +
+            ", summary='" + getSummary() + "'" +
             "}";
     }
 }

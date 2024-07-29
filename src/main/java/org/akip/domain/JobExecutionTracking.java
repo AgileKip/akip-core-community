@@ -40,8 +40,8 @@ public class JobExecutionTracking implements Serializable {
     private String status;
 
     @Lob
-    @Column(name = "description")
-    private String description;
+    @Column(name = "summary")
+    private String summary;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -123,17 +123,17 @@ public class JobExecutionTracking implements Serializable {
         this.status = status;
     }
 
-    public String getDescription() {
-        return this.description;
+    public String getSummary() {
+        return this.summary;
     }
 
-    public JobExecutionTracking description(String description) {
-        this.description = description;
+    public JobExecutionTracking summary(String summary) {
+        this.summary = summary;
         return this;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
