@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class JobExecutionTrackingEventControl {
@@ -24,7 +25,7 @@ public class JobExecutionTrackingEventControl {
     }
 
     @Transactional
-    public void completeWithError(String identifier, String error, HashMap<String, String> summary) {
+    public void completeWithError(String identifier, String error, Map<String, String> summary) {
         summary.put(JobExecutionTrackingConstants.ERROR, error);
         applicationEventPublisher.publishEvent(
             new JobExecutionTrackingEventComplete(identifier, JobExecutionTrackingConstants.STATUS_COMPLETE_ERROR, summary)
@@ -32,7 +33,7 @@ public class JobExecutionTrackingEventControl {
     }
 
     @Transactional
-    public void completeWithSuccess(String identifier, HashMap<String, String> summary) {
+    public void completeWithSuccess(String identifier, Map<String, String> summary) {
         applicationEventPublisher.publishEvent(
             new JobExecutionTrackingEventComplete(identifier, JobExecutionTrackingConstants.STATUS_COMPLETE_SUCCESS, summary)
         );

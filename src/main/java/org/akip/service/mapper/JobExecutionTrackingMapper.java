@@ -19,26 +19,24 @@ import java.util.Map;
 public interface JobExecutionTrackingMapper extends EntityMapper<JobExecutionTrackingDTO, JobExecutionTracking> {
     ObjectMapper mapper = new ObjectMapper();
 
-    @Mapping(source = "summary", target = "summary", qualifiedByName = "toHashMapStringDescription")
+    @Mapping(source = "summary", target = "summary")
     JobExecutionTrackingDTO toDto(JobExecutionTracking jobExecutionTracking);
 
-    @Mapping(source = "summary", target = "summary", qualifiedByName = "toStringHashMapDescription")
+    @Mapping(source = "summary", target = "summary")
     JobExecutionTracking toEntity(JobExecutionTrackingDTO jobExecutionTrackingDTO);
 
-    @Named("toHashMapStringDescription")
-    default HashMap<String, String> toHashMapStringDescription(String description) throws JsonProcessingException {
-        if (description != null) {
-            return mapper.readValue(description, new TypeReference<>() {});
+    default HashMap<String, String> stringToHashMap(String s) throws JsonProcessingException {
+        if (s != null) {
+            return mapper.readValue(s, new TypeReference<>() {});
         }
         return new HashMap<String, String>();
     }
 
-    @Named("toStringHashMapDescription")
-    default String toStringHashMapDescription(Map<String, String> descriptions) throws JsonProcessingException {
-        if (descriptions == null) {
+    default String mapToString(Map<String, String> map) throws JsonProcessingException {
+        if (map == null) {
             return null;
         }
 
-        return mapper.writeValueAsString(descriptions);
+        return mapper.writeValueAsString(map);
     }
 }

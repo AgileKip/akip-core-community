@@ -27,7 +27,8 @@ public class NotifyUserAssignedTasksService {
         this.userResolver = userResolver;
     }
 
-    public void notify(HashMap<String, String> summary){
+    public Map<String, String> notifyUserAssignedTasks(){
+        Map<String, String> summary = new HashMap<>();
         Map<String, Object> variables = new HashMap<>();
 
         List<TaskInstance> tasksAssigned = taskInstanceRepository.findByStatus(StatusTaskInstance.ASSIGNED);
@@ -51,5 +52,6 @@ public class NotifyUserAssignedTasksService {
             mailService.sendNotifyUserAssignedTasksMail(user, variables);
             summary.put("sentEmailsTo", "Sent Emails To "+user.getEmail()+": " + userTasks.size());
         }
+        return summary;
     }
 }

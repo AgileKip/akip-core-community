@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @ConditionalOnProperty(value = "akip.notify-user-assigned-tasks.enabled", matchIfMissing = true, havingValue = "true")
@@ -27,12 +28,12 @@ public class NotifyAssignedTasksScheduler {
     @Scheduled(cron = ("${akip.notify-user-assigned-tasks.cron-expression}"))
     public void alertUserAssignedTasks() {
         String identifier = jobExecutionTrackingEventControl.generateJobExecutionTrackingIdentifier(CRONNAME);
-        HashMap<String, String> summary = new HashMap<>();
+        Map<String, String> summary = new HashMap<>();
         try {
             jobExecutionTrackingEventControl.start(identifier, CRONNAME);
 
             log.debug("notify open task emails are being sent to Users");
-            notifyUserAssignedTasksService.notify(summary);
+            summary = notifyUserAssignedTasksService.notifyUserAssignedTasks();
 
             jobExecutionTrackingEventControl.completeWithSuccess(identifier, summary);
         } catch (Exception e) {
