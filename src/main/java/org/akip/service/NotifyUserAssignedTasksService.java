@@ -28,9 +28,6 @@ public class NotifyUserAssignedTasksService {
     }
 
     public Map<String, String> notifyUserAssignedTasks(){
-        Map<String, String> summary = new HashMap<>();
-        Map<String, Object> variables = new HashMap<>();
-
         List<TaskInstance> tasksAssigned = taskInstanceRepository.findByStatus(StatusTaskInstance.ASSIGNED);
 
         Set<String> usersLogin = tasksAssigned
@@ -42,15 +39,18 @@ public class NotifyUserAssignedTasksService {
 
         List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
 
+        Map<String, String> summary = new HashMap<>();
+
         for (AkipUserDTO user : users){
             List<TaskInstance> userTasks = tasksAssigned
                 .stream()
                 .filter((task) -> task.getAssignee().equals(user.getLogin()))
                 .collect(Collectors.toList());
 
+            Map<String, Object> variables = new HashMap<>();
             variables.put("tasks", userTasks);
             mailService.sendNotifyUserAssignedTasksMail(user, variables);
-            summary.put("sentEmailsTo", "Sent Emails To "+user.getEmail()+": " + userTasks.size());
+            summary.put("sentEmailsTo:"+user.getLogin(), "Emails sent to "+user.getEmail()+": " + userTasks.size());
         }
         return summary;
     }

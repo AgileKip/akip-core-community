@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,18 +27,17 @@ public class NotifyAssignedTasksScheduler {
     private static final String CRONNAME = "notifyUserAssignedTasks";
 
     @Scheduled(cron = ("${akip.notify-user-assigned-tasks.cron-expression}"))
-    public void alertUserAssignedTasks() {
+    public void notifyUserAssignedTasks() {
         String identifier = jobExecutionTrackingEventControl.generateJobExecutionTrackingIdentifier(CRONNAME);
-        Map<String, String> summary = new HashMap<>();
         try {
             jobExecutionTrackingEventControl.start(identifier, CRONNAME);
 
             log.debug("notify open task emails are being sent to Users");
-            summary = notifyUserAssignedTasksService.notifyUserAssignedTasks();
+            Map<String, String> summary = notifyUserAssignedTasksService.notifyUserAssignedTasks();
 
             jobExecutionTrackingEventControl.completeWithSuccess(identifier, summary);
         } catch (Exception e) {
-            jobExecutionTrackingEventControl.completeWithError(identifier, e.getMessage(), summary);
+            jobExecutionTrackingEventControl.completeWithError(identifier, e.getMessage(), Collections.emptyMap());
         }
     }
 }
