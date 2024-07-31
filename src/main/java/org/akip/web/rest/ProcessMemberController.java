@@ -41,26 +41,26 @@ public class ProcessMemberController {
         this.processMemberService = processMemberService;
     }
 
-    @GetMapping("/process/{processId}/members")
-    public List<ProcessMemberDTO> retrieveProcessMembers(@PathVariable("processId") Long processId) throws URISyntaxException {
-        log.debug("REST request to save ProcessMember : {}{}", processId);
-        return processMemberService.getProcessMembers(processId);
+    @GetMapping("/process-definition/{processDefinitionId}/members")
+    public List<ProcessMemberDTO> retrieveByProcessDefinition(@PathVariable("processDefinitionId") Long processDefinitionId) throws URISyntaxException {
+        log.debug("REST request to save ProcessMember : {}{}", processDefinitionId);
+        return processMemberService.getProcessMembers(processDefinitionId);
     }
 
-    @PostMapping("/process/{processId}/member")
-    public ResponseEntity<ProcessMemberDTO> createProcessMember(@PathVariable("processId") Long processId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
-        log.debug("REST request to save ProcessMember : {}{}", processId, processMember.getUsername());
-        ProcessMemberDTO result = processMemberService.save(processId, processMember);
+    @PostMapping("/process/{processDefinitionId}/member")
+    public ResponseEntity<ProcessMemberDTO> create(@PathVariable("processDefinitionId") Long processDefinitionId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
+        log.debug("REST request to save ProcessMember : {}{}", processDefinitionId, processMember.getUsername());
+        ProcessMemberDTO result = processMemberService.save(processDefinitionId, processMember);
         return ResponseEntity
             .created(new URI("/api/process-members/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
-    @PostMapping("/process/{processId}/member/save")
-    public ResponseEntity<ProcessMemberDTO> save(@PathVariable Long processId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
+    @PostMapping("/process/{processDefinitionId}/member/save")
+    public ResponseEntity<ProcessMemberDTO> save(@PathVariable Long processDefinitionId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
         log.debug("REST request to save ProcessMember : {}", processMember.getUsername());
-        ProcessMemberDTO result = processMemberService.save(processId, processMember);
+        ProcessMemberDTO result = processMemberService.save(processDefinitionId, processMember);
         return ResponseEntity
                 .ok()
                 .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, processMember.getId() != null ? MESSAGE_PROCESS_MEMBER_UPDATED : MESSAGE_PROCESS_MEMBER_CREATED, result.getId().toString()))

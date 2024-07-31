@@ -102,12 +102,10 @@ public class CamundaTaskCreateListener implements TaskListener {
                 .findByBpmnProcessDefinitionId(delegateTask.getProcessDefinitionId().split(":")[0])
                 .map(processDefinitionMapper::toDto)
                 .get();
-        taskInstanceDTO.setProcessDefinition(processDefinitionDTO);
-        taskInstanceDTO.setTaskDefinition(taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(processDefinitionDTO.getBpmnProcessDefinitionId(), delegateTask.getTaskDefinitionKey()).orElseThrow()));
-
         if (optionalProcessDefinition.isPresent()) {
             taskInstanceDTO.setProcessDefinition(processDefinitionMapper.toDto(optionalProcessDefinition.get()));
         }
+        taskInstanceDTO.setTaskDefinition(taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(processDefinitionDTO.getBpmnProcessDefinitionId(), delegateTask.getTaskDefinitionKey()).orElseThrow()));
 
         return taskInstanceDTO;
     }
