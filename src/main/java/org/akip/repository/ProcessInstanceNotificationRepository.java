@@ -2,6 +2,7 @@ package org.akip.repository;
 
 
 import org.akip.domain.ProcessInstanceNotification;
+import org.akip.domain.enumeration.ProcessInstanceNotificationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,9 @@ import java.util.List;
 @Repository
 public interface ProcessInstanceNotificationRepository extends JpaRepository<ProcessInstanceNotification, Long> {
 
-    List<ProcessInstanceNotification> findProcessInstanceNotificationsBySubscriberId(String subscriberId);
+    List<ProcessInstanceNotification> findTop6BySubscriberIdOrderByIdDesc(String subscriberId);
+
+    long countBySubscriberIdAndStatus(String subscriberId, ProcessInstanceNotificationStatus status);
+
+
 }

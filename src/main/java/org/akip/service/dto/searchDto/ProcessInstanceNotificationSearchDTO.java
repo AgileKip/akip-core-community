@@ -1,7 +1,7 @@
 package org.akip.service.dto.searchDto;
 
+import org.akip.domain.enumeration.ProcessInstanceEventType;
 import org.akip.domain.enumeration.ProcessInstanceNotificationStatus;
-import org.akip.domain.enumeration.ProcessInstanceNotificationType;
 
 import java.time.LocalDate;
 
@@ -17,7 +17,7 @@ public class ProcessInstanceNotificationSearchDTO {
 
     private ProcessInstanceNotificationStatus status;
 
-    private ProcessInstanceNotificationType eventType;
+    private ProcessInstanceEventType eventType;
 
     private String subscriberId;
 
@@ -29,7 +29,7 @@ public class ProcessInstanceNotificationSearchDTO {
         String description,
         LocalDate date,
         ProcessInstanceNotificationStatus status,
-        ProcessInstanceNotificationType eventType,
+        ProcessInstanceEventType eventType,
         String subscriberId,
         String processInstanceName
     ) {
@@ -83,11 +83,11 @@ public class ProcessInstanceNotificationSearchDTO {
         this.status = status;
     }
 
-    public ProcessInstanceNotificationType getEventType() {
+    public ProcessInstanceEventType getEventType() {
         return eventType;
     }
 
-    public void setEventType(ProcessInstanceNotificationType eventType) {
+    public void setEventType(ProcessInstanceEventType eventType) {
         this.eventType = eventType;
     }
 

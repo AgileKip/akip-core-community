@@ -1,8 +1,8 @@
 package org.akip.service;
 
 import org.akip.domain.ProcessInstanceNotification;
+import org.akip.domain.enumeration.ProcessInstanceEventType;
 import org.akip.domain.enumeration.ProcessInstanceNotificationStatus;
-import org.akip.domain.enumeration.ProcessInstanceNotificationType;
 import org.akip.repository.ProcessInstanceNotificationRepository;
 import org.akip.service.dto.ProcessInstanceNotificationDTO;
 import org.akip.service.mapper.ProcessInstanceNotificationMapper;
@@ -59,10 +59,10 @@ public class ProcessInstanceNotificationService {
      *
      * @param processInstance the entity to save.
      */
-    public void save(ProcessInstance processInstance, ProcessInstanceNotificationType notificationType, String subscriberId) {
+    public void save(ProcessInstance processInstance, ProcessInstanceEventType notificationType, String subscriberId) {
         ProcessInstanceNotification processInstanceNotification = new ProcessInstanceNotification();
 
-        if (notificationType == ProcessInstanceNotificationType.TASK_COMPLETED) {
+        if (notificationType == ProcessInstanceEventType.TASK_COMPLETED) {
             processInstanceNotification.setTitle("Completed Task Notification");
             processInstanceNotification.setDescription(
                 "A completed task from the " +
@@ -71,7 +71,7 @@ public class ProcessInstanceNotificationService {
                 processInstance.getBusinessKey()
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.NOTE_ADDED) {
+        if (notificationType == ProcessInstanceEventType.NOTE_ADDED) {
             processInstanceNotification.setTitle("Note Added Notification");
             processInstanceNotification.setDescription(
                 "A new note has been added to the process " +
@@ -80,7 +80,7 @@ public class ProcessInstanceNotificationService {
                 processInstance.getBusinessKey()
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.NOTE_EDITED) {
+        if (notificationType == ProcessInstanceEventType.NOTE_EDITED) {
             processInstanceNotification.setTitle("Note Edited Notification");
             processInstanceNotification.setDescription(
                     "A note in the process " +
@@ -90,7 +90,7 @@ public class ProcessInstanceNotificationService {
                             ", which you signed, has been edited."
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.NOTE_REMOVED) {
+        if (notificationType == ProcessInstanceEventType.NOTE_REMOVED) {
             processInstanceNotification.setTitle("Note Removed Notification");
             processInstanceNotification.setDescription(
                     "A note in the process " +
@@ -100,7 +100,7 @@ public class ProcessInstanceNotificationService {
                             ", which you signed, has been removed."
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.ATTACHMENT_ADDED) {
+        if (notificationType == ProcessInstanceEventType.ATTACHMENT_ADDED) {
             processInstanceNotification.setTitle("Attachment Added Notification");
             processInstanceNotification.setDescription(
                 "A new attachment has been added to the process " +
@@ -109,7 +109,7 @@ public class ProcessInstanceNotificationService {
                 processInstance.getBusinessKey()
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.ATTACHMENT_EDITED) {
+        if (notificationType == ProcessInstanceEventType.ATTACHMENT_EDITED) {
             processInstanceNotification.setTitle("Attachment Edited Notification");
             processInstanceNotification.setDescription(
                     "An attachment in the process " +
@@ -119,7 +119,7 @@ public class ProcessInstanceNotificationService {
                             ", which you signed, has been edited"
             );
         }
-        if (notificationType == ProcessInstanceNotificationType.ATTACHMENT_REMOVED) {
+        if (notificationType == ProcessInstanceEventType.ATTACHMENT_REMOVED) {
             processInstanceNotification.setTitle("Attachment Removed Notification");
             processInstanceNotification.setDescription(
                     "An attachment in the process " +
@@ -180,13 +180,25 @@ public class ProcessInstanceNotificationService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<ProcessInstanceNotificationDTO> findAllProcessInstanceNotificationsBySubscriberId(String subscriberId) {
+    public List<ProcessInstanceNotificationDTO> findTop6BySubscriberIdOrderByIdDesc(String subscriberId) {
         log.debug("Request to get all ProcessInstanceNotifications SubscriberId");
         return processInstanceNotificationRepository
-            .findProcessInstanceNotificationsBySubscriberId(subscriberId)
+            .findTop6BySubscriberIdOrderByIdDesc(subscriberId)
             .stream()
             .map(processInstanceNotificationMapper::toDto)
             .collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    /**
+     * Get all the processInstanceNotifications.
+     *
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public Long countBySubscriberIdAndStatus(String subscriberId) {
+        log.debug("Request to get all ProcessInstanceNotificationsUnread SubscriberId");
+        return processInstanceNotificationRepository
+                .countBySubscriberIdAndStatus(subscriberId, ProcessInstanceNotificationStatus.UNREAD);
     }
 
     /**

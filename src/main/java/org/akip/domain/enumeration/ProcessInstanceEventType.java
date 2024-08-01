@@ -1,9 +1,9 @@
 package org.akip.domain.enumeration;
 
 /**
- * The ProcessInstanceNotificationType enumeration.
+ * The ProcessInstanceEventType enumeration.
  */
-public enum ProcessInstanceNotificationType {
+public enum ProcessInstanceEventType {
     TASK_COMPLETED,
     NOTE_ADDED,
     NOTE_EDITED,

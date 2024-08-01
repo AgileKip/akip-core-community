@@ -1,7 +1,6 @@
 package org.akip.service.dto;
 
-import org.akip.domain.ProcessInstance;
-import org.akip.domain.enumeration.ProcessInstanceSubscriptionStatus;
+import org.akip.domain.enumeration.ActiveInactiveStatus;
 import org.akip.domain.enumeration.SubscriberType;
 
 import java.io.Serializable;
@@ -19,7 +18,7 @@ public class ProcessInstanceSubscriptionDTO implements Serializable {
 
     private String subscriberId;
 
-    private ProcessInstanceSubscriptionStatus status;
+    private ActiveInactiveStatus status;
 
     private LocalDate date;
 
@@ -59,11 +58,11 @@ public class ProcessInstanceSubscriptionDTO implements Serializable {
         this.subscriberId = subscriberId;
     }
 
-    public ProcessInstanceSubscriptionStatus getStatus() {
+    public ActiveInactiveStatus getStatus() {
         return status;
     }
 
-    public void setStatus(ProcessInstanceSubscriptionStatus status) {
+    public void setStatus(ActiveInactiveStatus status) {
         this.status = status;
     }
 

@@ -3,7 +3,7 @@ package org.akip.service;
 
 import org.akip.domain.ProcessInstance;
 import org.akip.domain.ProcessInstanceSubscription;
-import org.akip.domain.enumeration.ProcessInstanceNotificationType;
+import org.akip.domain.enumeration.ProcessInstanceEventType;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.ProcessInstanceSubscriptionRepository;
 import org.akip.resolver.AkipUserDTO;
@@ -40,95 +40,95 @@ public class SubscriptionService {
         this.processInstanceRepository = processInstanceRepository;
     }
 
-    public void notifyCompletedTask(Long processInstanceId) {
+    public void notifyTaskCompleted(Long processInstanceId) {
         Predicate<ProcessInstanceSubscription> filter = ProcessInstanceSubscription::getNotifyTasks;
         notifyUsers(
                 filter,
                 processInstanceId,
                 "mail/taskCompletedEventEmail",
                 "email.taskCompletedEvent.title",
-                ProcessInstanceNotificationType.TASK_COMPLETED
+                ProcessInstanceEventType.TASK_COMPLETED
         );
     }
 
-    public void notifyAddedNote(Long processInstanceId) {
+    public void notifyNoteAdded(Long processInstanceId) {
         Predicate<ProcessInstanceSubscription> filter = ProcessInstanceSubscription::getNotifyNotes;
         notifyUsers(
                 filter,
                 processInstanceId,
                 "mail/noteAddedEventEmail",
                 "email.noteAddedEvent.title",
-                ProcessInstanceNotificationType.NOTE_ADDED
+                ProcessInstanceEventType.NOTE_ADDED
         );
     }
 
-    public void notifyChangedNote(Long processInstanceId) {
+    public void notifyNoteChanged(Long processInstanceId) {
         Predicate<ProcessInstanceSubscription> filter = ProcessInstanceSubscription::getNotifyNotes;
         notifyUsers(
                 filter,
                 processInstanceId,
                 "mail/noteChangedEventEmail",
                 "email.noteChangedEvent.title",
-                ProcessInstanceNotificationType.NOTE_EDITED
+                ProcessInstanceEventType.NOTE_EDITED
         );
     }
 
-    public void notifyRemovedNote(Long processInstanceId) {
+    public void notifyNoteRemoved(Long processInstanceId) {
         Predicate<ProcessInstanceSubscription> filter = ProcessInstanceSubscription::getNotifyNotes;
         notifyUsers(
                 filter,
                 processInstanceId,
                 "mail/noteRemovedEventEmail",
                 "email.noteRemovedEvent.title",
-                ProcessInstanceNotificationType.NOTE_REMOVED
+                ProcessInstanceEventType.NOTE_REMOVED
         );
     }
 
-    public void notifyAddedAttachment(Long processInstanceId) {
+    public void notifyAttachmentAdded(Long processInstanceId) {
         Predicate<ProcessInstanceSubscription> filter = ProcessInstanceSubscription::getNotifyAttachments;
         notifyUsers(
                 filter,
                 processInstanceId,
                 "mail/attachmentAddedEventEmail",
                 "email.attachmentAddedEvent.title",
-                ProcessInstanceNotificationType.ATTACHMENT_ADDED
+                ProcessInstanceEventType.ATTACHMENT_ADDED
         );
     }
 
-    public void notifyChangedAttachment(Long processInstanceId) {
+    public void notifyAttachmentChanged(Long processInstanceId) {
         Predicate<ProcessInstanceSubscription> filter = ProcessInstanceSubscription::getNotifyAttachments;
         notifyUsers(
                 filter,
                 processInstanceId,
                 "mail/attachmentChangedEventEmail",
                 "email.attachmentChangedEvent.title",
-                ProcessInstanceNotificationType.ATTACHMENT_EDITED
+                ProcessInstanceEventType.ATTACHMENT_EDITED
         );
     }
 
-    public void notifyRemovedAttachment(Long processInstanceId) {
+    public void notifyAttachmentRemoved(Long processInstanceId) {
         Predicate<ProcessInstanceSubscription> filter = ProcessInstanceSubscription::getNotifyAttachments;
         notifyUsers(
                 filter,
                 processInstanceId,
                 "mail/attachmentRemovedEventEmail",
                 "email.attachmentRemovedEvent.title",
-                ProcessInstanceNotificationType.ATTACHMENT_REMOVED
+                ProcessInstanceEventType.ATTACHMENT_REMOVED
         );
     }
 
-    public void notifySubscriberChat(Long processInstanceId) {
+    public void notifyChatSubscriber(Long processInstanceId) {
         Predicate<ProcessInstanceSubscription> filter = ProcessInstanceSubscription::getNotifyChats;
         notifyUsers(
                 filter,
                 processInstanceId,
                 "mail/subscriberChatEmail",
                 "email.subscriptionChat.title",
-                ProcessInstanceNotificationType.CHAT_MESSAGE_SENT
+                ProcessInstanceEventType.CHAT_MESSAGE_SENT
         );
     }
 
-    private void notifyUsers(Predicate<ProcessInstanceSubscription> filter, Long processInstanceId, String emailTemplate, String emailTitle, ProcessInstanceNotificationType notificationType) {
+    private void notifyUsers(Predicate<ProcessInstanceSubscription> filter, Long processInstanceId, String emailTemplate, String emailTitle, ProcessInstanceEventType notificationType) {
         List<ProcessInstanceSubscription> processInstanceSubscriptions = processInstanceSubscriptionRepository.findAllByProcessInstanceId(processInstanceId)
                 .stream()
                 .filter(filter)
@@ -139,13 +139,13 @@ public class SubscriptionService {
                 .map(ProcessInstanceSubscription::getSubscriberId)
                 .collect(Collectors.toList());
 
-        List<AkipUserDTO> users = userResolver.getUsersByLogins(userLoginList);
+        List<AkipUserDTO> subscribedUsers = userResolver.getUsersByLogins(userLoginList);
 
         ProcessInstance processInstance = processInstanceRepository.findById(processInstanceId).get();
 
-        for (AkipUserDTO user : users) {
-            processInstanceMailService.sendEmailFromTemplate(user, processInstance, emailTemplate, emailTitle);
-            processInstanceNotificationService.save(processInstance, notificationType, user.getLogin());
+        for (AkipUserDTO subscribedUser : subscribedUsers) {
+            processInstanceMailService.sendEmailFromTemplate(subscribedUser, processInstance, emailTemplate, emailTitle);
+            processInstanceNotificationService.save(processInstance, notificationType, subscribedUser.getLogin());
         }
     }
 }

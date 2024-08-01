@@ -3,8 +3,8 @@ package org.akip.dao;
 import com.owse.searchFramework.*;
 import com.owse.searchFramework.enumeration.FilterType;
 import org.akip.domain.ProcessInstanceNotification;
+import org.akip.domain.enumeration.ProcessInstanceEventType;
 import org.akip.domain.enumeration.ProcessInstanceNotificationStatus;
-import org.akip.domain.enumeration.ProcessInstanceNotificationType;
 import org.akip.security.SecurityUtils;
 import org.akip.service.dto.searchDto.ProcessInstanceNotificationSearchDTO;
 import org.slf4j.Logger;
@@ -95,9 +95,9 @@ class ProcessInstanceNotificationDao extends AbstractDAO<ProcessInstanceNotifica
 
         EnumListFilterDef eventTypeFilterDef = new EnumListFilterDef();
         eventTypeFilterDef.setId("eventType");
-        eventTypeFilterDef.setOptions(Arrays.asList(ProcessInstanceNotificationType.values()));
+        eventTypeFilterDef.setOptions(Arrays.asList(ProcessInstanceEventType.values()));
         eventTypeFilterDef.setFilterType(FilterType.DEFAULT);
-        eventTypeFilterDef.setEnumType(ProcessInstanceNotificationType.class);
+        eventTypeFilterDef.setEnumType(ProcessInstanceEventType.class);
         filters.add(eventTypeFilterDef);
 
         StringFilterDef processInstanceNameFilterDef = new StringFilterDef();
@@ -151,7 +151,7 @@ class ProcessInstanceNotificationDao extends AbstractDAO<ProcessInstanceNotifica
         resultColumnEventType.setDtoField("eventType");
         resultColumnEventType.setVisible(true);
         resultColumnEventType.setType("Enum");
-        resultColumnEventType.setSubType("ProcessInstanceNotificationType");
+        resultColumnEventType.setSubType("ProcessInstanceEventType");
         resultColumns.add(resultColumnEventType);
 
         ResultColumn resultColumnProcessInstanceName = new ResultColumn();

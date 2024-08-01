@@ -1,7 +1,7 @@
 package org.akip.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.akip.domain.enumeration.ProcessInstanceSubscriptionStatus;
+import org.akip.domain.enumeration.ActiveInactiveStatus;
 import org.akip.domain.enumeration.SubscriberType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -34,7 +34,7 @@ public class ProcessInstanceSubscription implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private ProcessInstanceSubscriptionStatus status;
+    private ActiveInactiveStatus status;
 
     @Column(name = "date")
     private LocalDate date;
@@ -98,16 +98,16 @@ public class ProcessInstanceSubscription implements Serializable {
         this.subscriberId = subscriberId;
     }
 
-    public ProcessInstanceSubscriptionStatus getStatus() {
+    public ActiveInactiveStatus getStatus() {
         return this.status;
     }
 
-    public ProcessInstanceSubscription status(ProcessInstanceSubscriptionStatus status) {
+    public ProcessInstanceSubscription status(ActiveInactiveStatus status) {
         this.status = status;
         return this;
     }
 
-    public void setStatus(ProcessInstanceSubscriptionStatus status) {
+    public void setStatus(ActiveInactiveStatus status) {
         this.status = status;
     }
 

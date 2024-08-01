@@ -169,9 +169,21 @@ public class ProcessInstanceNotificationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processInstanceNotificationDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/process-instance-notifications/{subscriberId}/notification")
-    public List<ProcessInstanceNotificationDTO> getAllProcessInstanceNotificationsBySubscriberId(@PathVariable String subscriberId) {
+    public List<ProcessInstanceNotificationDTO> findTop6BySubscriberIdOrderByIdDesc(@PathVariable String subscriberId) {
         log.debug("REST request to get ProcessInstanceNotificationBySubscriberId : {}", subscriberId);
-        return processInstanceNotificationService.findAllProcessInstanceNotificationsBySubscriberId(subscriberId);
+        return processInstanceNotificationService.findTop6BySubscriberIdOrderByIdDesc(subscriberId);
+    }
+
+    /**
+     * {@code GET  /process-instance-notifications/:id} : get the "id" processInstanceNotification.
+     *
+     * @param subscriberId the id of the processInstanceNotificationDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processInstanceNotificationDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/process-instance-notifications/{subscriberId}/unread-notification")
+    public Long countBySubscriberIdAndStatus(@PathVariable String subscriberId) {
+        log.debug("REST request to get ProcessInstanceNotificationUnreadBySubscriberId : {}", subscriberId);
+        return processInstanceNotificationService.countBySubscriberIdAndStatus(subscriberId);
     }
 
     /**

@@ -3,7 +3,7 @@ package org.akip.service;
 
 import org.akip.camunda.CamundaConstants;
 import org.akip.domain.*;
-import org.akip.domain.enumeration.ProcessInstanceSubscriptionStatus;
+import org.akip.domain.enumeration.ActiveInactiveStatus;
 import org.akip.domain.enumeration.StatusProcessInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.repository.*;
@@ -383,7 +383,7 @@ public class ProcessInstanceService {
             ProcessInstanceSubscriptionDTO processInstanceSubscription = new ProcessInstanceSubscriptionDTO();
             processInstanceSubscription.setSubscriberType(processDefinitionSubscription.getSubscriberType());
             processInstanceSubscription.setSubscriberId(processDefinitionSubscription.getSubscriberId());
-            processInstanceSubscription.setStatus(ProcessInstanceSubscriptionStatus.ACTIVE);
+            processInstanceSubscription.setStatus(ActiveInactiveStatus.ACTIVE);
             processInstanceSubscription.setDate(processDefinitionSubscription.getDate());
             processInstanceSubscription.setNotifyAll(processDefinitionSubscription.getNotifyAll());
             processInstanceSubscription.setNotifyTasks(processDefinitionSubscription.getNotifyTasks());

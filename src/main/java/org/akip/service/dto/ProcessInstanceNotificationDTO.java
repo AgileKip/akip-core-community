@@ -1,7 +1,7 @@
 package org.akip.service.dto;
 
+import org.akip.domain.enumeration.ProcessInstanceEventType;
 import org.akip.domain.enumeration.ProcessInstanceNotificationStatus;
-import org.akip.domain.enumeration.ProcessInstanceNotificationType;
 import org.akip.domain.ProcessInstance;
 
 import java.io.Serializable;
@@ -23,7 +23,7 @@ public class ProcessInstanceNotificationDTO implements Serializable {
 
     private ProcessInstanceNotificationStatus status;
 
-    private ProcessInstanceNotificationType eventType;
+    private ProcessInstanceEventType eventType;
 
     private String subscriberId;
 
@@ -69,11 +69,11 @@ public class ProcessInstanceNotificationDTO implements Serializable {
         this.status = status;
     }
 
-    public ProcessInstanceNotificationType getEventType() {
+    public ProcessInstanceEventType getEventType() {
         return eventType;
     }
 
-    public void setEventType(ProcessInstanceNotificationType eventType) {
+    public void setEventType(ProcessInstanceEventType eventType) {
         this.eventType = eventType;
     }
 

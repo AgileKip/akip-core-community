@@ -7,7 +7,7 @@ import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
-import org.akip.publisher.PublisherEvent;
+import org.akip.publisher.ProcessInstanceEventPublisher;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.TaskInstanceRepository;
 import org.akip.security.SecurityUtils;
@@ -55,7 +55,7 @@ public class TaskInstanceService {
 
     private final BeanFactory beanFactory;
 
-    private final PublisherEvent publisherEvent;
+    private final ProcessInstanceEventPublisher processInstanceEventPublisher;
 
     private static final String ANONYMOUS_USER = "anonymousUser";
 
@@ -64,7 +64,7 @@ public class TaskInstanceService {
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
             NoteService noteService, EntityManager entityManager,
-            BeanFactory beanFactory, PublisherEvent publisherEvent) {
+            BeanFactory beanFactory, ProcessInstanceEventPublisher processInstanceEventPublisher) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
         this.taskInstanceRepository = taskInstanceRepository;
@@ -73,7 +73,7 @@ public class TaskInstanceService {
         this.noteService = noteService;
         this.entityManager = entityManager;
         this.beanFactory = beanFactory;
-        this.publisherEvent = publisherEvent;
+        this.processInstanceEventPublisher = processInstanceEventPublisher;
     }
 
     /**
@@ -167,7 +167,7 @@ public class TaskInstanceService {
         Map<String, Object> params = new HashMap<>();
         params.put(CamundaConstants.PROCESS_INSTANCE, processInstance);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().get());
-        publisherEvent.publishEventCompleteTask(this, taskInstance);
+        processInstanceEventPublisher.publishEventCompleteTask(this, taskInstance);
         taskService.complete(taskInstance.getTaskId(), params);
         noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }
@@ -178,7 +178,7 @@ public class TaskInstanceService {
         Map<String, Object> params = new HashMap<>();
         params.put(CamundaConstants.PROCESS_ENTITY, processEntity);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().orElseThrow());
-        publisherEvent.publishEventCompleteTask(this, taskInstance);
+        processInstanceEventPublisher.publishEventCompleteTask(this, taskInstance);
         taskService.complete(taskInstance.getTaskId(), params);
         noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }

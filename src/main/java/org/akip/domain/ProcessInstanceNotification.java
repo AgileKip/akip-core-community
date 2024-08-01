@@ -1,8 +1,8 @@
 package org.akip.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.akip.domain.enumeration.ProcessInstanceEventType;
 import org.akip.domain.enumeration.ProcessInstanceNotificationStatus;
-import org.akip.domain.enumeration.ProcessInstanceNotificationType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -40,7 +40,7 @@ public class ProcessInstanceNotification implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type")
-    private ProcessInstanceNotificationType eventType;
+    private ProcessInstanceEventType eventType;
 
     @Column(name = "subscriber_id")
     private String subscriberId;
@@ -115,16 +115,16 @@ public class ProcessInstanceNotification implements Serializable {
         this.status = status;
     }
 
-    public ProcessInstanceNotificationType getEventType() {
+    public ProcessInstanceEventType getEventType() {
         return this.eventType;
     }
 
-    public ProcessInstanceNotification eventType(ProcessInstanceNotificationType eventType) {
+    public ProcessInstanceNotification eventType(ProcessInstanceEventType eventType) {
         this.eventType = eventType;
         return this;
     }
 
-    public void setEventType(ProcessInstanceNotificationType eventType) {
+    public void setEventType(ProcessInstanceEventType eventType) {
         this.eventType = eventType;
     }
 
