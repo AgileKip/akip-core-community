@@ -1,6 +1,8 @@
 package org.akip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import org.akip.camunda.CamundaConstants;
 import org.akip.delegate.RedoableDelegate;
 import org.akip.domain.TaskInstance;
@@ -67,9 +69,11 @@ public class TaskInstanceService {
             ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, TaskInstanceRepository taskInstanceRepository,
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
-            NoteService noteService, EntityManager entityManager,
-            BeanFactory beanFactory, BindingBuilder bindingBuilder, RuntimeService runtimeService) {
-            BeanFactory beanFactory, ProcessInstanceEventPublisher processInstanceEventPublisher) {
+            NoteService noteService,
+            EntityManager entityManager,
+            BeanFactory beanFactory,
+            BindingBuilder bindingBuilder,
+            RuntimeService runtimeService, ProcessInstanceEventPublisher processInstanceEventPublisher) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
         this.taskInstanceRepository = taskInstanceRepository;
