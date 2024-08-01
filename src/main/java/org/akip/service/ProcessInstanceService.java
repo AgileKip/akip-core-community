@@ -131,9 +131,7 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO, processInstance);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -168,9 +166,7 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO, processInstance);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
     }
@@ -366,6 +362,14 @@ public class ProcessInstanceService {
         );
     }
 
+    private void synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(ProcessInstanceDTO processInstanceDTO, ProcessInstance processInstance) {
+        if (processInstanceDTO.getTemporaryProcessInstance() == null) {
+            return;
+        }
+        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
+        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+    }
     public void createSubscription(ProcessInstanceDTO processInstance) {
         List<ProcessDefinitionSubscription> processDefinitionSubscriptions = processDefinitionSubscriptionRepository.findByBpmnProcessDefinitionId(
                 processInstance.getProcessDefinition().getBpmnProcessDefinitionId()

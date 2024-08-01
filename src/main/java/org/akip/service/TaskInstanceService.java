@@ -7,16 +7,16 @@ import org.akip.domain.TaskInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
+import org.akip.groovy.BindingBuilder;
 import org.akip.publisher.ProcessInstanceEventPublisher;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.TaskInstanceRepository;
 import org.akip.security.SecurityUtils;
-import org.akip.service.dto.IProcessEntity;
-import org.akip.service.dto.ProcessInstanceDTO;
-import org.akip.service.dto.TaskInstanceDTO;
+import org.akip.service.dto.*;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.akip.service.mapper.TaskInstanceMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
@@ -55,6 +55,10 @@ public class TaskInstanceService {
 
     private final BeanFactory beanFactory;
 
+    private final BindingBuilder bindingBuilder;
+
+    private final RuntimeService runtimeService;
+
     private final ProcessInstanceEventPublisher processInstanceEventPublisher;
 
     private static final String ANONYMOUS_USER = "anonymousUser";
@@ -64,6 +68,7 @@ public class TaskInstanceService {
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
             NoteService noteService, EntityManager entityManager,
+            BeanFactory beanFactory, BindingBuilder bindingBuilder, RuntimeService runtimeService) {
             BeanFactory beanFactory, ProcessInstanceEventPublisher processInstanceEventPublisher) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
@@ -73,6 +78,8 @@ public class TaskInstanceService {
         this.noteService = noteService;
         this.entityManager = entityManager;
         this.beanFactory = beanFactory;
+        this.bindingBuilder = bindingBuilder;
+        this.runtimeService = runtimeService;
         this.processInstanceEventPublisher = processInstanceEventPublisher;
     }
 
@@ -112,11 +119,61 @@ public class TaskInstanceService {
         return taskInstanceRepository.findById(id).map(taskInstanceMapper::toDto);
     }
 
+    public String executeDocumentationExpression(TaskInstance taskInstance) {
+
+        Object processEntity = runtimeService.getVariable(taskInstance.getProcessInstance().getCamundaProcessInstanceId(), CamundaConstants.PROCESS_ENTITY);
+
+        if (processEntity != null){
+            return executeDocumentationExpressionFromProcessEntity(taskInstance, processEntity);
+        }
+
+        Object processInstance = runtimeService.getVariable(taskInstance.getProcessInstance().getCamundaProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE);
+
+        return executeDocumentationExpressionFromProcessInstance(taskInstance, processInstance);
+
+
+    }
+
+    public String executeDocumentationExpressionFromProcessEntity(TaskInstance taskInstance, Object processEntity) {
+
+        Binding binding = bindingBuilder.buildBindingFromProcessEntity(processEntity);
+        GroovyShell shell = new GroovyShell(binding);
+
+        String expression = taskInstance.getTaskDefinition().getDocumentation();
+
+        if (!expression.contains("\"\"\"")) {
+            expression = "\"\"\"" + expression + "\"\"\"";
+        }
+
+        return shell.evaluate(expression).toString();
+    }
+
+    public String executeDocumentationExpressionFromProcessInstance(TaskInstance taskInstance, Object processInstance) {
+
+        if (taskInstance.getTaskDefinition().getDocumentation() == null){
+            return "";
+        }
+
+        Binding binding = bindingBuilder.buildBindingFromProcessInstance(processInstance);
+        GroovyShell shell = new GroovyShell(binding);
+
+        String expression = taskInstance.getTaskDefinition().getDocumentation();
+
+        if (!expression.contains("\"\"\"")) {
+            expression = "\"\"\"" + expression + "\"\"\"";
+        }
+
+        return shell.evaluate(expression).toString();
+    }
+
     public Optional<TaskInstanceDTO> claim(Long id) {
         log.debug("Request to claim TaskInstance : {}", id);
         Optional<TaskInstance> optionalTaskInstance = taskInstanceRepository.findById(id);
         if (optionalTaskInstance.isPresent()) {
             TaskInstance taskInstance = optionalTaskInstance.get();
+
+            taskInstance.setDescription(executeDocumentationExpression(taskInstance));
+
             checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getCandidateGroups()));
 
             taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
