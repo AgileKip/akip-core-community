@@ -1,7 +1,7 @@
 package org.akip.web.rest;
 
 import org.akip.domain.ProcessDeployment;
-import org.akip.domain.enumeration.ProcessType;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.service.ProcessDeploymentService;
 import org.akip.service.dto.ProcessDeploymentBpmnModelDTO;
 import org.akip.service.dto.ProcessDeploymentDTO;
@@ -40,10 +40,10 @@ public class ProcessDeploymentController {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new processDeploymentDTO, or with status {@code 400 (Bad Request)} if the processDeploymentDTO has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/process-deployment/{processType}/deploy")
-    public ResponseEntity<Void> deploy(@PathVariable ProcessType processType, @RequestBody ProcessDeploymentDTO processDeploymentDTO) throws URISyntaxException {
+    @PostMapping("/process-deployment/{processVisibilityType}/deploy")
+    public ResponseEntity<Void> deploy(@PathVariable ProcessVisibilityType processVisibilityType, @RequestBody ProcessDeploymentDTO processDeploymentDTO) throws URISyntaxException {
         log.debug("REST request to deploy ProcessDeployment : {}", processDeploymentDTO);
-        ProcessDeploymentDTO result = processDeploymentService.deploy(processType, processDeploymentDTO);
+        ProcessDeploymentDTO result = processDeploymentService.deploy(processVisibilityType, processDeploymentDTO);
 
         return ResponseEntity
                 .created(new URI("/api/process-deployment/" + result.getId()))

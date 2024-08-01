@@ -1,6 +1,6 @@
 package org.akip.domain.enumeration;
 
-public enum ProcessType {
+public enum ProcessVisibilityType {
     PRIVATE,
     INTERNAL,
     PUBLIC

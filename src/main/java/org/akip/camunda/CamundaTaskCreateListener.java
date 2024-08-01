@@ -2,8 +2,7 @@ package org.akip.camunda;
 
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.ProcessDeployment;
-import org.akip.domain.enumeration.ProcessType;
-import org.akip.domain.enumeration.StatusProcessDeployment;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.repository.*;
@@ -112,17 +111,14 @@ public class CamundaTaskCreateListener implements TaskListener {
 
     private List<String> calculateCandidateGroups(ProcessDefinition processDefinition, List<String> candidateGroups){
 
-        if (processDefinition.getProcessType() == ProcessType.PRIVATE){
-
-            ProcessDeployment processDeployment = processDeploymentRepository.findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(processDefinition.getId()).get();
-
+        if (processDefinition.getProcessVisibilityType() == ProcessVisibilityType.PRIVATE){
             return candidateGroups
                     .stream()
                     .map(candidateGroup -> processDefinition.getBpmnProcessDefinitionId() + "." + candidateGroup)
                     .collect(Collectors.toList());
         }
 
-        if (processDefinition.getProcessType() == ProcessType.INTERNAL){
+        if (processDefinition.getProcessVisibilityType() == ProcessVisibilityType.INTERNAL){
 
             ProcessDeployment processDeployment = processDeploymentRepository.findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNotNull(processDefinition.getId()).get();
 

@@ -1,6 +1,6 @@
 package org.akip.service.dto;
 
-import org.akip.domain.enumeration.ProcessType;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 
 import javax.persistence.Lob;
@@ -29,7 +29,7 @@ public class ProcessDefinitionDTO implements Serializable {
 
     private FormDefinitionDTO startFormDefinition;
 
-    private ProcessType processType;
+    private ProcessVisibilityType processVisibilityType;
 
     private KipAppDTO kipApp;
 
@@ -97,12 +97,12 @@ public class ProcessDefinitionDTO implements Serializable {
         this.startFormDefinition = startFormDefinition;
     }
 
-    public ProcessType getProcessType() {
-        return processType;
+    public ProcessVisibilityType getProcessVisibilityType() {
+        return processVisibilityType;
     }
 
-    public void setProcessType(ProcessType processType) {
-        this.processType = processType;
+    public void setProcessVisibilityType(ProcessVisibilityType processVisibilityType) {
+        this.processVisibilityType = processVisibilityType;
     }
 
     public KipAppDTO getKipApp() {

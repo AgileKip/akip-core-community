@@ -1,6 +1,6 @@
 package org.akip.domain;
 
-import org.akip.domain.enumeration.ProcessType;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -50,7 +50,7 @@ public class ProcessDefinition implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "process_type")
-    private ProcessType processType;
+    private ProcessVisibilityType processVisibilityType;
 
     @ManyToOne
     private KipApp kipApp;
@@ -125,12 +125,12 @@ public class ProcessDefinition implements Serializable {
         this.startFormDefinition = startFormDefinition;
     }
 
-    public ProcessType getProcessType() {
-        return processType;
+    public ProcessVisibilityType getProcessVisibilityType() {
+        return processVisibilityType;
     }
 
-    public void setProcessType(ProcessType processType) {
-        this.processType = processType;
+    public void setProcessVisibilityType(ProcessVisibilityType processVisibilityType) {
+        this.processVisibilityType = processVisibilityType;
     }
 
     public KipApp getKipApp() {

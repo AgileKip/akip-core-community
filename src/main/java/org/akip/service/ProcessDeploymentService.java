@@ -3,7 +3,7 @@ package org.akip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.ProcessDeployment;
-import org.akip.domain.enumeration.ProcessType;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDeployment;
 import org.akip.exception.BadRequestErrorException;
 import org.akip.repository.ProcessDeploymentRepository;
@@ -65,11 +65,11 @@ public class ProcessDeploymentService {
         this.mapUtilMapper = mapUtilMapper;
     }
 
-    public ProcessDeploymentDTO deploy(ProcessType processType, ProcessDeploymentDTO processDeploymentDTO) {
+    public ProcessDeploymentDTO deploy(ProcessVisibilityType processVisibilityType, ProcessDeploymentDTO processDeploymentDTO) {
         BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(
                 new ByteArrayInputStream(processDeploymentDTO.getSpecificationFile())
         );
-        ProcessDefinition processDefinition = processDefinitionService.createOrUpdateProcessDefinition(processType, bpmnModelInstance);
+        ProcessDefinition processDefinition = processDefinitionService.createOrUpdateProcessDefinition(processVisibilityType, bpmnModelInstance);
 
         org.camunda.bpm.engine.repository.Deployment camundaDeployment = deployInCamunda(
                 processDeploymentDTO,
