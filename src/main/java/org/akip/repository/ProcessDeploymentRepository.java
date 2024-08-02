@@ -40,8 +40,6 @@ public interface ProcessDeploymentRepository extends JpaRepository<ProcessDeploy
 
     List<ProcessDeployment> findByProcessDefinitionIdAndStatusAndTenantIsNull(Long processDefinitionId, StatusProcessDeployment status);
 
-
-
     List<ProcessDeployment> findByProcessDefinitionIdAndStatusAndTenantId(
             Long processDefinitionId,
             StatusProcessDeployment status,

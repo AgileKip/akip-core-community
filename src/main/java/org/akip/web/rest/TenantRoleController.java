@@ -41,12 +41,12 @@ public class TenantRoleController {
     }
 
     @GetMapping("/tenant/{tenantId}/roles")
-    public List<TenantRoleDTO> retrieveTenantRoles(@PathVariable("tenantId") Long tenantId) throws URISyntaxException {
+    public List<TenantRoleDTO> getTenantRoles(@PathVariable("tenantId") Long tenantId) throws URISyntaxException {
         log.debug("REST request to save TentantRole : {}{}", tenantId);
         return tenantRoleService.getTenantRoles(tenantId);
     }
 
-    @PostMapping("/tenant/{tenantId}/role")
+    @PostMapping("/tenant/{tenantId}/roles")
     public ResponseEntity<TenantRoleDTO> createTenantRole(@PathVariable("tenantId") Long tenantId, @RequestBody TenantRoleDTO tenantRole) throws URISyntaxException {
         log.debug("REST request to save TentantRole : {}{}", tenantId, tenantRole.getName());
         TenantRoleDTO result = tenantRoleService.save(tenantId, tenantRole);
@@ -56,8 +56,8 @@ public class TenantRoleController {
             .body(result);
     }
 
-    @PostMapping("/tenant/{tenantId}/role/save")
-    public ResponseEntity<TenantRoleDTO> save(@PathVariable Long tenantId, @RequestBody TenantRoleDTO tenantRole) throws URISyntaxException {
+    @PutMapping("/tenant/{tenantId}/roles")
+    public ResponseEntity<TenantRoleDTO> updateTenantRole(@PathVariable("tenantId") Long tenantId, @RequestBody TenantRoleDTO tenantRole) throws URISyntaxException {
         log.debug("REST request to save ProcessRole : {}", tenantRole.getName());
         TenantRoleDTO result = tenantRoleService.save(tenantId, tenantRole);
         return ResponseEntity
@@ -66,7 +66,7 @@ public class TenantRoleController {
                 .body(result);
     }
 
-    @DeleteMapping("/tenant/{tenantId}/role/{tenantRoleId}")
+    @DeleteMapping("/tenant/{tenantId}/roles/{tenantRoleId}")
     public ResponseEntity<Void> deleteTentantRole(@PathVariable("tenantId") Long tenantId, @PathVariable("tenantRoleId") Long tenantRoleId) {
         log.debug("REST request to delete TenantRole : {}{}", tenantId, tenantRoleId);
         tenantRoleService.delete(tenantId, tenantRoleId);

@@ -43,6 +43,7 @@ public class TenantMemberService {
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
+
     public TenantMemberDTO save(Long tenantId, TenantMemberDTO tenantMemberDTO) {
         log.debug("Request to save TentantMember : {}{}", tenantId, tenantMemberDTO.getUsername());
         tenantMemberDTO.setTenant(new TenantDTO(tenantId));

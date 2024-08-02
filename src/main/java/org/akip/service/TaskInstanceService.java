@@ -6,6 +6,7 @@ import groovy.lang.GroovyShell;
 import org.akip.camunda.CamundaConstants;
 import org.akip.delegate.RedoableDelegate;
 import org.akip.domain.TaskInstance;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
@@ -177,7 +178,7 @@ public class TaskInstanceService {
 
             taskInstance.setDescription(executeDocumentationExpression(taskInstance));
 
-            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getComputedCandidateGroups()));
+            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getComputedCandidateGroups()), taskInstance.getProcessDefinition().getProcessVisibilityType());
 
             taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
             taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
@@ -198,14 +199,7 @@ public class TaskInstanceService {
      * Check whether the current user can claim this task according to the candidate group list
      * @param computedCandidateGroups candidateGroups
      */
-    private void checkCurrentUserPermission(List<String> computedCandidateGroups) {
-
-        List<String> authorities = new ArrayList<>();
-
-        authorities.addAll(SecurityUtils.getAuthorities());
-        authorities.addAll(processMemberService.getProcessRolesByUsername(SecurityUtils.getCurrentUserLogin().get()));
-        authorities.addAll(tenantMemberService.getTenantRolesByUsername(SecurityUtils.getCurrentUserLogin().get()));
-
+    private void checkCurrentUserPermission(List<String> computedCandidateGroups, ProcessVisibilityType processVisibilityType) {
         if (computedCandidateGroups.isEmpty()) {
             return;
         }
@@ -214,13 +208,28 @@ public class TaskInstanceService {
             return;
         }
 
-        for (String authority : authorities) {
+        for (String authority : getAuthorities(processVisibilityType)) {
             if (computedCandidateGroups.contains(authority)) {
                 return;
             }
         }
 
         throw new BadRequestErrorException("Task reserved for users " + String.join(", ", computedCandidateGroups));
+    }
+
+    private List<String> getAuthorities(ProcessVisibilityType processVisibilityType){
+        if (ProcessVisibilityType.PUBLIC.equals(processVisibilityType)){
+            List<String> authorities = new ArrayList<>();
+            //add wildcard for public processes
+            authorities.add("*");
+            authorities.addAll(SecurityUtils.getAuthorities());
+            return authorities;
+        }
+        if (ProcessVisibilityType.PRIVATE.equals(processVisibilityType)){
+            return processMemberService.getProcessRolesByUsername(SecurityUtils.getCurrentUserLogin().get());
+        }
+
+        return tenantMemberService.getTenantRolesByUsername(SecurityUtils.getCurrentUserLogin().get());
     }
 
     public void complete(TaskInstanceDTO taskInstanceDTO) {

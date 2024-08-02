@@ -42,13 +42,13 @@ public class ProcessMemberController {
     }
 
     @GetMapping("/process-definition/{processDefinitionId}/members")
-    public List<ProcessMemberDTO> retrieveByProcessDefinition(@PathVariable("processDefinitionId") Long processDefinitionId) throws URISyntaxException {
+    public List<ProcessMemberDTO> getProcessMembers(@PathVariable("processDefinitionId") Long processDefinitionId) throws URISyntaxException {
         log.debug("REST request to save ProcessMember : {}{}", processDefinitionId);
         return processMemberService.getProcessMembers(processDefinitionId);
     }
 
-    @PostMapping("/process/{processDefinitionId}/member")
-    public ResponseEntity<ProcessMemberDTO> create(@PathVariable("processDefinitionId") Long processDefinitionId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
+    @PostMapping("/process-definition/{processDefinitionId}/members")
+    public ResponseEntity<ProcessMemberDTO> createProcessMember(@PathVariable("processDefinitionId") Long processDefinitionId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
         log.debug("REST request to save ProcessMember : {}{}", processDefinitionId, processMember.getUsername());
         ProcessMemberDTO result = processMemberService.save(processDefinitionId, processMember);
         return ResponseEntity
@@ -57,8 +57,8 @@ public class ProcessMemberController {
             .body(result);
     }
 
-    @PostMapping("/process/{processDefinitionId}/member/save")
-    public ResponseEntity<ProcessMemberDTO> save(@PathVariable Long processDefinitionId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
+    @PutMapping("/process-definition/{processDefinitionId}/members")
+    public ResponseEntity<ProcessMemberDTO> updateProcessMember(@PathVariable Long processDefinitionId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
         log.debug("REST request to save ProcessMember : {}", processMember.getUsername());
         ProcessMemberDTO result = processMemberService.save(processDefinitionId, processMember);
         return ResponseEntity
@@ -67,7 +67,7 @@ public class ProcessMemberController {
                 .body(result);
     }
 
-    @DeleteMapping("/process/{processId}/member/{processMemberId}")
+    @DeleteMapping("/process-definition/{processDefinitionId}/members/{processMemberId}")
     public ResponseEntity<Void> deleteProcessMember(@PathVariable("processId") Long processId, @PathVariable("processMemberId") Long processMemberId) {
         log.debug("REST request to delete ProcessMember : {}{}", processId, processMemberId);
         processMemberService.delete(processId, processMemberId);

@@ -1,6 +1,5 @@
 package org.akip.service.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.akip.domain.TaskInstance;
 import org.akip.service.dto.TaskInstanceDTO;
 import org.apache.commons.lang3.StringUtils;

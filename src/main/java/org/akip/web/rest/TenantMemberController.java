@@ -41,12 +41,12 @@ public class TenantMemberController {
     }
 
     @GetMapping("/tenant/{tenantId}/members")
-    public List<TenantMemberDTO> retrieveTenantMembers(@PathVariable("tenantId") Long tenantId) throws URISyntaxException {
+    public List<TenantMemberDTO> getTenantMembers(@PathVariable("tenantId") Long tenantId) throws URISyntaxException {
         log.debug("REST request to save TentantMember : {}{}", tenantId);
         return tenantMemberService.getTenantMembers(tenantId);
     }
 
-    @PostMapping("/tenant/{tenantId}/member")
+    @PostMapping("/tenant/{tenantId}/members")
     public ResponseEntity<TenantMemberDTO> createTenantMember(@PathVariable("tenantId") Long tenantId, @RequestBody TenantMemberDTO tenantMember) throws URISyntaxException {
         log.debug("REST request to save TentantMember : {}{}", tenantId, tenantMember.getUsername());
         TenantMemberDTO result = tenantMemberService.save(tenantId, tenantMember);
@@ -56,8 +56,8 @@ public class TenantMemberController {
             .body(result);
     }
 
-    @PostMapping("/tenant/{tenantId}/member/save")
-    public ResponseEntity<TenantMemberDTO> save(@PathVariable Long tenantId, @RequestBody TenantMemberDTO tenantMember) throws URISyntaxException {
+    @PutMapping("/tenant/{tenantId}/members")
+    public ResponseEntity<TenantMemberDTO> updateTenantMember(@PathVariable Long tenantId, @RequestBody TenantMemberDTO tenantMember) throws URISyntaxException {
         log.debug("REST request to save ProcessMember : {}", tenantMember.getUsername());
         TenantMemberDTO result = tenantMemberService.save(tenantId, tenantMember);
         return ResponseEntity
@@ -66,8 +66,8 @@ public class TenantMemberController {
                 .body(result);
     }
 
-    @DeleteMapping("/tenant/{tenantId}/member/{tenantMemberId}")
-    public ResponseEntity<Void> deleteTentantUser(@PathVariable("tenantId") Long tenantId, @PathVariable("tenantMemberId") Long tenantMemberId) {
+    @DeleteMapping("/tenant/{tenantId}/members/{tenantMemberId}")
+    public ResponseEntity<Void> deleteTenantMember(@PathVariable("tenantId") Long tenantId, @PathVariable("tenantMemberId") Long tenantMemberId) {
         log.debug("REST request to delete TenantMember : {}{}", tenantId, tenantMemberId);
         tenantMemberService.delete(tenantId, tenantMemberId);
         return ResponseEntity

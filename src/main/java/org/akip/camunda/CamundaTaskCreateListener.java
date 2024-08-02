@@ -82,16 +82,6 @@ public class CamundaTaskCreateListener implements TaskListener {
                 .filter(identityLink -> identityLink.getGroupId() != null)
                 .forEach(identityLink -> taskInstanceDTO.getCandidateGroups().add(identityLink.getGroupId()));
 
-        Optional<ProcessDefinition> optionalProcessDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(
-                delegateTask.getProcessDefinitionId().split(":")[0]
-        );
-
-        if (taskInstanceDTO.getCandidateGroups().isEmpty()){
-            taskInstanceDTO.getCandidateGroups().add("*");
-        }
-
-        taskInstanceDTO.getComputedCandidateGroups().addAll(calculateCandidateGroups(optionalProcessDefinition.get(), taskInstanceDTO.getCandidateGroups()));
-
         ProcessInstanceDTO processInstance = new ProcessInstanceDTO();
         processInstance.setId(1L);
         processInstance.setCamundaProcessInstanceId(delegateTask.getProcessInstanceId());
@@ -101,12 +91,19 @@ public class CamundaTaskCreateListener implements TaskListener {
                 .findByBpmnProcessDefinitionId(delegateTask.getProcessDefinitionId().split(":")[0])
                 .map(processDefinitionMapper::toDto)
                 .get();
-        if (optionalProcessDefinition.isPresent()) {
-            taskInstanceDTO.setProcessDefinition(processDefinitionMapper.toDto(optionalProcessDefinition.get()));
-        }
+        mountComputedCandidateGroups(processDefinitionDTO, taskInstanceDTO);
+        taskInstanceDTO.setProcessDefinition(processDefinitionDTO);
         taskInstanceDTO.setTaskDefinition(taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(processDefinitionDTO.getBpmnProcessDefinitionId(), delegateTask.getTaskDefinitionKey()).orElseThrow()));
 
         return taskInstanceDTO;
+    }
+
+    private void mountComputedCandidateGroups(ProcessDefinitionDTO processDefinitionDTO ,TaskInstanceDTO taskInstanceDTO){
+        if (taskInstanceDTO.getCandidateGroups().isEmpty()){
+            taskInstanceDTO.getCandidateGroups().add("*");
+        }
+
+        taskInstanceDTO.getComputedCandidateGroups().addAll(calculateCandidateGroups(processDefinitionMapper.toEntity(processDefinitionDTO), taskInstanceDTO.getCandidateGroups()));
     }
 
     private List<String> calculateCandidateGroups(ProcessDefinition processDefinition, List<String> candidateGroups){
