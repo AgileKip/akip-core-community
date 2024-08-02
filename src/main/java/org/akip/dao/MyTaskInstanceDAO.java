@@ -50,6 +50,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
 
         List<String> authorities = new ArrayList<>();
 
+        authorities.add("*");
         authorities.addAll(SecurityUtils.getAuthorities());
         authorities.addAll(processMemberService.getProcessRolesByUsername(SecurityUtils.getCurrentUserLogin().get()));
         authorities.addAll(tenantMemberService.getTenantRolesByUsername(SecurityUtils.getCurrentUserLogin().get()));
