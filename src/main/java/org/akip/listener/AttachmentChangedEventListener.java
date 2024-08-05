@@ -1,9 +1,10 @@
 package org.akip.listener;
 
 import org.akip.domain.AttachmentEntity;
+import org.akip.domain.ProcessInstance;
 import org.akip.event.*;
 import org.akip.repository.AttachmentEntityRepository;
-import org.akip.service.SubscriptionService;
+import org.akip.service.AttachmentChangedSubscriptionService;
 import org.akip.service.dto.AttachmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -15,25 +16,22 @@ import java.util.List;
 @Component
 public class AttachmentChangedEventListener implements ApplicationListener<AttachmentChangedEvent> {
 
-    private final SubscriptionService subscriptionService;
+    private final AttachmentChangedSubscriptionService attachmentChangedSubscriptionService;
     private final AttachmentEntityRepository attachmentEntityRepository;
 
     @Autowired
-    public AttachmentChangedEventListener(SubscriptionService subscriptionService,
-                                          AttachmentEntityRepository attachmentEntityRepository) {
-        this.subscriptionService = subscriptionService;
+    public AttachmentChangedEventListener(
+            AttachmentChangedSubscriptionService attachmentChangedSubscriptionService, AttachmentEntityRepository attachmentEntityRepository) {
+        this.attachmentChangedSubscriptionService = attachmentChangedSubscriptionService;
         this.attachmentEntityRepository = attachmentEntityRepository;
     }
 
     @Async
     public void onApplicationEvent(AttachmentChangedEvent event) {
         AttachmentDTO attachmentChangedEvent = event.getAttachment();
-        List<AttachmentEntity> attachmentEntities = attachmentEntityRepository.findAttachmentEntityByAttachment_Id(attachmentChangedEvent.getId());
+        List<AttachmentEntity> attachmentEntities = attachmentEntityRepository.findByAttachmentIdAndEntityName(attachmentChangedEvent.getId(), ProcessInstance.class.getSimpleName());
         for (AttachmentEntity attachmentEntity : attachmentEntities) {
-            if (attachmentEntity.getEntityName().equals("ProcessInstance")) {
-                subscriptionService.notifyAttachmentChanged(attachmentEntity.getEntityId());
-                return;
-            }
+            attachmentChangedSubscriptionService.notifyUsers(attachmentChangedEvent.getId(), attachmentEntity.getEntityId());
         }
     }
 }

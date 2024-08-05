@@ -13,11 +13,12 @@ import tech.jhipster.config.JHipsterProperties;
 import java.util.Locale;
 
 @Service
-public class ProcessInstanceMailService {
+public class ProcessInstanceSubscriptionMailService {
 
     private static final Locale defaultLocale = Locale.forLanguageTag("en");
     private static final String USER = "user";
     private static final String PROCESS_INSTANCE = "processInstance";
+    private static final String EVENT_ID = "eventId";
     private final Logger log = LoggerFactory.getLogger(AkipMailService.class);
     private static final String BASE_URL = "baseUrl";
     private final JHipsterProperties jHipsterProperties;
@@ -27,7 +28,7 @@ public class ProcessInstanceMailService {
 
     private final AkipMailService mailService;
 
-    public ProcessInstanceMailService(
+    public ProcessInstanceSubscriptionMailService(
         JHipsterProperties jHipsterProperties,
         MessageSource messageSource,
         SpringTemplateEngine templateEngine,
@@ -39,12 +40,13 @@ public class ProcessInstanceMailService {
         this.mailService = mailService;
     }
 
-    public void sendEmailFromTemplate(AkipUserDTO user, ProcessInstance processInstance, String templateName, String titleKey) {
+    public void sendEmailFromTemplate(AkipUserDTO user, ProcessInstance processInstance, Long eventId, String templateName, String titleKey) {
         log.debug("Email doesn't exist for user '{}'", processInstance.getId());
 
         Context context = new Context(defaultLocale);
         context.setVariable(PROCESS_INSTANCE, processInstance);
         context.setVariable(USER, user);
+        context.setVariable(EVENT_ID, eventId);
         context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, defaultLocale);

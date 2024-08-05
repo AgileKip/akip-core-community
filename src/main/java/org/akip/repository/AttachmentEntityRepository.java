@@ -1,5 +1,6 @@
 package org.akip.repository;
 
+import org.akip.domain.Attachment;
 import org.akip.domain.AttachmentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,7 +16,7 @@ public interface AttachmentEntityRepository extends JpaRepository<AttachmentEnti
 
 	Optional<AttachmentEntity> findByEntityNameAndEntityIdAndAttachmentId(String entityName, Long entityId, Long attachmentId);
 
-	List<AttachmentEntity> findAttachmentEntityByAttachment_Id(Long attachmentId);
+	List<AttachmentEntity> findByAttachmentIdAndEntityName(Long attachment_id, String entityName);
 
 	void deleteByAttachmentId(Long attachmentId);
 

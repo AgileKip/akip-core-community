@@ -1,9 +1,10 @@
 package org.akip.listener;
 
 import org.akip.domain.NoteEntity;
+import org.akip.domain.ProcessInstance;
 import org.akip.event.*;
 import org.akip.repository.NoteEntityRepository;
-import org.akip.service.SubscriptionService;
+import org.akip.service.NoteRemovedSubscriptionService;
 import org.akip.service.dto.NoteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -15,25 +16,22 @@ import java.util.List;
 @Component
 public class NoteRemovedEventListener implements ApplicationListener<NoteRemovedEvent> {
 
-    private final SubscriptionService subscriptionService;
+    private final NoteRemovedSubscriptionService noteRemovedSubscriptionService;
     private final NoteEntityRepository noteEntityRepository;
 
     @Autowired
-    public NoteRemovedEventListener(SubscriptionService subscriptionService,
-                                    NoteEntityRepository noteEntityRepository) {
-        this.subscriptionService = subscriptionService;
+    public NoteRemovedEventListener(
+            NoteRemovedSubscriptionService noteRemovedSubscriptionService, NoteEntityRepository noteEntityRepository) {
+        this.noteRemovedSubscriptionService = noteRemovedSubscriptionService;
         this.noteEntityRepository = noteEntityRepository;
     }
 
     @Async
     public void onApplicationEvent(NoteRemovedEvent event) {
         NoteDTO noteRemovedEvent = event.getNote();
-        List<NoteEntity> noteEntities = noteEntityRepository.findNoteEntityByNote_Id(noteRemovedEvent.getId());
+        List<NoteEntity> noteEntities = noteEntityRepository.findByNoteIdAndEntityName(noteRemovedEvent.getId(), ProcessInstance.class.getSimpleName());
         for (NoteEntity noteEntity : noteEntities ){
-            if (noteEntity.getEntityName().equals("ProcessInstance")) {
-                subscriptionService.notifyNoteRemoved(noteEntity.getEntityId());
-                return;
-            }
+            noteRemovedSubscriptionService.notifyUsers(noteRemovedEvent.getId(), noteEntity.getEntityId());
         }
     }
 }

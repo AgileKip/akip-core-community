@@ -15,7 +15,7 @@ public interface NoteEntityRepository extends JpaRepository<NoteEntity, Long> {
 
 	Optional<NoteEntity> findByEntityNameAndEntityIdAndNoteId(String entityName, Long entityId, Long noteId);
 
-	List<NoteEntity> findNoteEntityByNote_Id(Long noteId);
+	List<NoteEntity> findByNoteIdAndEntityName(Long noteId, String entityName);
 
 	void deleteByNoteId(Long noteId);
 

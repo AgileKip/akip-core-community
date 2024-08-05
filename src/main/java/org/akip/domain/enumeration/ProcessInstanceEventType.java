@@ -6,7 +6,7 @@ package org.akip.domain.enumeration;
 public enum ProcessInstanceEventType {
     TASK_COMPLETED,
     NOTE_ADDED,
-    NOTE_EDITED,
+    NOTE_CHANGED,
     NOTE_REMOVED,
     ATTACHMENT_ADDED,
     ATTACHMENT_EDITED,
