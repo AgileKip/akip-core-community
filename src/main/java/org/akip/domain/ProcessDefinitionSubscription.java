@@ -1,6 +1,6 @@
 package org.akip.domain;
 
-import org.akip.domain.enumeration.ProcessDefinitionSubscriptionStatus;
+import org.akip.domain.enumeration.ActiveInactiveStatus;
 import org.akip.domain.enumeration.SubscriberType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -33,7 +33,7 @@ public class ProcessDefinitionSubscription implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private ProcessDefinitionSubscriptionStatus status;
+    private ActiveInactiveStatus status;
 
     @Column(name = "date")
     private LocalDate date;
@@ -99,16 +99,16 @@ public class ProcessDefinitionSubscription implements Serializable {
         this.subscriberId = subscriberId;
     }
 
-    public ProcessDefinitionSubscriptionStatus getStatus() {
+    public ActiveInactiveStatus getStatus() {
         return this.status;
     }
 
-    public ProcessDefinitionSubscription status(ProcessDefinitionSubscriptionStatus status) {
+    public ProcessDefinitionSubscription status(ActiveInactiveStatus status) {
         this.status = status;
         return this;
     }
 
-    public void setStatus(ProcessDefinitionSubscriptionStatus status) {
+    public void setStatus(ActiveInactiveStatus status) {
         this.status = status;
     }
 
