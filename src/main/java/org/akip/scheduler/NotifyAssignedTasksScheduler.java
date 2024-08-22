@@ -24,13 +24,13 @@ public class NotifyAssignedTasksScheduler {
     @Autowired
     private NotifyUserAssignedTasksService notifyUserAssignedTasksService;
 
-    private static final String CRONNAME = "notifyUserAssignedTasks";
+    private static final String CRON_NAME = "notifyUserAssignedTasks";
 
     @Scheduled(cron = ("${akip.notify-user-assigned-tasks.cron-expression}"))
     public void notifyUserAssignedTasks() {
-        String identifier = jobExecutionTrackingEventControl.generateJobExecutionTrackingIdentifier(CRONNAME);
+        String identifier = jobExecutionTrackingEventControl.generateJobExecutionTrackingIdentifier(CRON_NAME);
         try {
-            jobExecutionTrackingEventControl.start(identifier, CRONNAME);
+            jobExecutionTrackingEventControl.start(identifier, CRON_NAME);
 
             log.debug("notify open task emails are being sent to Users");
             Map<String, String> summary = notifyUserAssignedTasksService.notifyUserAssignedTasks();
