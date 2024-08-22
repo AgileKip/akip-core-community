@@ -11,8 +11,11 @@ import org.mapstruct.Named;
 /**
  * Mapper for the entity {@link ProcessDefinition} and its DTO {@link ProcessDefinitionDTO}.
  */
-@Mapper(componentModel = "spring", uses = {CamundaFormFieldDefMapper.class})
+@Mapper(componentModel = "spring", uses = {FormDefinitionMapper.class, MapUtilMapper.class})
 public interface ProcessDefinitionMapper extends EntityMapper<ProcessDefinitionDTO, ProcessDefinition> {
+
+    @Mapping(target = "startFormDefinition", source = "startFormDefinition", qualifiedByName = "name")
+    ProcessDefinitionDTO toDto(ProcessDefinition processDefinition);
 
     @Named("name")
     @BeanMapping(ignoreByDefault = true)

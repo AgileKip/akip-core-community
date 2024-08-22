@@ -41,10 +41,11 @@ public class ProcessDefinition implements Serializable {
     @Column(name = "can_be_manually_started")
     private Boolean canBeManuallyStarted;
 
-    @Lob
-    @Type(type = "org.hibernate.type.TextType")
-    @Column(name = "start_form_fields")
-    private String startFormFields;
+    @Column(name = "start_form_is_enabled")
+    private Boolean startFormIsEnabled;
+
+    @ManyToOne
+    private FormDefinition startFormDefinition;
 
     @ManyToOne
     private KipApp kipApp;
@@ -103,12 +104,20 @@ public class ProcessDefinition implements Serializable {
         this.canBeManuallyStarted = canBeManuallyStarted;
     }
 
-    public String getStartFormFields() {
-        return startFormFields;
+    public Boolean getStartFormIsEnabled() {
+        return startFormIsEnabled;
     }
 
-    public void setStartFormFields(String startFormFields) {
-        this.startFormFields = startFormFields;
+    public void setStartFormIsEnabled(Boolean startFormIsEnabled) {
+        this.startFormIsEnabled = startFormIsEnabled;
+    }
+
+    public FormDefinition getStartFormDefinition() {
+        return startFormDefinition;
+    }
+
+    public void setStartFormDefinition(FormDefinition startFormDefinition) {
+        this.startFormDefinition = startFormDefinition;
     }
 
     public KipApp getKipApp() {
