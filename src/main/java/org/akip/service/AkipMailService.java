@@ -1,18 +1,24 @@
 package org.akip.service;
 
+import org.akip.resolver.AkipUserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 import tech.jhipster.config.JHipsterProperties;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Service for sending emails.
@@ -26,15 +32,25 @@ public class AkipMailService {
 
     private final JHipsterProperties jHipsterProperties;
 
+    private static final String USER = "user";
+
+    private static final String BASE_URL = "baseUrl";
+
     private final JavaMailSender javaMailSender;
+
+    private final MessageSource messageSource;
+
+    private final SpringTemplateEngine templateEngine;
 
 
     public AkipMailService(
-        JHipsterProperties jHipsterProperties,
-        JavaMailSender javaMailSender
+            JHipsterProperties jHipsterProperties,
+            JavaMailSender javaMailSender, MessageSource messageSource, SpringTemplateEngine templateEngine
     ) {
         this.jHipsterProperties = jHipsterProperties;
         this.javaMailSender = javaMailSender;
+        this.messageSource = messageSource;
+        this.templateEngine = templateEngine;
     }
 
     @Async
@@ -68,4 +84,24 @@ public class AkipMailService {
         }
     }
 
+    @Async
+    public void sendEmailFromTemplate(AkipUserDTO user, String templateName, String titleKey, Map<String, Object> variables) {
+        if (user.getEmail() == null) {
+            log.debug("Email doesn't exist for user '{}'", user.getLogin());
+            return;
+        }
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        Context context = new Context(locale);
+        context.setVariables(variables);
+        context.setVariable(USER, user);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        String content = templateEngine.process(templateName, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    @Async
+    public void sendNotifyUserAssignedTasksMail(AkipUserDTO user, Map<String, Object> variables) {
+        sendEmailFromTemplate(user , "mail/notifyUserAssignedTasksMail", "akip.email.notifyUserAssignedTasksMail.title", variables);
+    }
 }
