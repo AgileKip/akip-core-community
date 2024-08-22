@@ -1,11 +1,17 @@
 # Changelog
 
-* 0.1.9 (WIP)
-  * Including RecSys
+* 0.1.10 (WIP)
+  * Including a feature to notify users about their open tasks (#10) 
+
+* 0.1.9
+  * Fixing bugs (#82)
+  * Including TaskDefinition entity
+  * Including FormDefinition entity
+  * Including support for CamundaForm8
+  * Including sections Process Event Subscription and Process Historical Activities in the Process Instance view  
 
 * 0.1.8
   * Including new field type: AkipTextareaChatGptField
-
 
 * 0.1.7
   * Including ChatGPT components (camunda delegate and form assistant)

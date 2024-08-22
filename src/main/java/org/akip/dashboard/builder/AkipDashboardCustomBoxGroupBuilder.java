@@ -37,3 +37,4 @@ public class AkipDashboardCustomBoxGroupBuilder extends DashboardGroupBuilder {
         return boxGroupModel;
     }
 }
+
