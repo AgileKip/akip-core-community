@@ -10,6 +10,7 @@ import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
 import org.akip.groovy.BindingBuilder;
+import org.akip.publisher.ProcessInstanceEventPublisher;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.TaskInstanceRepository;
 import org.akip.security.SecurityUtils;
@@ -60,14 +61,19 @@ public class TaskInstanceService {
 
     private final RuntimeService runtimeService;
 
+    private final ProcessInstanceEventPublisher processInstanceEventPublisher;
+
     private static final String ANONYMOUS_USER = "anonymousUser";
 
     public TaskInstanceService(
             ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, TaskInstanceRepository taskInstanceRepository,
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
-            NoteService noteService, EntityManager entityManager,
-            BeanFactory beanFactory, BindingBuilder bindingBuilder, RuntimeService runtimeService) {
+            NoteService noteService,
+            EntityManager entityManager,
+            BeanFactory beanFactory,
+            BindingBuilder bindingBuilder,
+            RuntimeService runtimeService, ProcessInstanceEventPublisher processInstanceEventPublisher) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
         this.taskInstanceRepository = taskInstanceRepository;
@@ -78,6 +84,7 @@ public class TaskInstanceService {
         this.beanFactory = beanFactory;
         this.bindingBuilder = bindingBuilder;
         this.runtimeService = runtimeService;
+        this.processInstanceEventPublisher = processInstanceEventPublisher;
     }
 
     /**
@@ -221,6 +228,7 @@ public class TaskInstanceService {
         Map<String, Object> params = new HashMap<>();
         params.put(CamundaConstants.PROCESS_INSTANCE, processInstance);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().get());
+        processInstanceEventPublisher.publishEventCompleteTask(this, taskInstance);
         taskService.complete(taskInstance.getTaskId(), params);
         noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }
@@ -231,6 +239,7 @@ public class TaskInstanceService {
         Map<String, Object> params = new HashMap<>();
         params.put(CamundaConstants.PROCESS_ENTITY, processEntity);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().orElseThrow());
+        processInstanceEventPublisher.publishEventCompleteTask(this, taskInstance);
         taskService.complete(taskInstance.getTaskId(), params);
         noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }

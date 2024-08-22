@@ -3,6 +3,7 @@ package org.akip.service;
 
 import org.akip.camunda.CamundaConstants;
 import org.akip.domain.*;
+import org.akip.domain.enumeration.ActiveInactiveStatus;
 import org.akip.domain.enumeration.StatusProcessInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.repository.*;
@@ -51,19 +52,23 @@ public class ProcessInstanceService {
 
     private final TemporaryProcessInstanceRepository temporaryProcessInstanceRepository;
 
+    private final ProcessInstanceSubscriptionService processInstanceSubscriptionService;
+
+    private final ProcessDefinitionSubscriptionRepository processDefinitionSubscriptionRepository;
+
     public ProcessInstanceService(
-        ProcessDeploymentService processDeploymentService,
-        TaskInstanceService taskInstanceService,
-        ProcessDefinitionRepository processDefinitionRepository,
-        ProcessDeploymentRepository processDeploymentRepository,
-        ProcessInstanceRepository processInstanceRepository,
-        ProcessInstanceMapper processInstanceMapper,
-        RuntimeService runtimeService,
-        AttachmentEntityRepository attachmentEntityRepository,
-        AttachmentRepository attachmentRepository,
-        NoteRepository noteRepository,
-        NoteEntityRepository noteEntityRepository,
-        TemporaryProcessInstanceRepository temporaryProcessInstanceRepository) {
+            ProcessDeploymentService processDeploymentService,
+            TaskInstanceService taskInstanceService,
+            ProcessDefinitionRepository processDefinitionRepository,
+            ProcessDeploymentRepository processDeploymentRepository,
+            ProcessInstanceRepository processInstanceRepository,
+            ProcessInstanceMapper processInstanceMapper,
+            RuntimeService runtimeService,
+            AttachmentEntityRepository attachmentEntityRepository,
+            AttachmentRepository attachmentRepository,
+            NoteRepository noteRepository,
+            NoteEntityRepository noteEntityRepository,
+            TemporaryProcessInstanceRepository temporaryProcessInstanceRepository, ProcessInstanceSubscriptionService processInstanceSubscriptionService, ProcessDefinitionSubscriptionRepository processDefinitionSubscriptionRepository) {
         this.processDeploymentService = processDeploymentService;
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
@@ -76,14 +81,20 @@ public class ProcessInstanceService {
         this.noteRepository = noteRepository;
         this.noteEntityRepository = noteEntityRepository;
         this.temporaryProcessInstanceRepository = temporaryProcessInstanceRepository;
+        this.processInstanceSubscriptionService = processInstanceSubscriptionService;
+        this.processDefinitionSubscriptionRepository = processDefinitionSubscriptionRepository;
     }
 
     public ProcessInstanceDTO create(ProcessInstanceDTO processInstanceDTO) {
         log.debug("Request to create processInstance : {}", processInstanceDTO);
         if (processInstanceDTO.getTenant() == null) {
-            return createWithoutTenant(processInstanceDTO);
+            ProcessInstanceDTO processInstance = createWithoutTenant(processInstanceDTO);
+            createSubscription(processInstance);
+            return processInstance;
         }
-        return createWithTenant(processInstanceDTO);
+        ProcessInstanceDTO processInstance = createWithTenant(processInstanceDTO);
+        createSubscription(processInstance);
+        return processInstance;
     }
 
     private ProcessInstanceDTO createWithTenant(ProcessInstanceDTO processInstanceDTO) {
@@ -166,10 +177,13 @@ public class ProcessInstanceService {
 
     public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity, Tenant tenant) {
         if (tenant == null) {
-            return createWithoutTenant(bpmnProcessDefinitionId, businessKey, processEntity);
+            ProcessInstance processInstance = createWithoutTenant(bpmnProcessDefinitionId, businessKey, processEntity);
+            createSubscription(processInstanceMapper.toDto(processInstance));
+            return processInstance;
         }
-
-        return createWithTenant(bpmnProcessDefinitionId, businessKey, processEntity, tenant);
+        ProcessInstance processInstance = createWithTenant(bpmnProcessDefinitionId, businessKey, processEntity, tenant);
+        createSubscription(processInstanceMapper.toDto(processInstance));
+        return processInstance;
     }
 
     private ProcessInstance createWithoutTenant(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity) {
@@ -356,5 +370,59 @@ public class ProcessInstanceService {
         synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
     }
+    public void createSubscription(ProcessInstanceDTO processInstance) {
+        List<ProcessDefinitionSubscription> processDefinitionSubscriptions = processDefinitionSubscriptionRepository.findByBpmnProcessDefinitionId(
+                processInstance.getProcessDefinition().getBpmnProcessDefinitionId()
+        );
+
+        if (processDefinitionSubscriptions.isEmpty()) {
+            return;
+        }
+
+        for (ProcessDefinitionSubscription processDefinitionSubscription : processDefinitionSubscriptions) {
+            if (!processDefinitionSubscription.getNotifyAll()) {
+                return;
+            }
+
+            ProcessInstanceSubscriptionDTO processInstanceSubscription = new ProcessInstanceSubscriptionDTO();
+            processInstanceSubscription.setSubscriberType(processDefinitionSubscription.getSubscriberType());
+            processInstanceSubscription.setSubscriberId(processDefinitionSubscription.getSubscriberId());
+            processInstanceSubscription.setStatus(ActiveInactiveStatus.ACTIVE);
+            processInstanceSubscription.setDate(processDefinitionSubscription.getDate());
+            processInstanceSubscription.setNotifyAll(processDefinitionSubscription.getNotifyAll());
+            processInstanceSubscription.setNotifyTasks(processDefinitionSubscription.getNotifyTasks());
+            processInstanceSubscription.setNotifyNotes(processDefinitionSubscription.getNotifyNotes());
+            processInstanceSubscription.setNotifyAttachments(processDefinitionSubscription.getNotifyAttachments());
+            processInstanceSubscription.setNotifyChats(processDefinitionSubscription.getNotifyChats());
+            processInstanceSubscription.setProcessInstance(processInstance);
+
+            processInstanceSubscriptionService.save(processInstanceSubscription);
+        }
+    }
+
+//    TODO: This method should implement any type of pagination.
+//          Otherwise it may retrieve a huge amount of data
+//    public List<ProcessInstanceDTO> findByProcessDefinition(String idOrBpmnProcessDefinitionId) {
+//        ProcessDefinitionDTO processDefinitionDTO = processDefinitionService
+//            .findByIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
+//            .orElseThrow();
+//        return processInstanceRepository
+//            .findByProcessDefinitionId(processDefinitionDTO.getId())
+//            .stream()
+//            .map(processInstanceMapper::toDto)
+//            .collect(Collectors.toList());
+//    }
+
+    //    TODO: This method should implement any type of pagination.
+    //          Otherwise it may retrieve a huge amount of data
+//    @Transactional(readOnly = true)
+//    public List<ProcessInstanceDTO> findAll() {
+//        log.debug("Request to get all ProcessInstances");
+//        return processInstanceRepository
+//            .findAll()
+//            .stream()
+//            .map(processInstanceMapper::toDto)
+//            .collect(Collectors.toCollection(LinkedList::new));
+//    }
 
 }

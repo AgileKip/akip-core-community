@@ -4,6 +4,7 @@ import org.akip.domain.Attachment;
 import org.akip.domain.AttachmentEntity;
 import org.akip.exception.BadRequestErrorException;
 import org.akip.minio.IDocumentStorageService;
+import org.akip.publisher.ProcessInstanceEventPublisher;
 import org.akip.repository.AttachmentEntityRepository;
 import org.akip.repository.AttachmentRepository;
 import org.akip.service.dto.AttachmentDTO;
@@ -42,15 +43,18 @@ public class AttachmentService {
 
     private List<IAttachmentValidator> attachmentValidators = new ArrayList<>();
 
+    private final ProcessInstanceEventPublisher processInstanceEventPublisher;
+
     public AttachmentService(
-        ApplicationContext applicationContext,
-        AttachmentRepository attachmentRepository,
-        AttachmentEntityRepository attachmentEntityRepository,
-        AttachmentMapper attachmentMapper
+            ApplicationContext applicationContext,
+            AttachmentRepository attachmentRepository,
+            AttachmentEntityRepository attachmentEntityRepository,
+            AttachmentMapper attachmentMapper, ProcessInstanceEventPublisher processInstanceEventPublisher
     ) {
         this.attachmentRepository = attachmentRepository;
         this.attachmentEntityRepository = attachmentEntityRepository;
         this.attachmentMapper = attachmentMapper;
+        this.processInstanceEventPublisher = processInstanceEventPublisher;
 
 //        List<IDocumentStorageService> documentStorageServices = applicationContext.getBeanNamesForType(IDocumentStorageService.class);
 
@@ -90,6 +94,7 @@ public class AttachmentService {
         Attachment attachment = attachmentRepository.save(attachmentMapper.toEntity(attachmentDTO));
         documentStorageService.put(MINIO_ENTITY_NAME, attachment.getUploadedDate(), MINIO_ENTITY_NAME + attachment.getId(), attachmentDTO.getBytes());
         linkAttachmentToEntities(attachment, attachmentDTO);
+        processInstanceEventPublisher.publishEventAddedAttachment(this, attachmentMapper.toDto(attachment));
         return attachmentMapper.toDto(attachment);
     }
 
@@ -107,6 +112,7 @@ public class AttachmentService {
             );
         }
         linkAttachmentToEntities(attachment, attachmentDTO);
+        processInstanceEventPublisher.publishEventChangedAttachment(this, attachmentDTO);
         return attachmentMapper.toDto(attachment);
     }
 
@@ -156,6 +162,7 @@ public class AttachmentService {
         AttachmentDTO attachmentDTO = attachmentMapper.toDto(attachmentRepository.getOne(attachmentId));
         attachmentEntityRepository.deleteByAttachmentId(attachmentId);
         attachmentRepository.deleteById(attachmentId);
+        processInstanceEventPublisher.publishEventRemovedAttachment(this, attachmentDTO);
         documentStorageService.delete(MINIO_ENTITY_NAME, attachmentDTO.getUploadedDate(), MINIO_ENTITY_NAME + attachmentDTO.getId());
     }
 

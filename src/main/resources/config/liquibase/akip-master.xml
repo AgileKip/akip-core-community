@@ -31,6 +31,9 @@
     <include file="config/liquibase/changelog/00000000000016_added_entity_ProcessTimelineDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000017_added_entity_ProcessTimelineItemDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000018_added_entity_TemporaryProcessInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000020_added_entity_ProcessInstanceSubscription.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000021_added_entity_ProcessDefinitionSubscription.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000022_added_entity_ProcessInstanceNotification.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000020_added_entity_FormDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000021_alter_entity_ProcessDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000023_added_entity_TaskDefinition.xml" relativeToChangelogFile="false"/>
@@ -51,5 +54,8 @@
     <include file="config/liquibase/changelog/00000000002001_added_entity_AkipEmailConnectorConfig.xml" relativeToChangelogFile="false"/>
 
     <include file="config/liquibase/changelog/00000000003001_added_entity_AkipPromptConfiguration.xml" relativeToChangelogFile="false"/>
+
+
+
 
 </databaseChangeLog>

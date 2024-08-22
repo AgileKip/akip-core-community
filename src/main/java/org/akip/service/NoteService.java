@@ -2,6 +2,7 @@ package org.akip.service;
 
 import org.akip.domain.Note;
 import org.akip.domain.NoteEntity;
+import org.akip.publisher.ProcessInstanceEventPublisher;
 import org.akip.repository.NoteEntityRepository;
 import org.akip.repository.NoteRepository;
 import org.akip.service.dto.NoteDTO;
@@ -36,12 +37,15 @@ public class NoteService {
 
     private List<INoteValidator> noteValidators = new ArrayList<>();
 
+	private final ProcessInstanceEventPublisher processInstanceEventPublisher;
 
-	public NoteService(NoteRepository noteRepository, NoteEntityRepository noteEntityRepository, NoteMapper noteMapper) {
+
+	public NoteService(NoteRepository noteRepository, NoteEntityRepository noteEntityRepository, NoteMapper noteMapper, ProcessInstanceEventPublisher processInstanceEventPublisher) {
 		this.noteRepository = noteRepository;
 		this.noteEntityRepository = noteEntityRepository;
 		this.noteMapper = noteMapper;
-	}
+        this.processInstanceEventPublisher = processInstanceEventPublisher;
+    }
 
 	public NoteDTO save(NoteDTO noteDTO) {
 		if (noteDTO.getId() == null) {
@@ -54,6 +58,7 @@ public class NoteService {
 		log.debug("Request to create Note : {}", noteDTO);
 		Note note = noteRepository.save(noteMapper.toEntity(noteDTO));
 		linkNoteToEntities(note, noteDTO);
+		processInstanceEventPublisher.publishEventAddedNote(this, noteMapper.toDto(note));
 		return noteMapper.toDto(note);
 	}
 
@@ -61,6 +66,7 @@ public class NoteService {
 		log.debug("Request to update Note : {}", noteDTO);
 		Note note = noteRepository.save(noteMapper.toEntity(noteDTO));
 		linkNoteToEntities(note, noteDTO);
+		processInstanceEventPublisher.publishEventChangedNote(this, noteDTO);
 		return noteMapper.toDto(note);
 	}
 
@@ -91,7 +97,9 @@ public class NoteService {
 
 	public void delete(Long noteId) {
 		log.debug("Request to delete Note : {}", noteId);
+		NoteDTO noteDTO = noteMapper.toDto(noteRepository.getOne(noteId));
 		noteEntityRepository.deleteByNoteId(noteId);
+		processInstanceEventPublisher.publishEventRemovedNote(this, noteDTO);
 		noteRepository.deleteById(noteId);
 	}
     
