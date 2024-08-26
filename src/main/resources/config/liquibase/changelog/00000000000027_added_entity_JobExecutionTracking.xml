@@ -20,10 +20,10 @@
             <column name="identifier" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="start_date" type="date">
+            <column name="start_date" type="datetime">
                 <constraints nullable="true" />
             </column>
-            <column name="end_date" type="date">
+            <column name="end_date" type="datetime">
                 <constraints nullable="true" />
             </column>
             <column name="status" type="varchar(255)">

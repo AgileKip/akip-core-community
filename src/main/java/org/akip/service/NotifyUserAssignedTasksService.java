@@ -50,7 +50,7 @@ public class NotifyUserAssignedTasksService {
             Map<String, Object> variables = new HashMap<>();
             variables.put("tasks", userTasks);
             mailService.sendNotifyUserAssignedTasksMail(user, variables);
-            summary.put(user.getLogin(), "Open tasks assigned to the user: " + userTasks.stream().map(TaskInstance::getId).collect(Collectors.joining ( "," )));
+            summary.put(user.getLogin(), "Open tasks assigned to the user: " + userTasks.stream().map(taskInstance -> taskInstance.getId().toString()).collect(Collectors.joining ( ", " )));
         }
         return summary;
     }

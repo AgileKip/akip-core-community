@@ -142,13 +142,13 @@ public class JobExecutionTracking implements Serializable {
     @PreUpdate
     public void prePersist() {
         if (this.startDate == null) {
-            this.setStartDate(LocalDate.now().atStartOfDay());
+            this.setStartDate(LocalDateTime.now());
         }
         if (
             this.getStatus().equals(JobExecutionTrackingConstants.STATUS_COMPLETE_SUCCESS) ||
             this.getStatus().equals(JobExecutionTrackingConstants.STATUS_COMPLETE_ERROR)
         ) {
-            this.setEndDate(LocalDate.now().atStartOfDay());
+            this.setEndDate(LocalDateTime.now());
         }
     }
 
