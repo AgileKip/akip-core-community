@@ -36,26 +36,26 @@ public class ProcessRoleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProcessRoleDTO> getProcessRoles(Long processId) {
-        log.debug("Request to get ProcessRole for Process {}", processId);
+    public List<ProcessRoleDTO> getProcessRolesByProcessDefinitionId(Long processDefinitionId) {
+        log.debug("Request to get ProcessRole for Process {}", processDefinitionId);
         return processRoleRepository
-                .findByProcessDefinitionId(processId)
+                .findByProcessDefinitionId(processDefinitionId)
                 .stream()
                 .map(processRoleMapper::toDto)
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
 
-    public ProcessRoleDTO save(Long processId, ProcessRoleDTO processRoleDTO) {
-        log.debug("Request to save ProcessRole : {}{}", processId, processRoleDTO.getName());
-        processRoleDTO.setProcessDefinition(processDefinitionRepository.findById(processId).get());
+    public ProcessRoleDTO save(Long processDefinitionId, ProcessRoleDTO processRoleDTO) {
+        log.debug("Request to save ProcessRole : {}{}", processDefinitionId, processRoleDTO.getName());
+        processRoleDTO.setProcessDefinition(processDefinitionRepository.findById(processDefinitionId).get());
         ProcessRole processRole = processRoleMapper.toEntity(processRoleDTO);
         ProcessRole processRoleToSaved = processRoleRepository.save(processRole);
         return processRoleMapper.toDto(processRoleToSaved);
     }
 
-    public void delete(Long ProcessId, Long ProcessRoleId) {
-        log.debug("Request to delete ProcessRole : {}", ProcessId, ProcessRoleId);
-        processRoleRepository.deleteById(ProcessRoleId);
+    public void delete(Long processDefinitionId, Long processRoleId) {
+        log.debug("Request to delete ProcessRole : {}{}", processDefinitionId, processRoleId);
+        processRoleRepository.deleteById(processRoleId);
     }
 }

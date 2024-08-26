@@ -49,7 +49,7 @@ public class ProcessDefinition implements Serializable {
     private FormDefinition startFormDefinition;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "process_type")
+    @Column(name = "process_visibility_type")
     private ProcessVisibilityType processVisibilityType;
 
     @ManyToOne

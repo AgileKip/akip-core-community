@@ -43,7 +43,7 @@ public class ProcessRoleController {
     @GetMapping("/process/{processDefinitionId}/roles")
     public List<ProcessRoleDTO> getProcessRoles(@PathVariable("processDefinitionId") Long processDefinitionId) throws URISyntaxException {
         log.debug("REST request to save TentantRole : {}{}", processDefinitionId);
-        return processRoleService.getProcessRoles(processDefinitionId);
+        return processRoleService.getProcessRolesByProcessDefinitionId(processDefinitionId);
     }
 
     @PostMapping("/process/{processDefinitionId}/roles")
