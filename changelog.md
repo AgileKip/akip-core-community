@@ -1,9 +1,9 @@
 # Changelog
 
 * 0.1.10 (WIP)
-  * Including RecSys
+  * Including a feature to notify users about their open tasks (#10) 
 
-* 0.1.9 (WIP)
+* 0.1.9
   * Fixing bugs (#82)
   * Including TaskDefinition entity
   * Including FormDefinition entity

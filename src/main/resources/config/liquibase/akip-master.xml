@@ -31,6 +31,11 @@
     <include file="config/liquibase/changelog/00000000000016_added_entity_ProcessTimelineDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000017_added_entity_ProcessTimelineItemDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000018_added_entity_TemporaryProcessInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000020_added_entity_FormDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000021_alter_entity_ProcessDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000023_added_entity_TaskDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000025_alter_entity_TaskInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000027_added_entity_JobExecutionTracking.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000019_added_constraints_TemporaryProcessInstance.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000020_added_entity_ProcessRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000021_added_constraints_ProcessRole.xml" relativeToChangelogFile="false"/>
@@ -55,6 +60,7 @@
     <include file="config/liquibase/changelog/00000000000035_added_new_constraints_TaskDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000036_added_new_constraints_TaskInstance.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000037_alter_entity_ProcessDeployment.xml" relativeToChangelogFile="false"/>
+
 
     <include file="config/liquibase/changelog/00000000001001_added_entity_DashboardConfig.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000001002_added_entity_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>
