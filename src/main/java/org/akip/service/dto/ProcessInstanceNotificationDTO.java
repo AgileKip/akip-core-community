@@ -6,6 +6,7 @@ import org.akip.domain.ProcessInstance;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -19,7 +20,9 @@ public class ProcessInstanceNotificationDTO implements Serializable {
 
     private String description;
 
-    private LocalDate date;
+    private LocalDateTime createDate;
+
+    private LocalDateTime readDate;
 
     private ProcessInstanceNotificationStatus status;
 
@@ -53,13 +56,17 @@ public class ProcessInstanceNotificationDTO implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getCreateDate() {
+        return createDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
+
+    public LocalDateTime getReadDate() { return readDate; }
+
+    public void setReadDate(LocalDateTime readDate) { this.readDate = readDate; }
 
     public ProcessInstanceNotificationStatus getStatus() {
         return status;
@@ -118,8 +125,8 @@ public class ProcessInstanceNotificationDTO implements Serializable {
     @Override
     public String toString() {
         return "ProcessInstanceNotificationDTO{" +
-            "id=" + getId() +
-            ", title='" + getTitle() + "'" +
-            "}";
+                "id=" + getId() +
+                ", title='" + getTitle() + "'" +
+                "}";
     }
 }

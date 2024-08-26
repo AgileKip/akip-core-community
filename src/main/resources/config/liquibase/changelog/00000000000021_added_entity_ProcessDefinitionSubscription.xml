@@ -23,7 +23,7 @@
             <column name="status" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="date" type="date">
+            <column name="subscription_date" type="date">
                 <constraints nullable="true" />
             </column>
             <column name="notify_all" type="boolean">

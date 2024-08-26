@@ -34,7 +34,7 @@ public class AttachmentChangedSubscriptionService extends AbstractSubscriptionSe
 
     @Override
     protected ProcessInstanceEventType notificationType() {
-        return ProcessInstanceEventType.ATTACHMENT_EDITED;
+        return ProcessInstanceEventType.ATTACHMENT_CHANGED;
     }
 
     @Override

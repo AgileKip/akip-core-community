@@ -54,7 +54,6 @@ public class ProcessInstanceService {
 
     private final ProcessInstanceSubscriptionService processInstanceSubscriptionService;
 
-    private final ProcessDefinitionSubscriptionRepository processDefinitionSubscriptionRepository;
 
     public ProcessInstanceService(
             ProcessDeploymentService processDeploymentService,
@@ -68,7 +67,7 @@ public class ProcessInstanceService {
             AttachmentRepository attachmentRepository,
             NoteRepository noteRepository,
             NoteEntityRepository noteEntityRepository,
-            TemporaryProcessInstanceRepository temporaryProcessInstanceRepository, ProcessInstanceSubscriptionService processInstanceSubscriptionService, ProcessDefinitionSubscriptionRepository processDefinitionSubscriptionRepository) {
+            TemporaryProcessInstanceRepository temporaryProcessInstanceRepository, ProcessInstanceSubscriptionService processInstanceSubscriptionService) {
         this.processDeploymentService = processDeploymentService;
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
@@ -82,18 +81,17 @@ public class ProcessInstanceService {
         this.noteEntityRepository = noteEntityRepository;
         this.temporaryProcessInstanceRepository = temporaryProcessInstanceRepository;
         this.processInstanceSubscriptionService = processInstanceSubscriptionService;
-        this.processDefinitionSubscriptionRepository = processDefinitionSubscriptionRepository;
     }
 
     public ProcessInstanceDTO create(ProcessInstanceDTO processInstanceDTO) {
         log.debug("Request to create processInstance : {}", processInstanceDTO);
         if (processInstanceDTO.getTenant() == null) {
             ProcessInstanceDTO processInstance = createWithoutTenant(processInstanceDTO);
-            createSubscription(processInstance);
+            processInstanceSubscriptionService.createSubscription(processInstance);
             return processInstance;
         }
         ProcessInstanceDTO processInstance = createWithTenant(processInstanceDTO);
-        createSubscription(processInstance);
+        processInstanceSubscriptionService.createSubscription(processInstance);
         return processInstance;
     }
 
@@ -178,11 +176,11 @@ public class ProcessInstanceService {
     public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity, Tenant tenant) {
         if (tenant == null) {
             ProcessInstance processInstance = createWithoutTenant(bpmnProcessDefinitionId, businessKey, processEntity);
-            createSubscription(processInstanceMapper.toDto(processInstance));
+            processInstanceSubscriptionService.createSubscription(processInstanceMapper.toDto(processInstance));
             return processInstance;
         }
         ProcessInstance processInstance = createWithTenant(bpmnProcessDefinitionId, businessKey, processEntity, tenant);
-        createSubscription(processInstanceMapper.toDto(processInstance));
+        processInstanceSubscriptionService.createSubscription(processInstanceMapper.toDto(processInstance));
         return processInstance;
     }
 
@@ -369,35 +367,6 @@ public class ProcessInstanceService {
         synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
         temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
-    }
-    public void createSubscription(ProcessInstanceDTO processInstance) {
-        List<ProcessDefinitionSubscription> processDefinitionSubscriptions = processDefinitionSubscriptionRepository.findByBpmnProcessDefinitionId(
-                processInstance.getProcessDefinition().getBpmnProcessDefinitionId()
-        );
-
-        if (processDefinitionSubscriptions.isEmpty()) {
-            return;
-        }
-
-        for (ProcessDefinitionSubscription processDefinitionSubscription : processDefinitionSubscriptions) {
-            if (!processDefinitionSubscription.getNotifyAll()) {
-                return;
-            }
-
-            ProcessInstanceSubscriptionDTO processInstanceSubscription = new ProcessInstanceSubscriptionDTO();
-            processInstanceSubscription.setSubscriberType(processDefinitionSubscription.getSubscriberType());
-            processInstanceSubscription.setSubscriberId(processDefinitionSubscription.getSubscriberId());
-            processInstanceSubscription.setStatus(ActiveInactiveStatus.ACTIVE);
-            processInstanceSubscription.setDate(processDefinitionSubscription.getDate());
-            processInstanceSubscription.setNotifyAll(processDefinitionSubscription.getNotifyAll());
-            processInstanceSubscription.setNotifyTasks(processDefinitionSubscription.getNotifyTasks());
-            processInstanceSubscription.setNotifyNotes(processDefinitionSubscription.getNotifyNotes());
-            processInstanceSubscription.setNotifyAttachments(processDefinitionSubscription.getNotifyAttachments());
-            processInstanceSubscription.setNotifyChats(processDefinitionSubscription.getNotifyChats());
-            processInstanceSubscription.setProcessInstance(processInstance);
-
-            processInstanceSubscriptionService.save(processInstanceSubscription);
-        }
     }
 
 //    TODO: This method should implement any type of pagination.

@@ -10,13 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.ResponseUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * REST controller for managing {@link org.akip.domain.ProcessInstanceNotification}.
@@ -101,89 +99,38 @@ public class ProcessInstanceNotificationResource {
             )
             .body(result);
     }
-
-    /**
-     * {@code PATCH  /process-instance-notifications/:id} : Partial updates given fields of an existing processInstanceNotification, field will ignore if it is null
-     *
-     * @param id the id of the processInstanceNotificationDTO to save.
-     * @param processInstanceNotificationDTO the processInstanceNotificationDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated processInstanceNotificationDTO,
-     * or with status {@code 400 (Bad Request)} if the processInstanceNotificationDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the processInstanceNotificationDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the processInstanceNotificationDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PatchMapping(value = "/process-instance-notifications/{id}", consumes = "application/merge-patch+json")
-    public ResponseEntity<ProcessInstanceNotificationDTO> partialUpdateProcessInstanceNotification(
-        @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody ProcessInstanceNotificationDTO processInstanceNotificationDTO
-    ) throws URISyntaxException {
-        log.debug("REST request to partial update ProcessInstanceNotification partially : {}, {}", id, processInstanceNotificationDTO);
-        if (processInstanceNotificationDTO.getId() == null) {
-            throw new BadRequestErrorException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, processInstanceNotificationDTO.getId())) {
-            throw new BadRequestErrorException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
-
-        if (!processInstanceNotificationRepository.existsById(id)) {
-            throw new BadRequestErrorException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
-
-        Optional<ProcessInstanceNotificationDTO> result = processInstanceNotificationService.partialUpdate(processInstanceNotificationDTO);
-
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, processInstanceNotificationDTO.getId().toString())
-        );
-    }
-
-    /**
-     * {@code GET  /process-instance-notifications} : get all the processInstanceNotifications.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of processInstanceNotifications in body.
-     */
-    @GetMapping("/process-instance-notifications")
-    public List<ProcessInstanceNotificationDTO> getAllProcessInstanceNotifications() {
-        log.debug("REST request to get all ProcessInstanceNotifications");
-        return processInstanceNotificationService.findAll();
-    }
-
     /**
      * {@code GET  /process-instance-notifications/:id} : get the "id" processInstanceNotification.
      *
      * @param id the id of the processInstanceNotificationDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processInstanceNotificationDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/process-instance-notifications/{id}")
-    public ResponseEntity<ProcessInstanceNotificationDTO> getProcessInstanceNotification(@PathVariable Long id) {
-        log.debug("REST request to get ProcessInstanceNotification : {}", id);
-        Optional<ProcessInstanceNotificationDTO> processInstanceNotificationDTO = processInstanceNotificationService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(processInstanceNotificationDTO);
+    @GetMapping("/process-instance-notifications/read-notification/{id}")
+    public ProcessInstanceNotificationDTO getReadNotification(@PathVariable Long id) {
+        log.debug("REST request to get ReadNotification : {}", id);
+        return processInstanceNotificationService.readNotification(id);
+    }
+
+    /**
+     * {@code GET  /process-instance-notifications/:id} : get the "id" processInstanceNotification.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processInstanceNotificationDTO, or with status
+     * {@code 404 (Not Found)}.
+     */
+    @GetMapping("/process-instance-notifications/my-last-notifications/")
+    public List<ProcessInstanceNotificationDTO> findTop6BySubscriberIdOrderByIdDesc() {
+        log.debug("REST request to get findTop6BySubscriberIdOrderByIdDesc :");
+        return processInstanceNotificationService.findTop6BySubscriberIdOrderByIdDesc();
     }
 
     /**
      * {@code GET  /process-instance-notifications/:id} : get the "id" processInstanceNotification.
      *
-     * @param subscriberId the id of the processInstanceNotificationDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processInstanceNotificationDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/process-instance-notifications/{subscriberId}/notification")
-    public List<ProcessInstanceNotificationDTO> findTop6BySubscriberIdOrderByIdDesc(@PathVariable String subscriberId) {
-        log.debug("REST request to get ProcessInstanceNotificationBySubscriberId : {}", subscriberId);
-        return processInstanceNotificationService.findTop6BySubscriberIdOrderByIdDesc(subscriberId);
-    }
-
-    /**
-     * {@code GET  /process-instance-notifications/:id} : get the "id" processInstanceNotification.
-     *
-     * @param subscriberId the id of the processInstanceNotificationDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processInstanceNotificationDTO, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/process-instance-notifications/{subscriberId}/unread-notification")
-    public Long countBySubscriberIdAndStatus(@PathVariable String subscriberId) {
-        log.debug("REST request to get ProcessInstanceNotificationUnreadBySubscriberId : {}", subscriberId);
-        return processInstanceNotificationService.countBySubscriberIdAndStatus(subscriberId);
+    @GetMapping("/process-instance-notifications/count-my-unread-notifications")
+    public Long countBySubscriberIdAndStatus() {
+        log.debug("REST request to get countBySubscriberIdAndStatus");
+        return processInstanceNotificationService.countBySubscriberIdAndStatus();
     }
 
     /**

@@ -20,7 +20,10 @@
             <column name="description" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="date" type="date">
+            <column name="create_date" type="datetime">
+                <constraints nullable="true" />
+            </column>
+            <column name="read_date" type="datetime">
                 <constraints nullable="true" />
             </column>
             <column name="status" type="varchar(255)">

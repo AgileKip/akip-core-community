@@ -106,63 +106,12 @@ public class ProcessDefinitionSubscriptionResource {
             .body(result);
     }
 
-    /**
-     * {@code PATCH  /process-definition-subscriptions/:id} : Partial updates given fields of an existing processDefinitionSubscription, field will ignore if it is null
-     *
-     * @param id the id of the processDefinitionSubscriptionDTO to save.
-     * @param processDefinitionSubscriptionDTO the processDefinitionSubscriptionDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated processDefinitionSubscriptionDTO,
-     * or with status {@code 400 (Bad Request)} if the processDefinitionSubscriptionDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the processDefinitionSubscriptionDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the processDefinitionSubscriptionDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PatchMapping(value = "/process-definition-subscriptions/{id}", consumes = "application/merge-patch+json")
-    public ResponseEntity<ProcessDefinitionSubscriptionDTO> partialUpdateProcessDefinitionSubscription(
-        @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody ProcessDefinitionSubscriptionDTO processDefinitionSubscriptionDTO
-    ) throws URISyntaxException {
-        log.debug("REST request to partial update ProcessDefinitionSubscription partially : {}, {}", id, processDefinitionSubscriptionDTO);
-        if (processDefinitionSubscriptionDTO.getId() == null) {
-            throw new BadRequestErrorException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, processDefinitionSubscriptionDTO.getId())) {
-            throw new BadRequestErrorException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
-
-        if (!processDefinitionSubscriptionRepository.existsById(id)) {
-            throw new BadRequestErrorException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
-
-        Optional<ProcessDefinitionSubscriptionDTO> result = processDefinitionSubscriptionService.partialUpdate(
-            processDefinitionSubscriptionDTO
-        );
-
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, processDefinitionSubscriptionDTO.getId().toString())
-        );
-    }
-
-    /**
-     * {@code GET  /process-definition-subscriptions} : get all the processDefinitionSubscriptions.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of processDefinitionSubscriptions in body.
-     */
-    @GetMapping("/process-definition-subscriptions")
-    public List<ProcessDefinitionSubscriptionDTO> getAllProcessDefinitionSubscriptions() {
-        log.debug("REST request to get all ProcessDefinitionSubscriptions");
-        return processDefinitionSubscriptionService.findAll();
-    }
-
-    @GetMapping("/process-definition-subscriptions/{subscriberId}/subscription/{bpmnProcessDefinitionId}")
+    @GetMapping("/process-definition-subscriptions/bpmnProcessDefinitionId/{bpmnProcessDefinitionId}")
     public ResponseEntity<ProcessDefinitionSubscriptionDTO> getBySubscriberIdAndBpmnProcessDefinitionId(
-        @PathVariable String subscriberId,
         @PathVariable String bpmnProcessDefinitionId
     ) {
-        log.debug("REST request to get ProcessInstanceSubscription : {}", subscriberId);
+        log.debug("REST request to get ProcessInstanceSubscription : {}", bpmnProcessDefinitionId);
         Optional<ProcessDefinitionSubscriptionDTO> processDefinitionSubscription = processDefinitionSubscriptionService.findBySubscriberIdAndBpmnProcessDefinitionId(
-            subscriberId,
             bpmnProcessDefinitionId
         );
         return ResponseUtil.wrapOrNotFound(processDefinitionSubscription);

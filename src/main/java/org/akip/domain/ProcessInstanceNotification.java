@@ -9,6 +9,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * A ProcessInstanceNotification.
@@ -31,8 +32,11 @@ public class ProcessInstanceNotification implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "date")
-    private LocalDate date;
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @Column(name = "read_date")
+    private LocalDateTime readDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -89,17 +93,21 @@ public class ProcessInstanceNotification implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getDate() {
-        return this.date;
+    public LocalDateTime getCreateDate() {
+        return this.createDate;
     }
 
-    public ProcessInstanceNotification date(LocalDate date) {
-        this.date = date;
+    public ProcessInstanceNotification date(LocalDateTime date) {
+        this.createDate = date;
         return this;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public LocalDateTime getReadDate() { return readDate; }
+
+    public void setReadDate(LocalDateTime readDate) { this.readDate = readDate; }
+
+    public void setCreateDate(LocalDateTime date) {
+        this.createDate = date;
     }
 
     public ProcessInstanceNotificationStatus getStatus() {

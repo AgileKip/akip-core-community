@@ -18,4 +18,6 @@ public interface ProcessInstanceSubscriptionRepository extends JpaRepository<Pro
     Optional<ProcessInstanceSubscription> findBySubscriberIdAndProcessInstanceId(String subscriberId, Long processInstanceId);
 
     List<ProcessInstanceSubscription> findAllByProcessInstanceId(Long processInstanceId);
+
+    List<ProcessInstanceSubscription> findBySubscriberId(String subscriberId);
 }

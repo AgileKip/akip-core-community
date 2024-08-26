@@ -36,8 +36,8 @@ public class ProcessInstanceSubscription implements Serializable {
     @Column(name = "status")
     private ActiveInactiveStatus status;
 
-    @Column(name = "date")
-    private LocalDate date;
+    @Column(name = "subscription_date")
+    private LocalDate subscriptionDate;
 
     @Column(name = "notify_all")
     private Boolean notifyAll;
@@ -111,17 +111,17 @@ public class ProcessInstanceSubscription implements Serializable {
         this.status = status;
     }
 
-    public LocalDate getDate() {
-        return this.date;
+    public LocalDate getSubscriptionDate() {
+        return this.subscriptionDate;
     }
 
     public ProcessInstanceSubscription date(LocalDate date) {
-        this.date = date;
+        this.subscriptionDate = date;
         return this;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setSubscriptionDate(LocalDate date) {
+        this.subscriptionDate = date;
     }
 
     public Boolean getNotifyAll() {

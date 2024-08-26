@@ -22,7 +22,7 @@ public class ProcessDefinitionSubscriptionDTO implements Serializable {
 
     private ActiveInactiveStatus status;
 
-    private LocalDate date;
+    private LocalDate subscriptionDate;
 
     private Boolean notifyAll;
 
@@ -70,12 +70,12 @@ public class ProcessDefinitionSubscriptionDTO implements Serializable {
         this.status = status;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getSubscriptionDate() {
+        return subscriptionDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setSubscriptionDate(LocalDate subscriptionDate) {
+        this.subscriptionDate = subscriptionDate;
     }
 
     public Boolean getNotifyAll() {

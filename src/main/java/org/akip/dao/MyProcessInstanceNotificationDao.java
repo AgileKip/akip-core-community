@@ -16,19 +16,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Service("processInstanceNotification")
-class ProcessInstanceNotificationDao extends AbstractDAO<ProcessInstanceNotificationSearchDTO> {
+@Service("myProcessInstanceNotification")
+class MyProcessInstanceNotificationDao extends AbstractDAO<ProcessInstanceNotificationSearchDTO> {
 
-    private final Logger log = LoggerFactory.getLogger(ProcessInstanceNotificationDao.class);
+    private final Logger log = LoggerFactory.getLogger(MyProcessInstanceNotificationDao.class);
 
-    ProcessInstanceNotificationDao(EntityManager entityManager) {
+    MyProcessInstanceNotificationDao(EntityManager entityManager) {
         super(entityManager, ProcessInstanceNotification.class, ProcessInstanceNotificationSearchDTO.class);
     }
 
     @Override
     public void configureCustomHQLFields() {
         getHqlFields().put("description", new HQLField("entity.description"));
-        getHqlFields().put("date", new HQLField("entity.date"));
+        getHqlFields().put("createDate", new HQLField("entity.createDate"));
+        getHqlFields().put("readDate", new HQLField("entity.readDate"));
         getHqlFields().put("status", new HQLField("entity.status"));
         getHqlFields().put("eventType", new HQLField("entity.eventType"));
         getHqlFields().put("userLogin", new HQLField("entity.subscriberId"));
@@ -41,7 +42,8 @@ class ProcessInstanceNotificationDao extends AbstractDAO<ProcessInstanceNotifica
         fields.add("entity.id");
         fields.add("entity.title");
         fields.add("entity.description");
-        fields.add("entity.date");
+        fields.add("entity.createDate");
+        fields.add("entity.readDate");
         fields.add("entity.status");
         fields.add("entity.eventType");
         fields.add("entity.subscriberId");
@@ -81,10 +83,15 @@ class ProcessInstanceNotificationDao extends AbstractDAO<ProcessInstanceNotifica
         descriptionFilterDef.setFilterType(FilterType.DEFAULT);
         filters.add(descriptionFilterDef);
 
-        DatetimeFilterDef dateFilterDef = new DatetimeFilterDef();
-        dateFilterDef.setId("date");
-        dateFilterDef.setFilterType(FilterType.ADVANCED);
-        filters.add(dateFilterDef);
+        DatetimeFilterDef createDateFilterDef = new DatetimeFilterDef();
+        createDateFilterDef.setId("createDate");
+        createDateFilterDef.setFilterType(FilterType.ADVANCED);
+        filters.add(createDateFilterDef);
+
+        DatetimeFilterDef readDateFilterDef = new DatetimeFilterDef();
+        readDateFilterDef.setId("readDate");
+        readDateFilterDef.setFilterType(FilterType.ADVANCED);
+        filters.add(readDateFilterDef);
 
         EnumListFilterDef statusFilterDef = new EnumListFilterDef();
         statusFilterDef.setId("status");
@@ -128,13 +135,21 @@ class ProcessInstanceNotificationDao extends AbstractDAO<ProcessInstanceNotifica
         resultColumnDescription.setType("String");
         resultColumns.add(resultColumnDescription);
 
-        ResultColumn resultColumnDate = new ResultColumn();
-        resultColumnDate.setId("date");
-        resultColumnDate.setTitle("Date");
-        resultColumnDate.setDtoField("date");
-        resultColumnDate.setVisible(true);
-        resultColumnDate.setType("Datetime");
-        resultColumns.add(resultColumnDate);
+        ResultColumn resultColumnCreateDate = new ResultColumn();
+        resultColumnCreateDate.setId("CreateDate");
+        resultColumnCreateDate.setTitle("Create Date");
+        resultColumnCreateDate.setDtoField("createDate");
+        resultColumnCreateDate.setVisible(true);
+        resultColumnCreateDate.setType("Datetime");
+        resultColumns.add(resultColumnCreateDate);
+
+        ResultColumn resultColumnReadDate = new ResultColumn();
+        resultColumnReadDate.setId("readDate");
+        resultColumnReadDate.setTitle("Read Date");
+        resultColumnReadDate.setDtoField("readDate");
+        resultColumnReadDate.setVisible(true);
+        resultColumnReadDate.setType("Datetime");
+        resultColumns.add(resultColumnReadDate);
 
         ResultColumn resultColumnStatus = new ResultColumn();
         resultColumnStatus.setId("status");

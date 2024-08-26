@@ -4,6 +4,7 @@ import org.akip.domain.enumeration.ProcessInstanceEventType;
 import org.akip.domain.enumeration.ProcessInstanceNotificationStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ProcessInstanceNotificationSearchDTO {
 
@@ -13,7 +14,9 @@ public class ProcessInstanceNotificationSearchDTO {
 
     private String description;
 
-    private LocalDate date;
+    private LocalDateTime createDate;
+
+    private LocalDateTime readDate;
 
     private ProcessInstanceNotificationStatus status;
 
@@ -27,7 +30,8 @@ public class ProcessInstanceNotificationSearchDTO {
         Long id,
         String title,
         String description,
-        LocalDate date,
+        LocalDateTime createDate,
+        LocalDateTime readDate,
         ProcessInstanceNotificationStatus status,
         ProcessInstanceEventType eventType,
         String subscriberId,
@@ -36,7 +40,8 @@ public class ProcessInstanceNotificationSearchDTO {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.date = date;
+        this.createDate = createDate;
+        this.readDate = readDate;
         this.status = status;
         this.eventType = eventType;
         this.subscriberId = subscriberId;
@@ -67,13 +72,17 @@ public class ProcessInstanceNotificationSearchDTO {
         this.description = description;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getCreateDate() {
+        return createDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
+
+    public LocalDateTime getReadDate() { return readDate; }
+
+    public void setReadDate(LocalDateTime readDate) { this.readDate = readDate; }
 
     public ProcessInstanceNotificationStatus getStatus() {
         return status;

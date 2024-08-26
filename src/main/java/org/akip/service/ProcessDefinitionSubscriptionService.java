@@ -1,7 +1,10 @@
 package org.akip.service;
 
 import org.akip.domain.ProcessDefinitionSubscription;
+import org.akip.domain.enumeration.ActiveInactiveStatus;
+import org.akip.domain.enumeration.SubscriberType;
 import org.akip.repository.ProcessDefinitionSubscriptionRepository;
+import org.akip.security.SecurityUtils;
 import org.akip.service.dto.ProcessDefinitionSubscriptionDTO;
 import org.akip.service.mapper.ProcessDefinitionSubscriptionMapper;
 import org.akip.domain.ProcessDefinition;
@@ -11,10 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link ProcessDefinitionSubscription}.
@@ -51,13 +52,17 @@ public class ProcessDefinitionSubscriptionService {
         String processDefinitionId,
         ProcessDefinitionSubscriptionDTO processDefinitionSubscriptionDTO
     ) {
-        log.debug("Request to save ProcessDefinitionSubscription : {}", processDefinitionSubscriptionDTO);
+        log.debug("Request to save ProcessDefinitionSubscription : {}, {}",processDefinitionId, processDefinitionSubscriptionDTO);
         ProcessDefinitionSubscription processDefinitionSubscription = processDefinitionSubscriptionMapper.toEntity(
             processDefinitionSubscriptionDTO
         );
         Optional<ProcessDefinition> processDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(processDefinitionId);
         processDefinitionSubscription.setProcessDefinition(processDefinition.get());
         processDefinitionSubscription.setBpmnProcessDefinitionId(processDefinitionId);
+        processDefinitionSubscription.setSubscriberType(SubscriberType.USER);
+        processDefinitionSubscription.setSubscriberId(SecurityUtils.getCurrentUserLogin().get());
+        processDefinitionSubscription.setStatus(ActiveInactiveStatus.ACTIVE);
+        processDefinitionSubscription.setSubscriptionDate(LocalDate.now());
         processDefinitionSubscription = processDefinitionSubscriptionRepository.save(processDefinitionSubscription);
         return processDefinitionSubscriptionMapper.toDto(processDefinitionSubscription);
     }
@@ -77,44 +82,6 @@ public class ProcessDefinitionSubscriptionService {
         return processDefinitionSubscriptionMapper.toDto(processDefinitionSubscription);
     }
 
-    /**
-     * Partially update a processDefinitionSubscription.
-     *
-     * @param processDefinitionSubscriptionDTO the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Optional<ProcessDefinitionSubscriptionDTO> partialUpdate(ProcessDefinitionSubscriptionDTO processDefinitionSubscriptionDTO) {
-        log.debug("Request to partially update ProcessDefinitionSubscription : {}", processDefinitionSubscriptionDTO);
-
-        return processDefinitionSubscriptionRepository
-            .findById(processDefinitionSubscriptionDTO.getId())
-            .map(
-                existingProcessDefinitionSubscription -> {
-                    processDefinitionSubscriptionMapper.partialUpdate(
-                        existingProcessDefinitionSubscription,
-                        processDefinitionSubscriptionDTO
-                    );
-                    return existingProcessDefinitionSubscription;
-                }
-            )
-            .map(processDefinitionSubscriptionRepository::save)
-            .map(processDefinitionSubscriptionMapper::toDto);
-    }
-
-    /**
-     * Get all the processDefinitionSubscriptions.
-     *
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<ProcessDefinitionSubscriptionDTO> findAll() {
-        log.debug("Request to get all ProcessDefinitionSubscriptions");
-        return processDefinitionSubscriptionRepository
-            .findAll()
-            .stream()
-            .map(processDefinitionSubscriptionMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
-    }
 
     /**
      * Get one processDefinitionSubscription by id.
@@ -130,12 +97,11 @@ public class ProcessDefinitionSubscriptionService {
 
     @Transactional(readOnly = true)
     public Optional<ProcessDefinitionSubscriptionDTO> findBySubscriberIdAndBpmnProcessDefinitionId(
-        String subscriberId,
         String bpmnProcessDefinitionId
     ) {
-        log.debug("Request to get ProcessInstanceSubscription : {}, {}", subscriberId, bpmnProcessDefinitionId);
+        log.debug("Request to get ProcessInstanceSubscription : {}", bpmnProcessDefinitionId);
         return processDefinitionSubscriptionRepository
-            .findBySubscriberIdAndBpmnProcessDefinitionId(subscriberId, bpmnProcessDefinitionId)
+            .findBySubscriberIdAndBpmnProcessDefinitionId(SecurityUtils.getCurrentUserLogin().get(), bpmnProcessDefinitionId)
             .map(processDefinitionSubscriptionMapper::toDto);
     }
 
