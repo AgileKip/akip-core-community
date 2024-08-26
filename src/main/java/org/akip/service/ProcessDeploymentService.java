@@ -65,11 +65,11 @@ public class ProcessDeploymentService {
         this.mapUtilMapper = mapUtilMapper;
     }
 
-    public ProcessDeploymentDTO deploy(ProcessVisibilityType processVisibilityType, ProcessDeploymentDTO processDeploymentDTO) {
+    public ProcessDeploymentDTO deploy(ProcessDeploymentDTO processDeploymentDTO) {
         BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(
                 new ByteArrayInputStream(processDeploymentDTO.getSpecificationFile())
         );
-        ProcessDefinition processDefinition = processDefinitionService.createOrUpdateProcessDefinition(processVisibilityType, bpmnModelInstance);
+        ProcessDefinition processDefinition = processDefinitionService.createOrUpdateProcessDefinition(processDeploymentDTO.getProcessVisibilityType(), bpmnModelInstance);
 
         org.camunda.bpm.engine.repository.Deployment camundaDeployment = deployInCamunda(
                 processDeploymentDTO,

@@ -54,6 +54,7 @@
     <include file="config/liquibase/changelog/00000000000034_added_new_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000035_added_new_constraints_TaskDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000036_added_new_constraints_TaskInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000037_alter_entity_ProcessDeployment.xml" relativeToChangelogFile="false"/>
 
     <include file="config/liquibase/changelog/00000000001001_added_entity_DashboardConfig.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000001002_added_entity_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>

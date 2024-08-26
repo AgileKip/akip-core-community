@@ -68,12 +68,12 @@ public class ProcessMemberController {
     }
 
     @DeleteMapping("/process-definition/{processDefinitionId}/members/{processMemberId}")
-    public ResponseEntity<Void> deleteProcessMember(@PathVariable("processId") Long processId, @PathVariable("processMemberId") Long processMemberId) {
-        log.debug("REST request to delete ProcessMember : {}{}", processId, processMemberId);
-        processMemberService.delete(processId, processMemberId);
+    public ResponseEntity<Void> deleteProcessMember(@PathVariable("processDefinitionId") Long processDefinitionId, @PathVariable("processMemberId") Long processMemberId) {
+        log.debug("REST request to delete ProcessMember : {}{}", processDefinitionId, processMemberId);
+        processMemberService.delete(processDefinitionId, processMemberId);
         return ResponseEntity
             .noContent()
-                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_PROCESS_MEMBER_REMOVED, String.valueOf(processId)))
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_PROCESS_MEMBER_REMOVED, String.valueOf(processDefinitionId)))
                 .build();
     }
 }
