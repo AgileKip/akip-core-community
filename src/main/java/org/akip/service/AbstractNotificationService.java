@@ -37,7 +37,7 @@ public abstract class AbstractNotificationService {
         this.processInstanceRepository = processInstanceRepository;
     }
 
-    public void notifyUsers(Long eventId, Long processInstanceId) {
+    public void notifyUsers(Long entityId, Long processInstanceId) {
         List<ProcessInstanceSubscription> processInstanceSubscriptions = processInstanceSubscriptionRepository.findAllByProcessInstanceId(processInstanceId)
                 .stream()
                 .filter(getFilter())
@@ -53,21 +53,21 @@ public abstract class AbstractNotificationService {
         ProcessInstance processInstance = processInstanceRepository.findById(processInstanceId).get();
 
         for (AkipUserDTO subscribedUser : subscribedUsers) {
-            processInstanceSubscriptionMailService.sendEmailFromTemplate(subscribedUser, processInstance, eventId, getEmailTemplate(), getEmailTitle());
-            processInstanceNotificationService.save(eventId, processInstance, getNotificationType(), subscribedUser.getLogin());
+            processInstanceSubscriptionMailService.sendEmailFromTemplate(subscribedUser, processInstance, entityId, getEmailTemplate(), getEmailTitle());
+            processInstanceNotificationService.save(entityId, processInstance, getNotificationType(), subscribedUser.getLogin());
         }
     }
 
-    public ProcessInstanceNotification createNotification(Long eventId, ProcessInstance processInstance){
+    public ProcessInstanceNotification createNotification(Long entityId, ProcessInstance processInstance){
         ProcessInstanceNotification notification = new ProcessInstanceNotification();
         notification.setTitle(getTitle());
-        notification.setDescription(getDescription(eventId, processInstance));
+        notification.setDescription(getDescription(entityId, processInstance));
         return notification;
     }
 
     protected abstract String getTitle();
 
-    protected abstract String getDescription(Long eventId, ProcessInstance processInstance);
+    protected abstract String getDescription(Long entityId, ProcessInstance processInstance);
 
     protected abstract String getEmailTitle();
 

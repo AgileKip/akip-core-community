@@ -24,8 +24,8 @@ public class AttachmentAddedNotificationService extends AbstractNotificationServ
     }
 
     @Override
-    protected String getDescription(Long eventId, ProcessInstance processInstance) {
-        return  "An attachment with the identifier: " + eventId + " in the process " +
+    protected String getDescription(Long entityId, ProcessInstance processInstance) {
+        return  "An attachment with the identifier: " + entityId + " in the process " +
                 processInstance.getProcessDefinition().getName() +
                 " with the instance: " + processInstance.getBusinessKey() +
                 ", which you signed, has been edited.";

@@ -24,8 +24,8 @@ public class TaskCompletedNotificationService extends AbstractNotificationServic
     }
 
     @Override
-    protected String getDescription(Long eventId, ProcessInstance processInstance) {
-        return "A new note with the identifier: " + eventId + " has been added to the process " +
+    protected String getDescription(Long entityId, ProcessInstance processInstance) {
+        return "A new note with the identifier: " + entityId + " has been added to the process " +
                 processInstance.getProcessDefinition().getName() +
                 " with the instance: " + processInstance.getBusinessKey();
     }
