@@ -4,7 +4,7 @@ import org.akip.domain.AttachmentEntity;
 import org.akip.domain.ProcessInstance;
 import org.akip.event.*;
 import org.akip.repository.AttachmentEntityRepository;
-import org.akip.service.AttachmentChangedSubscriptionService;
+import org.akip.service.AttachmentChangedNotificationService;
 import org.akip.service.dto.AttachmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -16,13 +16,13 @@ import java.util.List;
 @Component
 public class AttachmentChangedEventListener implements ApplicationListener<AttachmentChangedEvent> {
 
-    private final AttachmentChangedSubscriptionService attachmentChangedSubscriptionService;
+    private final AttachmentChangedNotificationService attachmentChangedNotificationService;
     private final AttachmentEntityRepository attachmentEntityRepository;
 
     @Autowired
     public AttachmentChangedEventListener(
-            AttachmentChangedSubscriptionService attachmentChangedSubscriptionService, AttachmentEntityRepository attachmentEntityRepository) {
-        this.attachmentChangedSubscriptionService = attachmentChangedSubscriptionService;
+            AttachmentChangedNotificationService attachmentChangedNotificationService, AttachmentEntityRepository attachmentEntityRepository) {
+        this.attachmentChangedNotificationService = attachmentChangedNotificationService;
         this.attachmentEntityRepository = attachmentEntityRepository;
     }
 
@@ -31,7 +31,7 @@ public class AttachmentChangedEventListener implements ApplicationListener<Attac
         AttachmentDTO attachmentChangedEvent = event.getAttachment();
         List<AttachmentEntity> attachmentEntities = attachmentEntityRepository.findByAttachmentIdAndEntityName(attachmentChangedEvent.getId(), ProcessInstance.class.getSimpleName());
         for (AttachmentEntity attachmentEntity : attachmentEntities) {
-            attachmentChangedSubscriptionService.notifyUsers(attachmentChangedEvent.getId(), attachmentEntity.getEntityId());
+            attachmentChangedNotificationService.notifyUsers(attachmentChangedEvent.getId(), attachmentEntity.getEntityId());
         }
     }
 }

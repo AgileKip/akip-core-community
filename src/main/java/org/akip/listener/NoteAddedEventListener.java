@@ -4,7 +4,7 @@ import org.akip.domain.NoteEntity;
 import org.akip.domain.ProcessInstance;
 import org.akip.event.*;
 import org.akip.repository.NoteEntityRepository;
-import org.akip.service.NoteAddedSubscriptionService;
+import org.akip.service.NoteAddedNotificationService;
 import org.akip.service.dto.NoteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -17,14 +17,13 @@ import java.util.List;
 public class NoteAddedEventListener implements ApplicationListener<NoteAddedEvent> {
 
     private final NoteEntityRepository noteEntityRepository;
-    private final NoteAddedSubscriptionService noteAddedSubscriptionService;
+    private final NoteAddedNotificationService noteAddedNotificationService;
 
-    @Autowired
     public NoteAddedEventListener(
-            NoteEntityRepository noteEntityRepository, NoteAddedSubscriptionService noteAddedSubscriptionService
+            NoteEntityRepository noteEntityRepository, NoteAddedNotificationService noteAddedNotificationService
     ) {
         this.noteEntityRepository = noteEntityRepository;
-        this.noteAddedSubscriptionService = noteAddedSubscriptionService;
+        this.noteAddedNotificationService = noteAddedNotificationService;
     }
 
     @Async
@@ -32,7 +31,7 @@ public class NoteAddedEventListener implements ApplicationListener<NoteAddedEven
         NoteDTO noteAddedEvent = event.getNote();
         List<NoteEntity> noteEntities = noteEntityRepository.findByNoteIdAndEntityName(noteAddedEvent.getId(), ProcessInstance.class.getSimpleName());
         for (NoteEntity noteEntity : noteEntities) {
-            noteAddedSubscriptionService.notifyUsers(noteAddedEvent.getId(), noteEntity.getEntityId());
+            noteAddedNotificationService.notifyUsers(noteAddedEvent.getId(), noteEntity.getEntityId());
         }
     }
 }

@@ -1,22 +1,52 @@
 package org.akip.service;
 
 import org.akip.domain.ProcessInstance;
-import org.akip.domain.ProcessInstanceNotification;
+import org.akip.domain.ProcessInstanceSubscription;
+import org.akip.domain.enumeration.ProcessInstanceEventType;
+import org.akip.repository.ProcessInstanceRepository;
+import org.akip.repository.ProcessInstanceSubscriptionRepository;
+import org.akip.resolver.UserResolver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.function.Predicate;
 
 @Service
 public class TaskCompletedNotificationService extends AbstractNotificationService {
 
+    public TaskCompletedNotificationService(ProcessInstanceSubscriptionMailService processInstanceSubscriptionMailService, ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository, UserResolver userResolver, ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceRepository processInstanceRepository) {
+        super(processInstanceSubscriptionMailService, processInstanceSubscriptionRepository, userResolver, processInstanceNotificationService, processInstanceRepository);
+    }
+
     @Override
-    public ProcessInstanceNotification createNotification(Long eventId, ProcessInstance processInstance) {
-        ProcessInstanceNotification notification = new ProcessInstanceNotification();
-        notification.setTitle("Completed Task Notification");
-        notification.setDescription(
-                "The task with the identifier: " + eventId + " from the " +
-                        processInstance.getProcessDefinition().getName() +
-                        " with the instance: " + processInstance.getBusinessKey() +
-                        " was completed."
-        );
-        return notification;
+    protected String getTitle() {
+        return "Completed Task Notification";
+    }
+
+    @Override
+    protected String getDescription(Long eventId, ProcessInstance processInstance) {
+        return "A new note with the identifier: " + eventId + " has been added to the process " +
+                processInstance.getProcessDefinition().getName() +
+                " with the instance: " + processInstance.getBusinessKey();
+    }
+
+    @Override
+    protected String getEmailTitle() {
+        return "email.taskCompletedEvent.title";
+    }
+
+    @Override
+    protected String getEmailTemplate() {
+        return "mail/taskCompletedEventEmail";
+    }
+
+    @Override
+    protected ProcessInstanceEventType getNotificationType() {
+        return ProcessInstanceEventType.TASK_COMPLETED;
+    }
+
+    @Override
+    protected Predicate<? super ProcessInstanceSubscription> getFilter() {
+        return ProcessInstanceSubscription::getNotifyTasks;
     }
 }

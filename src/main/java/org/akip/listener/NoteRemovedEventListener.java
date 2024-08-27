@@ -4,7 +4,7 @@ import org.akip.domain.NoteEntity;
 import org.akip.domain.ProcessInstance;
 import org.akip.event.*;
 import org.akip.repository.NoteEntityRepository;
-import org.akip.service.NoteRemovedSubscriptionService;
+import org.akip.service.NoteRemovedNotificationService;
 import org.akip.service.dto.NoteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -16,13 +16,13 @@ import java.util.List;
 @Component
 public class NoteRemovedEventListener implements ApplicationListener<NoteRemovedEvent> {
 
-    private final NoteRemovedSubscriptionService noteRemovedSubscriptionService;
+    private final NoteRemovedNotificationService noteRemovedNotificationService;
     private final NoteEntityRepository noteEntityRepository;
 
     @Autowired
     public NoteRemovedEventListener(
-            NoteRemovedSubscriptionService noteRemovedSubscriptionService, NoteEntityRepository noteEntityRepository) {
-        this.noteRemovedSubscriptionService = noteRemovedSubscriptionService;
+            NoteRemovedNotificationService noteRemovedNotificationService, NoteEntityRepository noteEntityRepository) {
+        this.noteRemovedNotificationService = noteRemovedNotificationService;
         this.noteEntityRepository = noteEntityRepository;
     }
 
@@ -31,7 +31,7 @@ public class NoteRemovedEventListener implements ApplicationListener<NoteRemoved
         NoteDTO noteRemovedEvent = event.getNote();
         List<NoteEntity> noteEntities = noteEntityRepository.findByNoteIdAndEntityName(noteRemovedEvent.getId(), ProcessInstance.class.getSimpleName());
         for (NoteEntity noteEntity : noteEntities ){
-            noteRemovedSubscriptionService.notifyUsers(noteRemovedEvent.getId(), noteEntity.getEntityId());
+            noteRemovedNotificationService.notifyUsers(noteRemovedEvent.getId(), noteEntity.getEntityId());
         }
     }
 }

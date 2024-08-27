@@ -10,6 +10,8 @@ import org.akip.service.mapper.ProcessInstanceNotificationMapper;
 import org.akip.domain.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,12 +34,46 @@ public class ProcessInstanceNotificationService {
 
     private final ProcessInstanceNotificationMapper processInstanceNotificationMapper;
 
+    private final TaskCompletedNotificationService taskCompletedNotificationService;
+
+    private final NoteAddedNotificationService noteAddedNotificationService;
+
+    private final NoteChangedNotificationService noteChangedNotificationService;
+
+    private final NoteRemovedNotificationService noteRemovedNotificationService;
+
+    private final AttachmentAddedNotificationService attachmentAddedNotificationService;
+
+    private final AttachmentChangedNotificationService attachmentChangedNotificationService;
+
+    private final AttachmentRemovedNotificationService attachmentRemovedNotificationService;
+
+
+
+
+
+
+    @Autowired
     public ProcessInstanceNotificationService(
-        ProcessInstanceNotificationRepository processInstanceNotificationRepository,
-        ProcessInstanceNotificationMapper processInstanceNotificationMapper
+            ProcessInstanceNotificationRepository processInstanceNotificationRepository,
+            ProcessInstanceNotificationMapper processInstanceNotificationMapper,
+            @Lazy TaskCompletedNotificationService taskCompletedNotificationService,
+            @Lazy NoteAddedNotificationService noteAddedNotificationService,
+            @Lazy NoteChangedNotificationService noteChangedNotificationService,
+            @Lazy NoteRemovedNotificationService noteRemovedNotificationService,
+            @Lazy AttachmentAddedNotificationService attachmentAddedNotificationService,
+            @Lazy AttachmentChangedNotificationService attachmentChangedNotificationService,
+            @Lazy AttachmentRemovedNotificationService attachmentRemovedNotificationService
     ) {
         this.processInstanceNotificationRepository = processInstanceNotificationRepository;
         this.processInstanceNotificationMapper = processInstanceNotificationMapper;
+        this.taskCompletedNotificationService = taskCompletedNotificationService;
+        this.noteAddedNotificationService = noteAddedNotificationService;
+        this.noteChangedNotificationService = noteChangedNotificationService;
+        this.noteRemovedNotificationService = noteRemovedNotificationService;
+        this.attachmentAddedNotificationService = attachmentAddedNotificationService;
+        this.attachmentChangedNotificationService = attachmentChangedNotificationService;
+        this.attachmentRemovedNotificationService = attachmentRemovedNotificationService;
     }
 
     /**
@@ -61,35 +97,8 @@ public class ProcessInstanceNotificationService {
      * @param processInstance the entity to save.
      */
     public void save(Long eventId, ProcessInstance processInstance, ProcessInstanceEventType notificationType, String subscriberId) {
-        AbstractNotificationService notificationService;
 
-        switch (notificationType) {
-            case TASK_COMPLETED:
-                notificationService = new TaskCompletedNotificationService();
-                break;
-            case NOTE_ADDED:
-                notificationService = new NoteAddedNotificationService();
-                break;
-            case NOTE_CHANGED:
-                notificationService = new NoteChangedNotificationService();
-                break;
-            case NOTE_REMOVED:
-                notificationService = new NoteRemovedNotificationService();
-                break;
-            case ATTACHMENT_ADDED:
-                notificationService = new AttachmentAddedNotificationService();
-                break;
-            case ATTACHMENT_CHANGED:
-                notificationService = new AttachmentChangedNotificationService();
-                break;
-            case ATTACHMENT_REMOVED:
-                notificationService = new AttachmentRemovedNotificationService();
-                break;
-            default:
-                throw new IllegalArgumentException("Unhandled notification type: " + notificationType);
-        }
-
-        ProcessInstanceNotification processInstanceNotification = notificationService.createNotification(eventId, processInstance);
+        ProcessInstanceNotification processInstanceNotification = getNotificationService(eventId, processInstance, notificationType);
         processInstanceNotification.setCreateDate(LocalDateTime.now());
         processInstanceNotification.setStatus(ProcessInstanceNotificationStatus.UNREAD);
         processInstanceNotification.setEventType(notificationType);
@@ -99,40 +108,25 @@ public class ProcessInstanceNotificationService {
         processInstanceNotificationMapper.toDto(processInstanceNotification);
     }
 
-    /**
-     * Partially update a processInstanceNotification.
-     *
-     * @param processInstanceNotificationDTO the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Optional<ProcessInstanceNotificationDTO> partialUpdate(ProcessInstanceNotificationDTO processInstanceNotificationDTO) {
-        log.debug("Request to partially update ProcessInstanceNotification : {}", processInstanceNotificationDTO);
-
-        return processInstanceNotificationRepository
-            .findById(processInstanceNotificationDTO.getId())
-            .map(
-                existingProcessInstanceNotification -> {
-                    processInstanceNotificationMapper.partialUpdate(existingProcessInstanceNotification, processInstanceNotificationDTO);
-                    return existingProcessInstanceNotification;
-                }
-            )
-            .map(processInstanceNotificationRepository::save)
-            .map(processInstanceNotificationMapper::toDto);
-    }
-
-    /**
-     * Get all the processInstanceNotifications.
-     *
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<ProcessInstanceNotificationDTO> findAll() {
-        log.debug("Request to get all ProcessInstanceNotifications");
-        return processInstanceNotificationRepository
-            .findAll()
-            .stream()
-            .map(processInstanceNotificationMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
+    private ProcessInstanceNotification getNotificationService(Long eventId, ProcessInstance processInstance, ProcessInstanceEventType notificationType) {
+        switch (notificationType) {
+            case TASK_COMPLETED:
+                return taskCompletedNotificationService.createNotification(eventId, processInstance);
+            case NOTE_ADDED:
+                return noteAddedNotificationService.createNotification(eventId, processInstance);
+            case NOTE_CHANGED:
+                return noteChangedNotificationService.createNotification(eventId, processInstance);
+            case NOTE_REMOVED:
+                return noteRemovedNotificationService.createNotification(eventId, processInstance);
+            case ATTACHMENT_ADDED:
+                return attachmentAddedNotificationService.createNotification(eventId, processInstance);
+            case ATTACHMENT_CHANGED:
+                return attachmentChangedNotificationService.createNotification(eventId, processInstance);
+            case ATTACHMENT_REMOVED:
+                return attachmentRemovedNotificationService.createNotification(eventId, processInstance);
+            default:
+                throw new IllegalArgumentException("Unhandled notification type: " + notificationType);
+        }
     }
 
     /**

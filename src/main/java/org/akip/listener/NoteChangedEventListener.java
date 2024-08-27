@@ -4,7 +4,7 @@ import org.akip.domain.NoteEntity;
 import org.akip.domain.ProcessInstance;
 import org.akip.event.*;
 import org.akip.repository.NoteEntityRepository;
-import org.akip.service.NoteChangedSubscriptionService;
+import org.akip.service.NoteChangedNotificationService;
 import org.akip.service.dto.NoteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -16,13 +16,13 @@ import java.util.List;
 @Component
 public class NoteChangedEventListener implements ApplicationListener<NoteChangedEvent> {
 
-    private final NoteChangedSubscriptionService noteChangedSubscriptionService;
+    private final NoteChangedNotificationService noteChangedNotificationService;
     private final NoteEntityRepository noteEntityRepository;
 
     @Autowired
     public NoteChangedEventListener(
-            NoteChangedSubscriptionService noteChangedSubscriptionService, NoteEntityRepository noteEntityRepository) {
-        this.noteChangedSubscriptionService = noteChangedSubscriptionService;
+            NoteChangedNotificationService noteChangedNotificationService, NoteEntityRepository noteEntityRepository) {
+        this.noteChangedNotificationService = noteChangedNotificationService;
         this.noteEntityRepository = noteEntityRepository;
     }
 
@@ -31,7 +31,7 @@ public class NoteChangedEventListener implements ApplicationListener<NoteChanged
         NoteDTO noteChangedEvent = event.getNote();
         List<NoteEntity> noteEntities = noteEntityRepository.findByNoteIdAndEntityName(noteChangedEvent.getId(), ProcessInstance.class.getSimpleName());
         for (NoteEntity noteEntity : noteEntities ){
-            noteChangedSubscriptionService.notifyUsers(noteChangedEvent.getId(), noteEntity.getEntityId());
+            noteChangedNotificationService.notifyUsers(noteChangedEvent.getId(), noteEntity.getEntityId());
         }
     }
 }

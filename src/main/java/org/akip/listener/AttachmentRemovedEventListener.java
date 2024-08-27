@@ -4,7 +4,7 @@ import org.akip.domain.AttachmentEntity;
 import org.akip.domain.ProcessInstance;
 import org.akip.event.*;
 import org.akip.repository.AttachmentEntityRepository;
-import org.akip.service.AttachmentRemovedSubscriptionService;
+import org.akip.service.AttachmentRemovedNotificationService;
 import org.akip.service.dto.AttachmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -18,13 +18,13 @@ public class AttachmentRemovedEventListener implements ApplicationListener<Attac
 
     private final AttachmentEntityRepository attachmentEntityRepository;
 
-    private final AttachmentRemovedSubscriptionService attachmentRemovedSubscriptionService;
+    private final AttachmentRemovedNotificationService attachmentRemovedNotificationService;
 
     @Autowired
     public AttachmentRemovedEventListener(
-            AttachmentEntityRepository attachmentEntityRepository, AttachmentRemovedSubscriptionService attachmentRemovedSubscriptionService) {
+            AttachmentEntityRepository attachmentEntityRepository, AttachmentRemovedNotificationService attachmentRemovedNotificationService) {
         this.attachmentEntityRepository = attachmentEntityRepository;
-        this.attachmentRemovedSubscriptionService = attachmentRemovedSubscriptionService;
+        this.attachmentRemovedNotificationService = attachmentRemovedNotificationService;
     }
 
     @Async
@@ -32,7 +32,7 @@ public class AttachmentRemovedEventListener implements ApplicationListener<Attac
         AttachmentDTO attachmentRemovedEvent = event.getAttachment();
         List<AttachmentEntity> attachmentEntities = attachmentEntityRepository.findByAttachmentIdAndEntityName(attachmentRemovedEvent.getId(), ProcessInstance.class.getSimpleName());
         for (AttachmentEntity attachmentEntity : attachmentEntities) {
-            attachmentRemovedSubscriptionService.notifyUsers(attachmentRemovedEvent.getId(), attachmentEntity.getEntityId());
+            attachmentRemovedNotificationService.notifyUsers(attachmentRemovedEvent.getId(), attachmentEntity.getEntityId());
         }
     }
 }
