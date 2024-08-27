@@ -16,7 +16,6 @@ import tech.jhipster.config.JHipsterProperties;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 
@@ -61,12 +60,11 @@ public class AkipMailService {
     @Async
     public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
         log.debug(
-            "Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
+            "Send email[multipart '{}' and html '{}'] to '{}' with subject '{}'",
             isMultipart,
             isHtml,
             to,
-            subject,
-            content
+            subject
         );
 
         // Prepare message using a Spring helper
