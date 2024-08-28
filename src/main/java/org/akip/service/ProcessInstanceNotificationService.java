@@ -96,9 +96,9 @@ public class ProcessInstanceNotificationService {
      *
      * @param processInstance the entity to save.
      */
-    public void save(Long eventId, ProcessInstance processInstance, ProcessInstanceEventType notificationType, String subscriberId) {
-
-        ProcessInstanceNotification processInstanceNotification = getNotificationService(eventId, processInstance, notificationType);
+    public void save(Object source, ProcessInstance processInstance, ProcessInstanceEventType notificationType, String subscriberId) {
+        AbstractNotificationService service = getNotificationService(notificationType);
+        ProcessInstanceNotification processInstanceNotification = service.createNotification(source, processInstance);
         processInstanceNotification.setCreateDate(LocalDateTime.now());
         processInstanceNotification.setStatus(ProcessInstanceNotificationStatus.UNREAD);
         processInstanceNotification.setEventType(notificationType);
@@ -108,22 +108,22 @@ public class ProcessInstanceNotificationService {
         processInstanceNotificationMapper.toDto(processInstanceNotification);
     }
 
-    private ProcessInstanceNotification getNotificationService(Long eventId, ProcessInstance processInstance, ProcessInstanceEventType notificationType) {
+    private AbstractNotificationService getNotificationService(ProcessInstanceEventType notificationType) {
         switch (notificationType) {
             case TASK_COMPLETED:
-                return taskCompletedNotificationService.createNotification(eventId, processInstance);
+                return taskCompletedNotificationService;
             case NOTE_ADDED:
-                return noteAddedNotificationService.createNotification(eventId, processInstance);
+                return noteAddedNotificationService;
             case NOTE_CHANGED:
-                return noteChangedNotificationService.createNotification(eventId, processInstance);
+                return noteChangedNotificationService;
             case NOTE_REMOVED:
-                return noteRemovedNotificationService.createNotification(eventId, processInstance);
+                return noteRemovedNotificationService;
             case ATTACHMENT_ADDED:
-                return attachmentAddedNotificationService.createNotification(eventId, processInstance);
+                return attachmentAddedNotificationService;
             case ATTACHMENT_CHANGED:
-                return attachmentChangedNotificationService.createNotification(eventId, processInstance);
+                return attachmentChangedNotificationService;
             case ATTACHMENT_REMOVED:
-                return attachmentRemovedNotificationService.createNotification(eventId, processInstance);
+                return attachmentRemovedNotificationService;
             default:
                 throw new IllegalArgumentException("Unhandled notification type: " + notificationType);
         }

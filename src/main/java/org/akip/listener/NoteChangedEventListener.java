@@ -28,10 +28,10 @@ public class NoteChangedEventListener implements ApplicationListener<NoteChanged
 
     @Async
     public void onApplicationEvent(NoteChangedEvent event) {
-        NoteDTO noteChangedEvent = event.getNote();
-        List<NoteEntity> noteEntities = noteEntityRepository.findByNoteIdAndEntityName(noteChangedEvent.getId(), ProcessInstance.class.getSimpleName());
+        NoteDTO noteChanged = (NoteDTO) event.getSource();
+        List<NoteEntity> noteEntities = noteEntityRepository.findByNoteIdAndEntityName(noteChanged.getId(), ProcessInstance.class.getSimpleName());
         for (NoteEntity noteEntity : noteEntities ){
-            noteChangedNotificationService.notifyUsers(noteChangedEvent.getId(), noteEntity.getEntityId());
+            noteChangedNotificationService.notifyUsers(noteChanged, noteEntity.getEntityId());
         }
     }
 }

@@ -28,10 +28,10 @@ public class NoteRemovedEventListener implements ApplicationListener<NoteRemoved
 
     @Async
     public void onApplicationEvent(NoteRemovedEvent event) {
-        NoteDTO noteRemovedEvent = event.getNote();
-        List<NoteEntity> noteEntities = noteEntityRepository.findByNoteIdAndEntityName(noteRemovedEvent.getId(), ProcessInstance.class.getSimpleName());
+        NoteDTO noteRemoved = (NoteDTO) event.getSource();
+        List<NoteEntity> noteEntities = noteEntityRepository.findByNoteIdAndEntityName(noteRemoved.getId(), ProcessInstance.class.getSimpleName());
         for (NoteEntity noteEntity : noteEntities ){
-            noteRemovedNotificationService.notifyUsers(noteRemovedEvent.getId(), noteEntity.getEntityId());
+            noteRemovedNotificationService.notifyUsers(noteRemoved, noteEntity.getEntityId());
         }
     }
 }

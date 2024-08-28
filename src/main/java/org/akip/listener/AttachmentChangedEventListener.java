@@ -28,10 +28,10 @@ public class AttachmentChangedEventListener implements ApplicationListener<Attac
 
     @Async
     public void onApplicationEvent(AttachmentChangedEvent event) {
-        AttachmentDTO attachmentChangedEvent = event.getAttachment();
+        AttachmentDTO attachmentChangedEvent = (AttachmentDTO) event.getSource();
         List<AttachmentEntity> attachmentEntities = attachmentEntityRepository.findByAttachmentIdAndEntityName(attachmentChangedEvent.getId(), ProcessInstance.class.getSimpleName());
         for (AttachmentEntity attachmentEntity : attachmentEntities) {
-            attachmentChangedNotificationService.notifyUsers(attachmentChangedEvent.getId(), attachmentEntity.getEntityId());
+            attachmentChangedNotificationService.notifyUsers(attachmentChangedEvent, attachmentEntity.getEntityId());
         }
     }
 }

@@ -6,6 +6,7 @@ import org.akip.domain.enumeration.ProcessInstanceEventType;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.ProcessInstanceSubscriptionRepository;
 import org.akip.resolver.UserResolver;
+import org.akip.service.dto.TaskInstanceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +20,14 @@ public class TaskCompletedNotificationService extends AbstractNotificationServic
     }
 
     @Override
-    protected String getTitle() {
+    protected String getTitle(Object source, ProcessInstance processInstance) {
         return "Completed Task Notification";
     }
 
     @Override
-    protected String getDescription(Long entityId, ProcessInstance processInstance) {
-        return "A new note with the identifier: " + entityId + " has been added to the process " +
+    protected String getDescription(Object source, ProcessInstance processInstance) {
+        TaskInstanceDTO taskInstance = (TaskInstanceDTO) source;
+        return "A new note with the identifier: " + taskInstance.getId() + " has been added to the process " +
                 processInstance.getProcessDefinition().getName() +
                 " with the instance: " + processInstance.getBusinessKey();
     }

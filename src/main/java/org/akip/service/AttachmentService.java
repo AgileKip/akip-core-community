@@ -94,7 +94,7 @@ public class AttachmentService {
         Attachment attachment = attachmentRepository.save(attachmentMapper.toEntity(attachmentDTO));
         documentStorageService.put(MINIO_ENTITY_NAME, attachment.getUploadedDate(), MINIO_ENTITY_NAME + attachment.getId(), attachmentDTO.getBytes());
         linkAttachmentToEntities(attachment, attachmentDTO);
-        processInstanceEventPublisher.publishEventAddedAttachment(this, attachmentMapper.toDto(attachment));
+        processInstanceEventPublisher.publishEventAddedAttachment(attachmentMapper.toDto(attachment));
         return attachmentMapper.toDto(attachment);
     }
 
@@ -112,7 +112,7 @@ public class AttachmentService {
             );
         }
         linkAttachmentToEntities(attachment, attachmentDTO);
-        processInstanceEventPublisher.publishEventChangedAttachment(this, attachmentDTO);
+        processInstanceEventPublisher.publishEventChangedAttachment(attachmentDTO);
         return attachmentMapper.toDto(attachment);
     }
 
@@ -162,7 +162,7 @@ public class AttachmentService {
         AttachmentDTO attachmentDTO = attachmentMapper.toDto(attachmentRepository.getOne(attachmentId));
         attachmentEntityRepository.deleteByAttachmentId(attachmentId);
         attachmentRepository.deleteById(attachmentId);
-        processInstanceEventPublisher.publishEventRemovedAttachment(this, attachmentDTO);
+        processInstanceEventPublisher.publishEventRemovedAttachment(attachmentDTO);
         documentStorageService.delete(MINIO_ENTITY_NAME, attachmentDTO.getUploadedDate(), MINIO_ENTITY_NAME + attachmentDTO.getId());
     }
 

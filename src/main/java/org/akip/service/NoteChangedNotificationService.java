@@ -7,6 +7,7 @@ import org.akip.domain.enumeration.ProcessInstanceEventType;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.ProcessInstanceSubscriptionRepository;
 import org.akip.resolver.UserResolver;
+import org.akip.service.dto.NoteDTO;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,14 @@ public class NoteChangedNotificationService extends AbstractNotificationService 
     }
 
     @Override
-    protected String getTitle() {
+    protected String getTitle(Object source, ProcessInstance processInstance) {
         return "Note Edited Notification";
     }
 
     @Override
-    protected String getDescription(Long entityId, ProcessInstance processInstance) {
-        return "A note with the identifier: " + entityId + " in the process " +
+    protected String getDescription(Object source, ProcessInstance processInstance) {
+        NoteDTO note = (NoteDTO) source;
+        return "A note with the identifier: " + note.getId() + " in the process " +
                 processInstance.getProcessDefinition().getName() +
                 " with the instance: " + processInstance.getBusinessKey() +
                 ", which you signed, has been edited.";

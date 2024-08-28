@@ -8,7 +8,7 @@
   <body>
     <p th:text="#{email.noteAddedEvent.greeting(${user.login})}">Dear</p>
     <p
-      th:text="#{email.noteAddedEvent.text1(${eventId.toString()}, ${processInstance.getProcessDefinition().getName()}, ${processInstance.getBusinessKey()})}"
+      th:text="#{email.noteAddedEvent.text1(${source.getId().toString()}, ${processInstance.getProcessDefinition().getName()}, ${processInstance.getBusinessKey()})}"
     ></p>
     <p>
       <span th:text="#{email.noteAddedEvent.text2}">Regards, </span>

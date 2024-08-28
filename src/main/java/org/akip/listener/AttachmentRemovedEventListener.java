@@ -29,10 +29,10 @@ public class AttachmentRemovedEventListener implements ApplicationListener<Attac
 
     @Async
     public void onApplicationEvent(AttachmentRemovedEvent event) {
-        AttachmentDTO attachmentRemovedEvent = event.getAttachment();
+        AttachmentDTO attachmentRemovedEvent = (AttachmentDTO) event.getSource();
         List<AttachmentEntity> attachmentEntities = attachmentEntityRepository.findByAttachmentIdAndEntityName(attachmentRemovedEvent.getId(), ProcessInstance.class.getSimpleName());
         for (AttachmentEntity attachmentEntity : attachmentEntities) {
-            attachmentRemovedNotificationService.notifyUsers(attachmentRemovedEvent.getId(), attachmentEntity.getEntityId());
+            attachmentRemovedNotificationService.notifyUsers(attachmentRemovedEvent, attachmentEntity.getEntityId());
         }
     }
 }
