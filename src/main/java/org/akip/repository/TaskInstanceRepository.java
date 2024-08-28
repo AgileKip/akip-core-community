@@ -29,4 +29,6 @@ public interface TaskInstanceRepository extends JpaRepository<TaskInstance, Long
     List<TaskInstance> findByAssigneeAndStatusIn(String assignee, List<StatusTaskInstance> statusTaskInstances);
 
     List<TaskInstance> findByProcessDefinitionIdAndTypeAndCreateDateBetween(Long processDefinitionId, TypeTaskInstance type, Instant startDate, Instant endDate);
+
+    List<TaskInstance> findByStatus(StatusTaskInstance status);
 }

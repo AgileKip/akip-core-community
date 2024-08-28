@@ -1,7 +1,8 @@
 # Changelog
 
-* 0.1.10 (WIP)
-  * Including a feature to notify users about their open tasks (#10) 
+* 0.1.10
+  * Including a feature to notify users about their open tasks (#10)
+  * Including JobExecutionTracking entity
 
 * 0.1.9
   * Fixing bugs (#82)

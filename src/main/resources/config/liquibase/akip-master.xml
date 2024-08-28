@@ -35,6 +35,7 @@
     <include file="config/liquibase/changelog/00000000000021_alter_entity_ProcessDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000023_added_entity_TaskDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000025_alter_entity_TaskInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000027_added_entity_JobExecutionTracking.xml" relativeToChangelogFile="false"/>
 
     <include file="config/liquibase/changelog/00000000000004_added_entity_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000005_added_entity_constraints_ProcessDeployment.xml" relativeToChangelogFile="false"/>
