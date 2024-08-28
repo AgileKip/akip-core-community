@@ -1,5 +1,9 @@
 # Changelog
 
+* 1.11.0 (WIP)
+  * Including a new process visibility type (public, internal, private)
+  * Including ProcessMember and TenantMember entities
+
 * 0.1.10
   * Including a feature to notify users about their open tasks (#10)
   * Including JobExecutionTracking entity
