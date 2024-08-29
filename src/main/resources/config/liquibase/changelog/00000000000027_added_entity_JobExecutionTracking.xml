@@ -9,7 +9,7 @@
     <!--
         Added the entity JobExecutionTracking.
     -->
-    <changeSet id="20230202000001-1" author="jhipster">
+    <changeSet id="00000000000027-1" author="akip">
         <createTable tableName="job_execution_tracking">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>

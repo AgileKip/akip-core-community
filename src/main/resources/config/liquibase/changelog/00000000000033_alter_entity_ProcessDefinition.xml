@@ -9,7 +9,7 @@
     <!--
         Added the entity TaskInstance.
     -->
-    <changeSet id="00000000000023-1" author="joao">
+    <changeSet id="00000000000033-1" author="akip">
         <addColumn tableName="process_definition">
             <column name="process_visibility_type" type="varchar(255)">
                 <constraints nullable="true" />

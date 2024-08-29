@@ -9,7 +9,7 @@
     <!--
         Added the entity TaskInstance.
     -->
-    <changeSet id="00000000000023-1" author="joao">
+    <changeSet id="00000000000032-1" author="akip">
         <addColumn tableName="task_instance">
             <column name="computed_candidate_groups" type="${clobType}">
                 <constraints nullable="true" />

@@ -9,16 +9,12 @@
     <!--
         Added the entity TaskInstance to add foreign key to TaskDefinition and drop formFields field.
     -->
-    <changeSet id="00000000000033-1" author="akip">
-        <addColumn tableName="task_instance">
-            <column name="task_definition_id" type="bigint">
+    <changeSet id="00000000000038-1" author="akip">
+        <addColumn tableName="process_deployment">
+            <column name="process_visibility_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
         </addColumn>
-    </changeSet>
-
-    <changeSet id="00000000000033-2" author="akip">
-        <dropColumn tableName="task_instance" columnName="form_fields" />
     </changeSet>
 
 </databaseChangeLog>

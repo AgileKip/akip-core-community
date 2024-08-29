@@ -7,14 +7,21 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Added the entity TaskInstance to add foreign key to TaskDefinition and drop formFields field.
+        Alter the entity ProcessDefinition.
     -->
-    <changeSet id="00000000000037-1" author="akip">
-        <addColumn tableName="process_deployment">
-            <column name="process_visibility_type" type="varchar(255)">
+    <changeSet id="00000000000021-1" author="akip">
+        <addColumn tableName="process_definition">
+            <column name="start_form_is_enabled" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="start_form_definition_id" type="bigint">
                 <constraints nullable="true" />
             </column>
         </addColumn>
+    </changeSet>
+
+    <changeSet id="00000000000021-2" author="akip">
+        <dropColumn tableName="process_definition" columnName="start_form_fields" />
     </changeSet>
 
 </databaseChangeLog>

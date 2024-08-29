@@ -4,14 +4,14 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <!--
-        Added the constraints for entity ProcessDefinition.
+        Added the constraints for entity TenantRole.
     -->
-    <changeSet id="00000000000034-1" author="akip">
+    <changeSet id="00000000000031-1" author="akip">
 
-        <addForeignKeyConstraint baseColumnNames="start_form_definition_id"
-                                 baseTableName="process_definition"
-                                 constraintName="fk_process_definition_form_definition_id"
+        <addForeignKeyConstraint baseColumnNames="tenant_id"
+                                 baseTableName="tenant_role"
+                                 constraintName="fk_tenant_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="form_definition"/>
+                                 referencedTableName="tenant"/>
     </changeSet>
 </databaseChangeLog>

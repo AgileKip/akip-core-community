@@ -6,29 +6,29 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet id="00000000000029-1" author="joao">
-        <createTable tableName="tenant_member_tenant_role">
-            <column name="tenant_member_id" type="bigint">
+    <changeSet id="00000000000036-1" author="akip">
+        <createTable tableName="process_member_process_role">
+            <column name="process_member_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="tenant_role_id" type="bigint">
+            <column name="process_role_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="tenant_member_id, tenant_role_id" tableName="tenant_member_tenant_role"/>
+        <addPrimaryKey columnNames="process_member_id, process_role_id" tableName="process_member_process_role"/>
 
-        <addForeignKeyConstraint baseColumnNames="tenant_role_id"
-                                 baseTableName="tenant_member_tenant_role"
-                                 constraintName="fk_tenant_role_id"
+        <addForeignKeyConstraint baseColumnNames="process_role_id"
+                                 baseTableName="process_member_process_role"
+                                 constraintName="fk_process_role_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="tenant_role"/>
+                                 referencedTableName="process_role"/>
 
-        <addForeignKeyConstraint baseColumnNames="tenant_member_id"
-                                 baseTableName="tenant_member_tenant_role"
-                                 constraintName="fk_tenant_member_id"
+        <addForeignKeyConstraint baseColumnNames="process_member_id"
+                                 baseTableName="process_member_process_role"
+                                 constraintName="fk_process_member_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="tenant_member"/>
+                                 referencedTableName="process_member"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->

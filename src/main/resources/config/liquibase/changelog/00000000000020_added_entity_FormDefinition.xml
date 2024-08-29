@@ -7,21 +7,25 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Alter the entity ProcessDefinition.
+        Added the entity FormDefinition.
     -->
-    <changeSet id="00000000000031-1" author="akip">
-        <addColumn tableName="process_definition">
-            <column name="start_form_is_enabled" type="boolean">
+    <changeSet id="00000000000020-1" author="akip">
+        <createTable tableName="form_definition">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="start_form_definition_id" type="bigint">
+            <column name="form_builder" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-        </addColumn>
+            <column name="form_version" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="form_schema" type="${clobType}">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
     </changeSet>
-
-    <changeSet id="00000000000021-2" author="akip">
-        <dropColumn tableName="process_definition" columnName="start_form_fields" />
-    </changeSet>
-
 </databaseChangeLog>
