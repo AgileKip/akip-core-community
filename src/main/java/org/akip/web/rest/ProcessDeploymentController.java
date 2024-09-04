@@ -2,6 +2,7 @@ package org.akip.web.rest;
 
 import org.akip.domain.ProcessDeployment;
 import org.akip.domain.enumeration.ProcessVisibilityType;
+import org.akip.exception.BadRequestErrorException;
 import org.akip.service.ProcessDeploymentService;
 import org.akip.service.dto.ProcessDeploymentBpmnModelDTO;
 import org.akip.service.dto.ProcessDeploymentDTO;
@@ -44,7 +45,9 @@ public class ProcessDeploymentController {
     public ResponseEntity<Void> deploy(@RequestBody ProcessDeploymentDTO processDeploymentDTO) throws URISyntaxException {
         log.debug("REST request to deploy ProcessDeployment : {}", processDeploymentDTO);
         ProcessDeploymentDTO result = processDeploymentService.deploy(processDeploymentDTO);
-
+        if(ProcessVisibilityType.INTERNAL.equals(processDeploymentDTO.getProcessVisibilityType()) && processDeploymentDTO.getTenant() == null){
+            throw new BadRequestErrorException("Internal process requires a tenant", "deployInternalProcess", "tenantIsNull");
+        }
         return ResponseEntity
                 .created(new URI("/api/process-deployment/" + result.getId()))
                 .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildDeployedMessage(result), result.getCamundaProcessDefinitionId()))
