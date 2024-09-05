@@ -80,6 +80,9 @@ public class TaskInstance implements Serializable {
     @Column(name = "candidateGroups")
     private String candidateGroups;
 
+    @Column(name = "computed_candidate_groups")
+    private String computedCandidateGroups;
+
     @Column(name = "connector_name")
     private String connectorName;
 
@@ -329,6 +332,19 @@ public class TaskInstance implements Serializable {
 
     public void setCandidateGroups(String candidateGroups) {
         this.candidateGroups = candidateGroups;
+    }
+
+    public String getComputedCandidateGroups() {
+        return computedCandidateGroups;
+    }
+
+    public TaskInstance computedCandidateGroups(String computedCandidateGroups) {
+        this.computedCandidateGroups = computedCandidateGroups;
+        return this;
+    }
+
+    public void setComputedCandidateGroups(String computedCandidateGroups) {
+        this.computedCandidateGroups = computedCandidateGroups;
     }
 
     public String getConnectorName() {

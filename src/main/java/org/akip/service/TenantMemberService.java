@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +50,13 @@ public class TenantMemberService {
         TenantMember tenantMember = tenantMemberMapper.toEntity(tenantMemberDTO);
         tenantMember = tenantMemberRepository.save(tenantMember);
         return tenantMemberMapper.toDto(tenantMember);
+    }
+
+    public List<String> getTenantRolesByUsername(String username){
+        List<String> tenantRoles = new ArrayList<>();
+        tenantRoles.addAll(tenantMemberRepository.findTenantRolesWithDefinitionIdPrefixByUsername(username));
+        tenantRoles.addAll(tenantMemberRepository.findTenantWildcardPrefixByUsername(username));
+        return tenantRoles;
     }
 
     public void delete(Long tenantId, Long tenantMemberId) {

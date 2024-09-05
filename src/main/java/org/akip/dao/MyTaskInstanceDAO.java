@@ -10,6 +10,8 @@ import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.repository.TenantMemberRepository;
 import org.akip.security.SecurityUtils;
 import org.akip.service.ProcessDefinitionService;
+import org.akip.service.ProcessMemberService;
+import org.akip.service.TenantMemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,10 +30,16 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
 
     private final TenantMemberRepository tenantMemberRepository;
 
-    MyTaskInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService, TenantMemberRepository tenantMemberRepository) {
+    private final TenantMemberService tenantMemberService;
+
+    private final ProcessMemberService processMemberService;
+
+    MyTaskInstanceDAO(EntityManager entityManager, ProcessDefinitionService processDefinitionService, TenantMemberRepository tenantMemberRepository, TenantMemberService tenantMemberService, ProcessMemberService processMemberService) {
         super(entityManager, TaskInstance.class, TaskInstanceSearchDTO.class);
         this.processDefinitionService = processDefinitionService;
         this.tenantMemberRepository = tenantMemberRepository;
+        this.tenantMemberService = tenantMemberService;
+        this.processMemberService = processMemberService;
     }
 
     @Override
@@ -40,10 +48,17 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         tenantsCurrentUserFilter.setId("tenantObject");
         tenantsCurrentUserFilter.setValues(tenantMemberRepository.findTenantByTenantMemberUsername(SecurityUtils.getCurrentUserLogin().get()));
 
+        List<String> authorities = new ArrayList<>();
+
+        authorities.add("*");
+        authorities.addAll(SecurityUtils.getAuthorities());
+        authorities.addAll(processMemberService.getProcessRolesByUsername(SecurityUtils.getCurrentUserLogin().get()));
+        authorities.addAll(tenantMemberService.getTenantRolesByUsername(SecurityUtils.getCurrentUserLogin().get()));
+
         AssigneeAndCandidateGroupFilter assigneeAndCandidateGroupFilter = new AssigneeAndCandidateGroupFilter();
         assigneeAndCandidateGroupFilter.setId("assigneeAndCandidateGroupFilter");
         assigneeAndCandidateGroupFilter.setAssignee(SecurityUtils.getCurrentUserLogin().get());
-        assigneeAndCandidateGroupFilter.setValues(SecurityUtils.getAuthorities());
+        assigneeAndCandidateGroupFilter.setValues(authorities);
 
         EnumFilter userTaskFilter = new EnumFilter();
         userTaskFilter.setId("type");
