@@ -21,7 +21,9 @@ public class ProcessInstanceSubscriptionMailService {
     private static final Locale defaultLocale = Locale.forLanguageTag("en");
     private static final String USER = "user";
     private static final String PROCESS_INSTANCE = "processInstance";
-    private static final String SOURCE = "source";
+    private static final String TITLE = "title";
+    private static final String DESCRIPTION = "description";
+    private static final String NOTIFICATION_ID = "notificationId";
     private final Logger log = LoggerFactory.getLogger(AkipMailService.class);
     private static final String BASE_URL = "baseUrl";
     private final JHipsterProperties jHipsterProperties;
@@ -30,6 +32,12 @@ public class ProcessInstanceSubscriptionMailService {
     private final SpringTemplateEngine templateEngine;
 
     private final AkipMailService mailService;
+
+    private static final String TITLE_KEY = "email.eventNotification.title";
+
+    private static final String TEMPLATE_NAME = "mail/eventNotificationEmail";
+
+
 
     public ProcessInstanceSubscriptionMailService(
         JHipsterProperties jHipsterProperties,
@@ -43,29 +51,17 @@ public class ProcessInstanceSubscriptionMailService {
         this.mailService = mailService;
     }
 
-    public void sendEmailFromTemplate(AkipUserDTO user, ProcessInstance processInstance, Object source, String templateName, String titleKey) {
+    public void sendEmailFromTemplate(AkipUserDTO user, ProcessInstance processInstance, Long notificationId, String title, String description) {
         log.debug("Email doesn't exist for user '{}'", processInstance.getId());
         Context context = new Context(defaultLocale);
-        if (source instanceof NoteDTO) {
-            context.setVariable(PROCESS_INSTANCE, processInstance);
-            context.setVariable(USER, user);
-            context.setVariable(SOURCE, source);
-            context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
-        }
-        if (source instanceof AttachmentDTO) {
-            context.setVariable(PROCESS_INSTANCE, processInstance);
-            context.setVariable(USER, user);
-            context.setVariable(SOURCE, source);
-            context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
-        }
-        if (source instanceof TaskInstanceDTO) {
-            context.setVariable(PROCESS_INSTANCE, processInstance);
-            context.setVariable(USER, user);
-            context.setVariable(SOURCE, source);
-            context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
-        }
-        String content = templateEngine.process(templateName, context);
-        String subject = messageSource.getMessage(titleKey, null, defaultLocale);
+        context.setVariable(TITLE, title);
+        context.setVariable(DESCRIPTION, description);
+        context.setVariable(PROCESS_INSTANCE, processInstance);
+        context.setVariable(NOTIFICATION_ID, notificationId);
+        context.setVariable(USER, user);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        String content = templateEngine.process(TEMPLATE_NAME, context);
+        String subject = messageSource.getMessage(TITLE_KEY, new Object[]{title}, defaultLocale);
         mailService.sendEmail(user.getEmail(), subject, content, false, true);
     }
 }

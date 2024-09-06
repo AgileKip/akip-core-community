@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="#{email.eventNotification.title(${title})}"></title>
+    <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+  </head>
+  <body>
+    <p th:text="#{email.eventNotification.greeting(${user.login})}">Dear,</p>
+    <p
+      th:text="#{email.eventNotification.text1(${description})}"
+    ></p>
+    <p th:text="#{email.eventNotification.text2}">To access the notification details click on the link below:</p>
+    <p>
+        <a th:with="url=(@{|${baseUrl}/#{email.eventNotification.link(${notificationId.toString()})}|})" th:href="${url}" th:text="#{email.eventNotification.link(${notificationId.toString()})}"
+        ></a
+        >
+    </p>
+    <p>
+      <span th:text="#{email.eventNotification.text4}">Regards, </span>
+    </p>
+    <p>
+      <em th:text="#{email.eventNotification.signature}">JHipster.</em>
+    </p>
+  </body>
+</html>

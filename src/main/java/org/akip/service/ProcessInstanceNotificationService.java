@@ -96,7 +96,7 @@ public class ProcessInstanceNotificationService {
      *
      * @param processInstance the entity to save.
      */
-    public void save(Object source, ProcessInstance processInstance, ProcessInstanceEventType notificationType, String subscriberId) {
+    public ProcessInstanceNotificationDTO save(Object source, ProcessInstance processInstance, ProcessInstanceEventType notificationType, String subscriberId) {
         AbstractNotificationService service = getNotificationService(notificationType);
         ProcessInstanceNotification processInstanceNotification = service.createNotification(source, processInstance);
         processInstanceNotification.setCreateDate(LocalDateTime.now());
@@ -105,7 +105,7 @@ public class ProcessInstanceNotificationService {
         processInstanceNotification.setSubscriberId(subscriberId);
         processInstanceNotification.setProcessInstance(processInstance);
         processInstanceNotification = processInstanceNotificationRepository.save(processInstanceNotification);
-        processInstanceNotificationMapper.toDto(processInstanceNotification);
+        return processInstanceNotificationMapper.toDto(processInstanceNotification);
     }
 
     private AbstractNotificationService getNotificationService(ProcessInstanceEventType notificationType) {
@@ -138,7 +138,7 @@ public class ProcessInstanceNotificationService {
     public List<ProcessInstanceNotificationDTO> findTop6BySubscriberIdOrderByIdDesc() {
         log.debug("Request to get all ProcessInstanceNotifications SubscriberId");
         return processInstanceNotificationRepository
-            .findTop6BySubscriberIdOrderByIdDesc(SecurityUtils.getCurrentUserLogin().get())
+            .findTop6BySubscriberIdAndStatusOrderByIdDesc(SecurityUtils.getCurrentUserLogin().get(), ProcessInstanceNotificationStatus.UNREAD)
             .stream()
             .map(processInstanceNotificationMapper::toDto)
             .collect(Collectors.toCollection(LinkedList::new));
@@ -175,7 +175,7 @@ public class ProcessInstanceNotificationService {
      * @return the entity.
      */
     public ProcessInstanceNotificationDTO readNotification(Long id) {
-        log.debug("Request to get ProcessInstanceNotification : {}", id);
+        log.debug("Request to get ProcessInstanceReadNotification : {}", id);
         ProcessInstanceNotification processInstanceNotification = processInstanceNotificationRepository.findById(id).get();
         processInstanceNotification.setStatus(ProcessInstanceNotificationStatus.READ);
         processInstanceNotification.setReadDate(LocalDateTime.now());

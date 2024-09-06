@@ -128,9 +128,9 @@ class MyProcessInstanceNotificationDao extends AbstractDAO<ProcessInstanceNotifi
         resultColumns.add(resultColumnId);
 
         ResultColumn resultColumnDescription = new ResultColumn();
-        resultColumnDescription.setId("description");
-        resultColumnDescription.setTitle("Description");
-        resultColumnDescription.setDtoField("description");
+        resultColumnDescription.setId("title");
+        resultColumnDescription.setTitle("Title");
+        resultColumnDescription.setDtoField("title");
         resultColumnDescription.setVisible(true);
         resultColumnDescription.setType("String");
         resultColumns.add(resultColumnDescription);

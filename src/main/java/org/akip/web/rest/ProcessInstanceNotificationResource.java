@@ -10,11 +10,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.ResponseUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * REST controller for managing {@link org.akip.domain.ProcessInstanceNotification}.
@@ -99,6 +101,20 @@ public class ProcessInstanceNotificationResource {
             )
             .body(result);
     }
+
+    /**
+     * {@code GET  /process-instance-notifications/:id} : get the "id" processInstanceNotification.
+     *
+     * @param id the id of the processInstanceNotificationDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processInstanceNotificationDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/process-instance-notifications/{id}")
+    public ResponseEntity<ProcessInstanceNotificationDTO> getProcessInstanceNotification(@PathVariable Long id) {
+        log.debug("REST request to get ProcessInstanceNotification : {}", id);
+        Optional<ProcessInstanceNotificationDTO> processInstanceNotificationDTO = processInstanceNotificationService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(processInstanceNotificationDTO);
+    }
+
     /**
      * {@code GET  /process-instance-notifications/:id} : get the "id" processInstanceNotification.
      *

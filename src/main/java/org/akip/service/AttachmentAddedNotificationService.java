@@ -3,6 +3,7 @@ package org.akip.service;
 import org.akip.domain.ProcessInstance;
 import org.akip.domain.ProcessInstanceSubscription;
 import org.akip.domain.enumeration.ProcessInstanceEventType;
+import org.akip.repository.ProcessInstanceNotificationRepository;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.ProcessInstanceSubscriptionRepository;
 import org.akip.resolver.UserResolver;
@@ -15,32 +16,23 @@ import java.util.function.Predicate;
 @Service
 public class AttachmentAddedNotificationService extends AbstractNotificationService {
 
-    public AttachmentAddedNotificationService(ProcessInstanceSubscriptionMailService processInstanceSubscriptionMailService, ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository, UserResolver userResolver, ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceRepository processInstanceRepository) {
-        super(processInstanceSubscriptionMailService, processInstanceSubscriptionRepository, userResolver, processInstanceNotificationService, processInstanceRepository);
+
+    public AttachmentAddedNotificationService(ProcessInstanceSubscriptionMailService processInstanceSubscriptionMailService, ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository, UserResolver userResolver, ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceNotificationRepository processInstanceNotificationRepository, ProcessInstanceRepository processInstanceRepository) {
+        super(processInstanceSubscriptionMailService, processInstanceSubscriptionRepository, userResolver, processInstanceNotificationService, processInstanceNotificationRepository, processInstanceRepository);
     }
 
     @Override
     protected String getTitle(Object source, ProcessInstance processInstance) {
-        return "Attachment Added Notification";
+        return "Attachment Added in the " + processInstance.getProcessDefinition().getName();
     }
 
     @Override
     protected String getDescription(Object source, ProcessInstance processInstance) {
         AttachmentDTO attachment = (AttachmentDTO) source;
-        return  "An attachment with the identifier: " + attachment.getId() + " in the process " +
-                processInstance.getProcessDefinition().getName() +
-                " with the instance: " + processInstance.getBusinessKey() +
-                ", which you signed, has been edited.";
-    }
-
-    @Override
-    protected String getEmailTitle() {
-        return "email.attachmentAddedEvent.title";
-    }
-
-    @Override
-    protected String getEmailTemplate() {
-        return "mail/attachmentAddedEventEmail";
+        return  "An attachment with the identifier: " + attachment.getId() +
+                " was added by user: " + attachment.getUploadedBy() +","+
+                " with name: " + attachment.getName() +
+                " on this date: ";
     }
 
     @Override

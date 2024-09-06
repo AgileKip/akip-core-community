@@ -6,7 +6,9 @@ import org.akip.domain.enumeration.ProcessInstanceNotificationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Data SQL repository for the ProcessInstanceNotification entity.
@@ -15,9 +17,8 @@ import java.util.List;
 @Repository
 public interface ProcessInstanceNotificationRepository extends JpaRepository<ProcessInstanceNotification, Long> {
 
-    List<ProcessInstanceNotification> findTop6BySubscriberIdOrderByIdDesc(String subscriberId);
+    List<ProcessInstanceNotification> findTop6BySubscriberIdAndStatusOrderByIdDesc(String subscriberId, ProcessInstanceNotificationStatus status);
 
     long countBySubscriberIdAndStatus(String subscriberId, ProcessInstanceNotificationStatus status);
-
 
 }
