@@ -4,14 +4,14 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <!--
-        Added the constraints for entity TemporaryProcessInstance.
+        Added the constraints for entity TenantRole.
     -->
-    <changeSet id="00000000000019-1" author="bhruno">
+    <changeSet id="00000000000031-1" author="akip">
 
-        <addForeignKeyConstraint baseColumnNames="process_instance_id"
-                                 baseTableName="temporary_process_instance"
-                                 constraintName="fk_process_instance_id"
+        <addForeignKeyConstraint baseColumnNames="tenant_id"
+                                 baseTableName="tenant_role"
+                                 constraintName="fk_tenant_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="process_instance"/>
+                                 referencedTableName="tenant"/>
     </changeSet>
 </databaseChangeLog>

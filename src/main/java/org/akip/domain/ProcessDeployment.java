@@ -1,5 +1,6 @@
 package org.akip.domain;
 
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDeployment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -62,6 +63,10 @@ public class ProcessDeployment implements Serializable {
 
     @ManyToOne
     private ProcessDefinition processDefinition;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "processVisibilityType")
+    private ProcessVisibilityType processVisibilityType;
 
     @ManyToOne
     private Tenant tenant;
@@ -162,6 +167,14 @@ public class ProcessDeployment implements Serializable {
 
     public void setProcessDefinition(ProcessDefinition processDefinition) {
         this.processDefinition = processDefinition;
+    }
+
+    public ProcessVisibilityType getProcessVisibilityType() {
+        return processVisibilityType;
+    }
+
+    public void setProcessVisibilityType(ProcessVisibilityType processVisibilityType) {
+        this.processVisibilityType = processVisibilityType;
     }
 
     public Tenant getTenant() {

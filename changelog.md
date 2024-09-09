@@ -1,5 +1,11 @@
 # Changelog
 
+* 1.11.0
+  * Implement New Model (Process Definition/Tenant/User/Role) #17
+    * Including a new process visibility type (public, internal, private)
+    * Including ProcessMember and TenantMember entities
+    * Including ProcessRole and TenantRole entities
+
 * 0.1.10
   * Including a feature to notify users about their open tasks (#10)
   * Including JobExecutionTracking entity
