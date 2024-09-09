@@ -16,6 +16,12 @@
         ></a
         >
     </p>
+    <p th:text="#{email.eventNotification.text3}">To access the process instance details click on the link below:</p>
+    <p>
+        <a th:with="url=(@{|${baseUrl}/#{email.eventNotification.link2(${processInstance.getProcessDefinition().getBpmnProcessDefinitionId}, ${processInstance.getId().toString()})}|})" th:href="${url}" th:text="#{email.eventNotification.link2(${processInstance.getProcessDefinition().getBpmnProcessDefinitionId}, ${processInstance.getId().toString()})}"
+        ></a
+        >
+    </p>
     <p>
       <span th:text="#{email.eventNotification.text4}">Regards, </span>
     </p>

@@ -24,16 +24,15 @@ public class AttachmentChangedNotificationService extends AbstractNotificationSe
 
     @Override
     protected String getTitle(Object source, ProcessInstance processInstance) {
-        return "Attachment Edited in the: " + processInstance.getProcessDefinition().getName();
+        return "Attachment Edited in the: " + processInstance.getBusinessKey();
     }
 
     @Override
     protected String getDescription(Object source, ProcessInstance processInstance) {
         AttachmentDTO attachment = (AttachmentDTO) source;
-        return "An attachment with the identifier: " + attachment.getId() +
-                " was edited by user: " + attachment.getUploadedBy() +","+
-                " with name: " + attachment.getName() +
-                " on this date: ";
+        return  " An attachment as edited by user: " + attachment.getUploadedBy() +",\n" +
+                " with name: " + attachment.getName() + "\n" +
+                " on this date: " + attachment.getUploadedDate();
     }
 
     @Override

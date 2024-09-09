@@ -26,16 +26,15 @@ public class NoteRemovedNotificationService extends AbstractNotificationService 
     @Override
     protected String getTitle(Object source, ProcessInstance processInstance) {
 
-        return "Note Removed in the " + processInstance.getProcessDefinition().getName();
+        return "Note Removed in the " + processInstance.getBusinessKey();
     }
 
     @Override
     protected String getDescription(Object source, ProcessInstance processInstance) {
         NoteDTO note = (NoteDTO) source;
-        return "A note with the identifier: " + note.getId() +
-                " was removed by user: " + note.getAuthor() +","+
-                " with content: " + note.getText() +
-                " on this date: ";
+        return  " A note was removed by user: " + note.getAuthor() +",\n" +
+                " with content: " + note.getText() + "\n" +
+                " on this date: " + note.getDate();
     }
 
     @Override

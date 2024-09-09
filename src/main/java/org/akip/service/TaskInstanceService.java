@@ -228,8 +228,9 @@ public class TaskInstanceService {
         Map<String, Object> params = new HashMap<>();
         params.put(CamundaConstants.PROCESS_INSTANCE, processInstance);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().get());
-        processInstanceEventPublisher.publishEventCompleteTask(taskInstance);
         taskService.complete(taskInstance.getTaskId(), params);
+        TaskInstanceDTO taskInstanceSaved = taskInstanceMapper.toDto(taskInstanceRepository.findById(taskInstance.getId()).get());
+        processInstanceEventPublisher.publishEventCompleteTask(taskInstanceSaved);
         noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }
 
@@ -239,8 +240,9 @@ public class TaskInstanceService {
         Map<String, Object> params = new HashMap<>();
         params.put(CamundaConstants.PROCESS_ENTITY, processEntity);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().orElseThrow());
-        processInstanceEventPublisher.publishEventCompleteTask(taskInstance);
         taskService.complete(taskInstance.getTaskId(), params);
+        TaskInstanceDTO taskInstanceSaved = taskInstanceMapper.toDto(taskInstanceRepository.findById(taskInstance.getId()).get());
+        processInstanceEventPublisher.publishEventCompleteTask(taskInstanceSaved);
         noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }
 

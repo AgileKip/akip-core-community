@@ -24,15 +24,15 @@ public class TaskCompletedNotificationService extends AbstractNotificationServic
 
     @Override
     protected String getTitle(Object source, ProcessInstance processInstance) {
-        return "Completed Task in the " + processInstance.getProcessDefinition().getName();
+        return "Completed Task in the " + processInstance.getBusinessKey();
     }
 
     @Override
     protected String getDescription(Object source, ProcessInstance processInstance) {
         TaskInstanceDTO taskInstance = (TaskInstanceDTO) source;
-        return "A task with identifier: " + taskInstance.getId() +
-                " was completed by the user"+ taskInstance.getAssignee()+
-                " on this date: ";
+        return  " A task with identifier: " + taskInstance.getId() + "\n" +
+                " was completed by the user: "+ taskInstance.getAssignee() + "\n" +
+                " on this date: " + taskInstance.getEndTime();
     }
 
     @Override

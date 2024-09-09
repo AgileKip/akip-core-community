@@ -25,16 +25,15 @@ public class AttachmentRemovedNotificationService extends AbstractNotificationSe
 
     @Override
     protected String getTitle(Object source, ProcessInstance processInstance) {
-        return "Attachment Removed in the: " + processInstance.getProcessDefinition().getName();
+        return "Attachment Removed in the: " + processInstance.getBusinessKey();
     }
 
     @Override
     protected String getDescription(Object source, ProcessInstance processInstance) {
         AttachmentDTO attachment = (AttachmentDTO) source;
-        return   "An attachment with the identifier: " + attachment.getId() +
-                " was removed by user: " + attachment.getUploadedBy() +","+
-                " with name: " + attachment.getName() +
-                " on this date: ";
+        return  " An attachment was removed by user: " + attachment.getUploadedBy() +",\n" +
+                " with name: " + attachment.getName() + "\n" +
+                " on this date: " + attachment.getUploadedDate();
     }
 
     @Override

@@ -23,16 +23,15 @@ public class AttachmentAddedNotificationService extends AbstractNotificationServ
 
     @Override
     protected String getTitle(Object source, ProcessInstance processInstance) {
-        return "Attachment Added in the " + processInstance.getProcessDefinition().getName();
+        return "Attachment Added in the " + processInstance.getBusinessKey();
     }
 
     @Override
     protected String getDescription(Object source, ProcessInstance processInstance) {
         AttachmentDTO attachment = (AttachmentDTO) source;
-        return  "An attachment with the identifier: " + attachment.getId() +
-                " was added by user: " + attachment.getUploadedBy() +","+
-                " with name: " + attachment.getName() +
-                " on this date: ";
+        return  " An new attachment was added by user: " + attachment.getUploadedBy() +",\n" +
+                " with name: " + attachment.getName() + "\n" +
+                " on this date: " + attachment.getUploadedDate();
     }
 
     @Override
