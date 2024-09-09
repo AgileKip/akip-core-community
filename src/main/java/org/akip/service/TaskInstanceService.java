@@ -6,6 +6,7 @@ import groovy.lang.GroovyShell;
 import org.akip.camunda.CamundaConstants;
 import org.akip.delegate.RedoableDelegate;
 import org.akip.domain.TaskInstance;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
@@ -44,6 +45,10 @@ public class TaskInstanceService {
 
     private final ProcessInstanceMapper processInstanceMapper;
 
+    private final ProcessMemberService processMemberService;
+
+    private final TenantMemberService tenantMemberService;
+
     private final TaskInstanceRepository taskInstanceRepository;
 
     private final TaskInstanceMapper taskInstanceMapper;
@@ -63,13 +68,15 @@ public class TaskInstanceService {
     private static final String ANONYMOUS_USER = "anonymousUser";
 
     public TaskInstanceService(
-            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, TaskInstanceRepository taskInstanceRepository,
+            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, ProcessMemberService processMemberService, TenantMemberService tenantMemberService, TaskInstanceRepository taskInstanceRepository,
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
             NoteService noteService, EntityManager entityManager,
             BeanFactory beanFactory, BindingBuilder bindingBuilder, RuntimeService runtimeService) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
+        this.processMemberService = processMemberService;
+        this.tenantMemberService = tenantMemberService;
         this.taskInstanceRepository = taskInstanceRepository;
         this.taskInstanceMapper = taskInstanceMapper;
         this.taskService = taskService;
@@ -171,7 +178,7 @@ public class TaskInstanceService {
 
             taskInstance.setDescription(executeDocumentationExpression(taskInstance));
 
-            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getCandidateGroups()));
+            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getComputedCandidateGroups()), taskInstance.getProcessDefinition().getProcessVisibilityType());
 
             taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
             taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
@@ -190,25 +197,39 @@ public class TaskInstanceService {
 
     /***
      * Check whether the current user can claim this task according to the candidate group list
-     * @param candidateGroups candidateGroups
+     * @param computedCandidateGroups candidateGroups
      */
-    private void checkCurrentUserPermission(List<String> candidateGroups) {
-        if (candidateGroups.isEmpty()) {
+    private void checkCurrentUserPermission(List<String> computedCandidateGroups, ProcessVisibilityType processVisibilityType) {
+        if (computedCandidateGroups.isEmpty()) {
             return;
         }
 
-        if (candidateGroups.contains(ANONYMOUS_USER)) {
+        if (computedCandidateGroups.contains(ANONYMOUS_USER)) {
             return;
         }
 
-        List<String> authoritiesCurrentUser = SecurityUtils.getAuthorities();
-        for (String authority : authoritiesCurrentUser) {
-            if (candidateGroups.contains(authority)) {
+        for (String authority : getAuthorities(processVisibilityType)) {
+            if (computedCandidateGroups.contains(authority)) {
                 return;
             }
         }
 
-        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", candidateGroups));
+        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", computedCandidateGroups));
+    }
+
+    private List<String> getAuthorities(ProcessVisibilityType processVisibilityType){
+        if (ProcessVisibilityType.PUBLIC.equals(processVisibilityType)){
+            List<String> authorities = new ArrayList<>();
+            //add wildcard for public processes
+            authorities.add("*");
+            authorities.addAll(SecurityUtils.getAuthorities());
+            return authorities;
+        }
+        if (ProcessVisibilityType.PRIVATE.equals(processVisibilityType)){
+            return processMemberService.getProcessRolesByUsername(SecurityUtils.getCurrentUserLogin().get());
+        }
+
+        return tenantMemberService.getTenantRolesByUsername(SecurityUtils.getCurrentUserLogin().get());
     }
 
     public void complete(TaskInstanceDTO taskInstanceDTO) {

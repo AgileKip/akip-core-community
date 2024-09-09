@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="00000000000037-1" author="akip">
+        <createTable tableName="tenant_member_tenant_role">
+            <column name="tenant_member_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tenant_role_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="tenant_member_id, tenant_role_id" tableName="tenant_member_tenant_role"/>
+
+        <addForeignKeyConstraint baseColumnNames="tenant_role_id"
+                                 baseTableName="tenant_member_tenant_role"
+                                 constraintName="fk_tenant_role_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tenant_role"/>
+
+        <addForeignKeyConstraint baseColumnNames="tenant_member_id"
+                                 baseTableName="tenant_member_tenant_role"
+                                 constraintName="fk_tenant_member_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tenant_member"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+</databaseChangeLog>
