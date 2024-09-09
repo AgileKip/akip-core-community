@@ -12,6 +12,7 @@ import org.akip.service.dto.AttachmentDTO;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.function.Predicate;
 
 @Service
@@ -31,8 +32,8 @@ public class AttachmentChangedNotificationService extends AbstractNotificationSe
     protected String getDescription(Object source, ProcessInstance processInstance) {
         AttachmentDTO attachment = (AttachmentDTO) source;
         return  " An attachment as edited by user: " + attachment.getUploadedBy() +",\n" +
-                " with name: " + attachment.getName() + "\n" +
-                " on this date: " + attachment.getUploadedDate();
+                " with name: " + attachment.getName() + ",\n" +
+                " on this date: " + attachment.getUploadedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
     @Override

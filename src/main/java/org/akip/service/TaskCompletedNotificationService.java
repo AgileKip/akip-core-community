@@ -12,6 +12,9 @@ import org.akip.service.dto.TaskInstanceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Predicate;
 
 @Service
@@ -32,7 +35,7 @@ public class TaskCompletedNotificationService extends AbstractNotificationServic
         TaskInstanceDTO taskInstance = (TaskInstanceDTO) source;
         return  " A task with identifier: " + taskInstance.getId() + "\n" +
                 " was completed by the user: "+ taskInstance.getAssignee() + "\n" +
-                " on this date: " + taskInstance.getEndTime();
+                " on this date: " + LocalDateTime.ofInstant(taskInstance.getEndTime(), ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
     @Override

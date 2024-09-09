@@ -13,6 +13,7 @@ import org.akip.service.mapper.ProcessInstanceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.function.Predicate;
 
 @Service
@@ -34,8 +35,8 @@ public class NoteAddedNotificationService extends AbstractNotificationService {
     protected String getDescription(Object source, ProcessInstance processInstance) {
         NoteDTO note = (NoteDTO) source;
         return  " A new note was added by user: " + note.getAuthor() +",\n" +
-                " with content: " + note.getText() + "\n" +
-                " on this date: " + note.getDate();
+                " with content: " + note.getText() + ",\n" +
+                " on this date: " + note.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
     @Override
