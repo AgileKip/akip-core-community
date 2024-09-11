@@ -1,7 +1,6 @@
 package org.akip.service;
 
 import org.akip.domain.ProcessInstance;
-import org.akip.domain.ProcessInstanceNotification;
 import org.akip.domain.ProcessInstanceSubscription;
 import org.akip.domain.enumeration.ProcessInstanceEventType;
 import org.akip.repository.ProcessInstanceNotificationRepository;
@@ -9,7 +8,6 @@ import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.ProcessInstanceSubscriptionRepository;
 import org.akip.resolver.UserResolver;
 import org.akip.service.dto.AttachmentDTO;
-import org.akip.service.mapper.ProcessInstanceMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
@@ -19,8 +17,8 @@ import java.util.function.Predicate;
 public class AttachmentChangedNotificationService extends AbstractNotificationService {
 
 
-    public AttachmentChangedNotificationService(ProcessInstanceSubscriptionMailService processInstanceSubscriptionMailService, ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository, UserResolver userResolver, ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceNotificationRepository processInstanceNotificationRepository, ProcessInstanceRepository processInstanceRepository) {
-        super(processInstanceSubscriptionMailService, processInstanceSubscriptionRepository, userResolver, processInstanceNotificationService, processInstanceNotificationRepository, processInstanceRepository);
+    public AttachmentChangedNotificationService(ProcessInstanceNotificationMailService processInstanceNotificationMailService, ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository, UserResolver userResolver, ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceNotificationRepository processInstanceNotificationRepository, ProcessInstanceRepository processInstanceRepository) {
+        super(processInstanceNotificationMailService, processInstanceSubscriptionRepository, userResolver, processInstanceNotificationService, processInstanceNotificationRepository, processInstanceRepository);
     }
 
     @Override

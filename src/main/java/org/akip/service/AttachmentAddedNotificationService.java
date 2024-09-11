@@ -8,7 +8,6 @@ import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.ProcessInstanceSubscriptionRepository;
 import org.akip.resolver.UserResolver;
 import org.akip.service.dto.AttachmentDTO;
-import org.akip.service.mapper.ProcessInstanceMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
@@ -18,8 +17,8 @@ import java.util.function.Predicate;
 public class AttachmentAddedNotificationService extends AbstractNotificationService {
 
 
-    public AttachmentAddedNotificationService(ProcessInstanceSubscriptionMailService processInstanceSubscriptionMailService, ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository, UserResolver userResolver, ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceNotificationRepository processInstanceNotificationRepository, ProcessInstanceRepository processInstanceRepository) {
-        super(processInstanceSubscriptionMailService, processInstanceSubscriptionRepository, userResolver, processInstanceNotificationService, processInstanceNotificationRepository, processInstanceRepository);
+    public AttachmentAddedNotificationService(ProcessInstanceNotificationMailService processInstanceNotificationMailService, ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository, UserResolver userResolver, ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceNotificationRepository processInstanceNotificationRepository, ProcessInstanceRepository processInstanceRepository) {
+        super(processInstanceNotificationMailService, processInstanceSubscriptionRepository, userResolver, processInstanceNotificationService, processInstanceNotificationRepository, processInstanceRepository);
     }
 
     @Override

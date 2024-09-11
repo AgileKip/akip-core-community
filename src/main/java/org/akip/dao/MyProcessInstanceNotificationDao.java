@@ -34,6 +34,7 @@ class MyProcessInstanceNotificationDao extends AbstractDAO<ProcessInstanceNotifi
         getHqlFields().put("eventType", new HQLField("entity.eventType"));
         getHqlFields().put("userLogin", new HQLField("entity.subscriberId"));
         getHqlFields().put("processInstance", new HQLField("entity.processInstance.processDefinition.name"));
+
     }
 
     @Override

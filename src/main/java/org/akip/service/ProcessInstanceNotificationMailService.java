@@ -1,10 +1,9 @@
 package org.akip.service;
 
 import org.akip.domain.ProcessInstance;
+import org.akip.domain.ProcessInstanceNotification;
 import org.akip.resolver.AkipUserDTO;
-import org.akip.service.dto.AttachmentDTO;
-import org.akip.service.dto.NoteDTO;
-import org.akip.service.dto.TaskInstanceDTO;
+import org.akip.service.dto.ProcessInstanceNotificationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -16,14 +15,14 @@ import tech.jhipster.config.JHipsterProperties;
 import java.util.Locale;
 
 @Service
-public class ProcessInstanceSubscriptionMailService {
+public class ProcessInstanceNotificationMailService {
 
     private static final Locale defaultLocale = Locale.forLanguageTag("en");
     private static final String USER = "user";
     private static final String PROCESS_INSTANCE = "processInstance";
-    private static final String TITLE = "title";
+    private static final String NOTIFICATION_TITLE = "notification_title";
     private static final String DESCRIPTION = "description";
-    private static final String NOTIFICATION_ID = "notificationId";
+    private static final String NOTIFICATION = "notification";
     private final Logger log = LoggerFactory.getLogger(AkipMailService.class);
     private static final String BASE_URL = "baseUrl";
     private final JHipsterProperties jHipsterProperties;
@@ -39,7 +38,7 @@ public class ProcessInstanceSubscriptionMailService {
 
 
 
-    public ProcessInstanceSubscriptionMailService(
+    public ProcessInstanceNotificationMailService(
         JHipsterProperties jHipsterProperties,
         MessageSource messageSource,
         SpringTemplateEngine templateEngine,
@@ -51,17 +50,15 @@ public class ProcessInstanceSubscriptionMailService {
         this.mailService = mailService;
     }
 
-    public void sendEmailFromTemplate(AkipUserDTO user, ProcessInstance processInstance, Long notificationId, String title, String description) {
+    public void sendNotificationEmail(AkipUserDTO user, ProcessInstance processInstance, ProcessInstanceNotificationDTO notification) {
         log.debug("Email doesn't exist for user '{}'", processInstance.getId());
         Context context = new Context(defaultLocale);
-        context.setVariable(TITLE, title);
-        context.setVariable(DESCRIPTION, description);
         context.setVariable(PROCESS_INSTANCE, processInstance);
-        context.setVariable(NOTIFICATION_ID, notificationId);
+        context.setVariable(NOTIFICATION, notification);
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
         String content = templateEngine.process(TEMPLATE_NAME, context);
-        String subject = messageSource.getMessage(TITLE_KEY, new Object[]{title}, defaultLocale);
+        String subject = messageSource.getMessage(TITLE_KEY, new Object[]{notification.getTitle()}, defaultLocale);
         mailService.sendEmail(user.getEmail(), subject, content, false, true);
     }
 }

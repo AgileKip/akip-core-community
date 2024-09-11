@@ -2,17 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title th:text="#{email.eventNotification.title(${title})}"></title>
+    <title th:text="#{email.eventNotification.title(${notification.getTitle()})}"></title>
     <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}" />
   </head>
   <body>
     <p th:text="#{email.eventNotification.greeting(${user.login})}">Dear,</p>
     <p
-      th:text="#{email.eventNotification.text1(${description})}"
+      th:text="#{email.eventNotification.text1(${notification.getDescription()})}"
     ></p>
     <p th:text="#{email.eventNotification.text2}">To access the notification details click on the link below:</p>
     <p>
-        <a th:with="url=(@{|${baseUrl}/#{email.eventNotification.link(${notificationId.toString()})}|})" th:href="${url}" th:text="#{email.eventNotification.link(${notificationId.toString()})}"
+        <a th:with="url=(@{|${baseUrl}/#{email.eventNotification.link(${notification.getId().toString()})}|})" th:href="${url}" th:text="#{email.eventNotification.link(${notification.getId().toString()})}"
         ></a
         >
     </p>

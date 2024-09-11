@@ -10,7 +10,6 @@ import org.akip.repository.ProcessInstanceSubscriptionRepository;
 import org.akip.resolver.AkipUserDTO;
 import org.akip.resolver.UserResolver;
 import org.akip.service.dto.ProcessInstanceNotificationDTO;
-import org.akip.service.mapper.ProcessInstanceMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public abstract class AbstractNotificationService {
 
-    private final ProcessInstanceSubscriptionMailService processInstanceSubscriptionMailService;
+    private final ProcessInstanceNotificationMailService processInstanceNotificationMailService;
     private final ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository;
     private final UserResolver userResolver;
     private final ProcessInstanceNotificationService processInstanceNotificationService;
@@ -29,12 +28,12 @@ public abstract class AbstractNotificationService {
 
 
     public AbstractNotificationService(
-            ProcessInstanceSubscriptionMailService processInstanceSubscriptionMailService,
+            ProcessInstanceNotificationMailService processInstanceNotificationMailService,
             ProcessInstanceSubscriptionRepository processInstanceSubscriptionRepository,
             UserResolver userResolver,
             ProcessInstanceNotificationService processInstanceNotificationService, ProcessInstanceNotificationRepository processInstanceNotificationRepository,
             ProcessInstanceRepository processInstanceRepository) {
-        this.processInstanceSubscriptionMailService = processInstanceSubscriptionMailService;
+        this.processInstanceNotificationMailService = processInstanceNotificationMailService;
         this.processInstanceSubscriptionRepository = processInstanceSubscriptionRepository;
         this.userResolver = userResolver;
         this.processInstanceNotificationService = processInstanceNotificationService;
@@ -57,8 +56,8 @@ public abstract class AbstractNotificationService {
 
         ProcessInstance processInstance = processInstanceRepository.findById(processInstanceId).get();
         for (AkipUserDTO subscribedUser : subscribedUsers) {
-            ProcessInstanceNotificationDTO processInstanceNotification = processInstanceNotificationService.save(source, processInstance, getNotificationType(), subscribedUser.getLogin());
-            processInstanceSubscriptionMailService.sendEmailFromTemplate(subscribedUser, processInstance, processInstanceNotification.getId(), getTitle(source, processInstance), getDescription(source, processInstance));
+            ProcessInstanceNotificationDTO notification = processInstanceNotificationService.save(source, processInstance, getNotificationType(), subscribedUser.getLogin());
+            processInstanceNotificationMailService.sendNotificationEmail(subscribedUser, processInstance, notification);
         }
     }
 
