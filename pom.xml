@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.akip</groupId>
   <artifactId>akip-core</artifactId>
   <version>1.12.0-SNAPSHOT</version>
   <name>akip-core</name>
-  <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>11</java.version>
+    <java.version>22</java.version>
+    <groovy.version>4.0.23</groovy.version>
 
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
-    <spring-boot.version>2.4.4</spring-boot.version>
-    <camunda.version>7.14.0</camunda.version>
-    <mapstruct.version>1.4.2.Final</mapstruct.version>
-    <commons-lang3.version>3.11</commons-lang3.version>
-    <commons-compress.version>1.20</commons-compress.version>
-    <zalando.problem-spring-web.version>0.26.2</zalando.problem-spring-web.version>
-    <javax.annotation.version>1.3.2</javax.annotation.version>
-    <jhipster.version>7.0.1</jhipster.version>
-    <jhipster-dependencies.version>7.0.1</jhipster-dependencies.version>
-    <liquibase.version>4.3.2</liquibase.version>
-    <minio.version>7.1.4</minio.version>
+    <spring-boot.version>3.3.3</spring-boot.version>
+    <camunda.version>7.17.0</camunda.version> <!-- Atualizado para compatível com Spring Boot 3.x -->
+    <mapstruct.version>1.6.0</mapstruct.version> <!-- Atualizado para compatível com Java 22 -->
+    <commons-lang3.version>3.13.0</commons-lang3.version> <!-- Atualizado -->
+    <commons-compress.version>1.22</commons-compress.version> <!-- Atualizado -->
+    <zalando.problem-spring-web.version>0.28.0</zalando.problem-spring-web.version> <!-- Atualizado -->
+    <javax.annotation.version>1.5.0</javax.annotation.version> <!-- Atualizado -->
+    <jhipster.version>8.7.0</jhipster.version> <!-- Atualizado para compatível com Spring Boot 3.x -->
+    <jhipster-dependencies.version>8.0.0</jhipster-dependencies.version>
+    <liquibase.version>5.0.0</liquibase.version> <!-- Atualizado para compatível com Spring Boot 3.x -->
+    <minio.version>8.0.0</minio.version> <!-- Atualizado -->
   </properties>
 
   <dependencyManagement>
@@ -56,7 +56,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.13.2</version> <!-- Atualizado -->
       <scope>test</scope>
     </dependency>
 
@@ -77,9 +77,20 @@
     </dependency>
 
     <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <version>1.9.22.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>6.1.12</version>
+    </dependency>
+
+    <dependency>
       <groupId>javax.annotation</groupId>
       <artifactId>javax.annotation-api</artifactId>
-      <version>${javax.annotation.version}</version>
+      <version>1.3.2</version>
     </dependency>
 
     <dependency>
@@ -132,8 +143,7 @@
     <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
-      <!-- Inherited version from Spring Boot can't be used because of regressions -->
-      <version>${liquibase.version}</version>
+      <version>4.27.0</version>
     </dependency>
 
     <dependency>
@@ -158,10 +168,8 @@
 
   <distributionManagement>
     <repository>
-<!--      <id>kip4you-repository</id>-->
       <id>kip4you-nexus-maven-release</id>
       <name>Nexus Release KIP4You</name>
-<!--      <url>https://pkgs.dev.azure.com/kip4you/kip4you-repository/_packaging/kip4you-repository/maven/v1</url>-->
       <url>http://192.168.3.3:8787/repository/kip4you-maven-releases/</url>
     </repository>
     <snapshotRepository>
@@ -172,75 +180,65 @@
   </distributionManagement>
 
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+    <pluginManagement>
       <plugins>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.2.0</version> <!-- Atualizado -->
         </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>3.3.0</version> <!-- Atualizado -->
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>3.11.0</version> <!-- Certifique-se de usar uma versão compatível com o Java 22 -->
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
-            <compilerId>groovy-eclipse-compiler</compilerId>
-            <compilerVersion>3.3.0-01</compilerVersion>
-<!--            <verbose>true</verbose>-->
           </configuration>
-          <dependencies>
-            <dependency>
-              <groupId>org.codehaus.groovy</groupId>
-              <artifactId>groovy-eclipse-compiler</artifactId>
-              <version>3.7.0</version>
-            </dependency>
-            <dependency>
-              <groupId>org.codehaus.groovy</groupId>
-              <artifactId>groovy-eclipse-batch</artifactId>
-              <version>3.0.8-01</version>
-            </dependency>
-            <dependency>
-              <groupId>org.mapstruct</groupId>
-              <artifactId>mapstruct-processor</artifactId>
-              <version>${mapstruct.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.springframework.boot</groupId>
-              <artifactId>spring-boot-configuration-processor</artifactId>
-              <version>${spring-boot.version}</version>
-            </dependency>
-          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>gmaven-plugin</artifactId>
+          <version>1.5</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>compile</goal>
+                <goal>generateTestSources</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <source>${groovy.version}</source>
+            <target>${groovy.version}</target>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
+          <version>3.1.2</version> <!-- Atualizado -->
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>3.3.0</version> <!-- Atualizado -->
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
+          <version>3.1.3</version> <!-- Atualizado -->
         </plugin>
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
+          <version>3.1.2</version> <!-- Atualizado -->
         </plugin>
-        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.7.1</version>
+          <version>3.12.0</version> <!-- Atualizado -->
         </plugin>
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.2.0</version> <!-- Atualizado -->
         </plugin>
       </plugins>
     </pluginManagement>
