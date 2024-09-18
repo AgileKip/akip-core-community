@@ -1,7 +1,27 @@
 # Changelog
 
-* 0.1.8 (WIP)
-  * Including RecSys
+* 1.12.0 (WIP)
+  * To be defined
+
+* 1.11.0
+  * Implement New Model (Process Definition/Tenant/User/Role) #17
+    * Including a new process visibility type (public, internal, private)
+    * Including ProcessMember and TenantMember entities
+    * Including ProcessRole and TenantRole entities
+
+* 0.1.10
+  * Including a feature to notify users about their open tasks (#10)
+  * Including JobExecutionTracking entity
+
+* 0.1.9
+  * Fixing bugs (#82)
+  * Including TaskDefinition entity
+  * Including FormDefinition entity
+  * Including support for CamundaForm8
+  * Including sections Process Event Subscription and Process Historical Activities in the Process Instance view  
+
+* 0.1.8
+  * Including new field type: AkipTextareaChatGptField
 
 * 0.1.7
   * Including ChatGPT components (camunda delegate and form assistant)

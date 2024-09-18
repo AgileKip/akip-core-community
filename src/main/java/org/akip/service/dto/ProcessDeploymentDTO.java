@@ -1,5 +1,6 @@
 package org.akip.service.dto;
 
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDeployment;
 
 import java.io.Serializable;
@@ -35,6 +36,8 @@ public class ProcessDeploymentDTO implements Serializable {
     private Map<String, String> props;
 
     private ProcessDefinitionDTO processDefinition;
+
+    private ProcessVisibilityType processVisibilityType;
 
     private TenantDTO tenant;
 
@@ -132,6 +135,14 @@ public class ProcessDeploymentDTO implements Serializable {
 
     public void setProcessDefinition(ProcessDefinitionDTO processDefinition) {
         this.processDefinition = processDefinition;
+    }
+
+    public ProcessVisibilityType getProcessVisibilityType() {
+        return processVisibilityType;
+    }
+
+    public void setProcessVisibilityType(ProcessVisibilityType processVisibilityType) {
+        this.processVisibilityType = processVisibilityType;
     }
 
     public TenantDTO getTenant() {

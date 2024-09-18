@@ -1,10 +1,14 @@
 package org.akip.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A TenantMember.
@@ -26,6 +30,17 @@ public class TenantMember implements Serializable {
 
     @ManyToOne
     private Tenant tenant;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "tenant_member_tenant_role",
+            joinColumns = { @JoinColumn(name = "tenant_member_id", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "tenant_role_id", referencedColumnName = "id") }
+    )
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @BatchSize(size = 20)
+    private List<TenantRole> tenantRoles = new ArrayList<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -65,6 +80,19 @@ public class TenantMember implements Serializable {
 
     public void setTenant(Tenant tenant) {
         this.tenant = tenant;
+    }
+
+    public List<TenantRole> getTenantRoles() {
+        return tenantRoles;
+    }
+
+    public TenantMember tenantRoles(List<TenantRole> tenantRoles) {
+        this.tenantRoles = tenantRoles;
+        return this;
+    }
+
+    public void setTenantRoles(List<TenantRole> tenantRoles) {
+        this.tenantRoles = tenantRoles;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

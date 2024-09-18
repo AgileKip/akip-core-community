@@ -3,12 +3,14 @@ package org.akip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.ProcessDeployment;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDeployment;
 import org.akip.exception.BadRequestErrorException;
 import org.akip.repository.ProcessDeploymentRepository;
 import org.akip.service.dto.ProcessDefinitionDTO;
 import org.akip.service.dto.ProcessDeploymentBpmnModelDTO;
 import org.akip.service.dto.ProcessDeploymentDTO;
+import org.akip.service.mapper.MapUtilMapper;
 import org.akip.service.mapper.ProcessDeploymentMapper;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.model.bpmn.Bpmn;
@@ -48,23 +50,26 @@ public class ProcessDeploymentService {
 
     private final ProcessDeploymentMapper processDeploymentMapper;
 
+    private final MapUtilMapper mapUtilMapper;
+
     public ProcessDeploymentService(
         ProcessDefinitionService processDefinitionService,
         ProcessDeploymentRepository processDeploymentRepository,
         RepositoryService repositoryService,
-        ProcessDeploymentMapper processDeploymentMapper
-    ) {
+        ProcessDeploymentMapper processDeploymentMapper,
+        MapUtilMapper mapUtilMapper) {
         this.processDefinitionService = processDefinitionService;
         this.processDeploymentRepository = processDeploymentRepository;
         this.repositoryService = repositoryService;
         this.processDeploymentMapper = processDeploymentMapper;
+        this.mapUtilMapper = mapUtilMapper;
     }
 
     public ProcessDeploymentDTO deploy(ProcessDeploymentDTO processDeploymentDTO) {
         BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(
                 new ByteArrayInputStream(processDeploymentDTO.getSpecificationFile())
         );
-        ProcessDefinition processDefinition = processDefinitionService.createOrUpdateProcessDefinition(bpmnModelInstance);
+        ProcessDefinition processDefinition = processDefinitionService.createOrUpdateProcessDefinition(processDeploymentDTO.getProcessVisibilityType(), bpmnModelInstance);
 
         org.camunda.bpm.engine.repository.Deployment camundaDeployment = deployInCamunda(
                 processDeploymentDTO,
@@ -298,7 +303,7 @@ public class ProcessDeploymentService {
 
     public void saveProperties(Long id, Map<String, String> properties) {
         try {
-            String propertiesAsString = processDeploymentMapper.mapToString(properties);
+            String propertiesAsString = mapUtilMapper.mapToString(properties);
             processDeploymentRepository.updatePropertiesById(propertiesAsString, id);
         } catch (JsonProcessingException e) {
             throw new BadRequestErrorException(e.getMessage());

@@ -1,6 +1,5 @@
 package org.akip.service.dto;
 
-import org.akip.camunda.form.CamundaFormFieldDef;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 
@@ -53,13 +52,15 @@ public class TaskInstanceDTO implements Serializable {
 
     private List<String> candidateGroups = new ArrayList<>();
 
+    private List<String> computedCandidateGroups = new ArrayList<>();
+
     private String connectorName;
 
     private String connectorConfigName;
 
-    private List<CamundaFormFieldDef> formFields;
-
     private ProcessDefinitionDTO processDefinition;
+
+    private TaskDefinitionDTO taskDefinition;
 
     private ProcessInstanceDTO processInstance;
 
@@ -207,6 +208,14 @@ public class TaskInstanceDTO implements Serializable {
         this.candidateGroups = candidateGroups;
     }
 
+    public List<String> getComputedCandidateGroups() {
+        return computedCandidateGroups;
+    }
+
+    public void setComputedCandidateGroups(List<String> computedCandidateGroups) {
+        this.computedCandidateGroups = computedCandidateGroups;
+    }
+
     public String getConnectorName() {
         return connectorName;
     }
@@ -221,14 +230,6 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setConnectorConfigName(String connectorConfigName) {
         this.connectorConfigName = connectorConfigName;
-    }
-
-    public List<CamundaFormFieldDef> getFormFields() {
-        return formFields;
-    }
-
-    public void setFormFields(List<CamundaFormFieldDef> formFields) {
-        this.formFields = formFields;
     }
 
     public ProcessDefinitionDTO getProcessDefinition() {
@@ -247,35 +248,35 @@ public class TaskInstanceDTO implements Serializable {
         this.processInstance = processInstance;
     }
 
+    public TaskDefinitionDTO getTaskDefinition() {
+        return taskDefinition;
+    }
+
+    public void setTaskDefinition(TaskDefinitionDTO taskDefinition) {
+        this.taskDefinition = taskDefinition;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof TaskInstanceDTO)) {
-            return false;
-        }
-
-        TaskInstanceDTO taskInstanceDTO = (TaskInstanceDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, taskInstanceDTO.id);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskInstanceDTO that = (TaskInstanceDTO) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(id);
     }
 
     // prettier-ignore
+
     @Override
     public String toString() {
         return "TaskInstanceDTO{" +
-            "id=" + getId() +
-            ", taskId='" + getTaskId() + "'" +
-            ", name='" + getName() + "'" +
-            ", status='" + getStatus() + "'" +
-            "}";
+                "id=" + id +
+                ", taskId='" + taskId + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

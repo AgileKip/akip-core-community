@@ -16,10 +16,8 @@ import java.util.Map;
 /**
  * Mapper for the entity {@link ProcessDeployment} and its DTO {@link ProcessDeploymentDTO}.
  */
-@Mapper(componentModel = "spring", uses = {ProcessDefinitionMapper.class})
+@Mapper(componentModel = "spring", uses = {ProcessDefinitionMapper.class, MapUtilMapper.class})
 public interface ProcessDeploymentMapper extends EntityMapper<ProcessDeploymentDTO, ProcessDeployment> {
-
-    ObjectMapper objectMapper = new ObjectMapper();
 
     @Mapping(target = "specificationFile", ignore = true)
     @Mapping(target = "specificationFileContentType", ignore = true)
@@ -34,17 +32,4 @@ public interface ProcessDeploymentMapper extends EntityMapper<ProcessDeploymentD
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
-    default String mapToString(Map<String, String> map) throws JsonProcessingException {
-        if (map == null) {
-            return null;
-        }
-        return objectMapper.writeValueAsString(map);
-    }
-
-    default Map<String, String> stringToMap(String s) throws JsonProcessingException {
-        if (s == null) {
-            return Collections.emptyMap();
-        }
-        return objectMapper.readValue(s, new TypeReference<Map<String, String>>() {});
-    }
 }

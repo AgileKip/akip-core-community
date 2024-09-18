@@ -91,6 +91,18 @@ public class ProcessInstanceService {
         return createWithTenant(processInstanceDTO);
     }
 
+    public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity) {
+        return create(bpmnProcessDefinitionId, businessKey, processEntity, null);
+    }
+
+    public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity, Tenant tenant) {
+        if (tenant == null) {
+            return createWithoutTenant(bpmnProcessDefinitionId, businessKey, processEntity);
+        }
+
+        return createWithTenant(bpmnProcessDefinitionId, businessKey, processEntity, tenant);
+    }
+
     private ProcessInstanceDTO createWithTenant(ProcessInstanceDTO processInstanceDTO) {
         log.debug("Request to create processInstance : {}", processInstanceDTO);
         ProcessInstance processInstance = processInstanceMapper.toEntity(processInstanceDTO);
@@ -125,9 +137,7 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO.getTemporaryProcessInstance(), processInstanceSaved);
         this.mongoService.saveInMongo(processInstance, processInstanceSaved);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
@@ -163,24 +173,10 @@ public class ProcessInstanceService {
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
-        synchronizeAttachments(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        synchronizeNotes(processInstanceDTO.getTemporaryProcessInstance(), processInstance);
-        temporaryProcessInstanceRepository.updateProcessInstanceIdById(processInstance, processInstanceDTO.getTemporaryProcessInstance().getId());
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO.getTemporaryProcessInstance(), processInstanceSaved);
         this.mongoService.saveInMongo(processInstance, processInstanceSaved);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
         return processInstanceSaved;
-    }
-
-    public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity) {
-        return create(bpmnProcessDefinitionId, businessKey, processEntity, null);
-    }
-
-    public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity, Tenant tenant) {
-        if (tenant == null) {
-            return createWithoutTenant(bpmnProcessDefinitionId, businessKey, processEntity);
-        }
-
-        return createWithTenant(bpmnProcessDefinitionId, businessKey, processEntity, tenant);
     }
 
     private ProcessInstance createWithoutTenant(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity) {
@@ -215,12 +211,15 @@ public class ProcessInstanceService {
                 .execute();
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
+
+        ProcessInstance processInstanceSaved = processInstanceRepository.save(processInstance);
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processEntity.getProcessInstance().getTemporaryProcessInstance(), processInstanceMapper.toDto(processInstanceSaved));
         try {
-            this.mongoService.saveInMongo(processInstanceMapper.toDto(processInstance));
+            this.mongoService.saveInMongo(processInstanceMapper.toDto(processInstanceSaved));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        return processInstanceRepository.save(processInstance);
+        return processInstanceSaved;
     }
 
     private ProcessInstance createWithTenant(
@@ -264,12 +263,15 @@ public class ProcessInstanceService {
                 .execute();
 
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
+
+        ProcessInstance processInstanceSaved = processInstanceRepository.save(processInstance);
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processEntity.getProcessInstance().getTemporaryProcessInstance(), processInstanceMapper.toDto(processInstanceSaved));
         try {
-            this.mongoService.saveInMongo(processInstanceMapper.toDto(processInstance));
+            this.mongoService.saveInMongo(processInstanceMapper.toDto(processInstanceSaved));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        return processInstanceRepository.save(processInstance);
+        return processInstanceSaved;
     }
 
     /**
@@ -325,12 +327,12 @@ public class ProcessInstanceService {
     }
 
     private void synchronizeAttachments(
-            TemporaryProcessInstanceDTO temporaryProcessInstance,
-            ProcessInstance processInstance
+            Long temporaryProcessInstanceId,
+            Long processInstanceId
     ) {
         List<Attachment> attachments = attachmentRepository.findByEntityNameAndEntityId(
                 TemporaryProcessInstance.class.getSimpleName(),
-                temporaryProcessInstance.getId()
+                temporaryProcessInstanceId
         );
         if (attachments.isEmpty()) {
             return;
@@ -341,19 +343,19 @@ public class ProcessInstanceService {
                     AttachmentEntity attachmentEntityProcessInstance = new AttachmentEntity();
                     attachmentEntityProcessInstance.setAttachment(attachment);
                     attachmentEntityProcessInstance.setEntityName(ProcessInstance.class.getSimpleName());
-                    attachmentEntityProcessInstance.setEntityId(processInstance.getId());
+                    attachmentEntityProcessInstance.setEntityId(processInstanceId);
                     attachmentEntityRepository.save(attachmentEntityProcessInstance);
                 }
         );
     }
 
     private void synchronizeNotes(
-            TemporaryProcessInstanceDTO temporaryProcessInstance,
-            ProcessInstance processInstance
+            Long temporaryProcessInstanceId,
+            Long processInstanceId
     ) {
         List<Note> notes = noteRepository.findByEntityNameAndEntityId(
                 TemporaryProcessInstance.class.getSimpleName(),
-                temporaryProcessInstance.getId()
+                temporaryProcessInstanceId
         );
         if (notes.isEmpty()) {
             return;
@@ -363,35 +365,22 @@ public class ProcessInstanceService {
                     NoteEntity noteEntityProcessInstance = new NoteEntity();
                     noteEntityProcessInstance.setNote(note);
                     noteEntityProcessInstance.setEntityName(ProcessInstance.class.getSimpleName());
-                    noteEntityProcessInstance.setEntityId(processInstance.getId());
+                    noteEntityProcessInstance.setEntityId(processInstanceId);
                     noteEntityRepository.save(noteEntityProcessInstance);
                 }
         );
     }
 
-//    TODO: This method should implement any type of pagination.
-//          Otherwise it may retrieve a huge amount of data
-//    public List<ProcessInstanceDTO> findByProcessDefinition(String idOrBpmnProcessDefinitionId) {
-//        ProcessDefinitionDTO processDefinitionDTO = processDefinitionService
-//            .findByIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
-//            .orElseThrow();
-//        return processInstanceRepository
-//            .findByProcessDefinitionId(processDefinitionDTO.getId())
-//            .stream()
-//            .map(processInstanceMapper::toDto)
-//            .collect(Collectors.toList());
-//    }
-
-    //    TODO: This method should implement any type of pagination.
-    //          Otherwise it may retrieve a huge amount of data
-//    @Transactional(readOnly = true)
-//    public List<ProcessInstanceDTO> findAll() {
-//        log.debug("Request to get all ProcessInstances");
-//        return processInstanceRepository
-//            .findAll()
-//            .stream()
-//            .map(processInstanceMapper::toDto)
-//            .collect(Collectors.toCollection(LinkedList::new));
-//    }
+    private void synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(TemporaryProcessInstanceDTO temporaryProcessInstanceDTO, ProcessInstanceDTO processInstanceSaved) {
+        if (temporaryProcessInstanceDTO == null) {
+            return;
+        }
+        synchronizeAttachments(temporaryProcessInstanceDTO.getId(), processInstanceSaved.getId());
+        synchronizeNotes(temporaryProcessInstanceDTO.getId(), processInstanceSaved.getId());
+        TemporaryProcessInstance temporaryProcessInstance = temporaryProcessInstanceRepository.findById(temporaryProcessInstanceDTO.getId()).get();
+        temporaryProcessInstance.setProcessInstance(new ProcessInstance());
+        temporaryProcessInstance.getProcessInstance().setId(processInstanceSaved.getId());
+        temporaryProcessInstanceRepository.save(temporaryProcessInstance);
+    }
 
 }

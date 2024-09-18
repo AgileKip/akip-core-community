@@ -3,11 +3,21 @@ package org.akip.resolver;
 import java.io.Serializable;
 
 public class AkipUserDTO implements Serializable {
+
+    private String login;
     private String firstName;
     private String email;
     private String langKey;
 
     public AkipUserDTO() {
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getFirstName() {

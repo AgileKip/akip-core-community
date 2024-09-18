@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Alter the entity ProcessDefinition.
+    -->
+    <changeSet id="00000000000021-1" author="akip">
+        <addColumn tableName="process_definition">
+            <column name="start_form_is_enabled" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="start_form_definition_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="00000000000021-2" author="akip">
+        <dropColumn tableName="process_definition" columnName="start_form_fields" />
+    </changeSet>
+
+</databaseChangeLog>

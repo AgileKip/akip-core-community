@@ -1,23 +1,25 @@
 package org.akip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import org.akip.camunda.CamundaConstants;
 import org.akip.delegate.RedoableDelegate;
 import org.akip.domain.ProcessInstance;
 import org.akip.domain.TaskInstance;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
-import org.akip.exception.ClaimNotAllowedException;
+import org.akip.groovy.BindingBuilder;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.TaskInstanceRepository;
 import org.akip.security.SecurityUtils;
-import org.akip.service.dto.IProcessEntity;
-import org.akip.service.dto.ProcessInstanceDTO;
-import org.akip.service.dto.TaskInstanceDTO;
+import org.akip.service.dto.*;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.akip.service.mapper.TaskInstanceMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
@@ -44,6 +46,10 @@ public class TaskInstanceService {
 
     private final ProcessInstanceMapper processInstanceMapper;
 
+    private final ProcessMemberService processMemberService;
+
+    private final TenantMemberService tenantMemberService;
+
     private final TaskInstanceRepository taskInstanceRepository;
 
     private final TaskInstanceMapper taskInstanceMapper;
@@ -56,24 +62,37 @@ public class TaskInstanceService {
 
     private final BeanFactory beanFactory;
 
+    private final BindingBuilder bindingBuilder;
+
+    private final RuntimeService runtimeService;
+
     private final MongoService mongoService;
 
     private static final String ANONYMOUS_USER = "anonymousUser";
 
     public TaskInstanceService(
-            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, TaskInstanceRepository taskInstanceRepository,
-            TaskInstanceMapper taskInstanceMapper,
-            TaskService taskService,
-            NoteService noteService, EntityManager entityManager,
-            BeanFactory beanFactory, MongoService mongoService) {
+        ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, ProcessMemberService processMemberService, TenantMemberService tenantMemberService, TaskInstanceRepository taskInstanceRepository,
+        TaskInstanceMapper taskInstanceMapper,
+        TaskService taskService,
+        NoteService noteService,
+        EntityManager entityManager,
+        BeanFactory beanFactory,
+        BindingBuilder bindingBuilder,
+        RuntimeService runtimeService,
+        MongoService mongoService
+    ) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
+        this.processMemberService = processMemberService;
+        this.tenantMemberService = tenantMemberService;
         this.taskInstanceRepository = taskInstanceRepository;
         this.taskInstanceMapper = taskInstanceMapper;
         this.taskService = taskService;
         this.noteService = noteService;
         this.entityManager = entityManager;
         this.beanFactory = beanFactory;
+        this.bindingBuilder = bindingBuilder;
+        this.runtimeService = runtimeService;
         this.mongoService = mongoService;
     }
 
@@ -113,12 +132,62 @@ public class TaskInstanceService {
         return taskInstanceRepository.findById(id).map(taskInstanceMapper::toDto);
     }
 
+    public String executeDocumentationExpression(TaskInstance taskInstance) {
+
+        Object processEntity = runtimeService.getVariable(taskInstance.getProcessInstance().getCamundaProcessInstanceId(), CamundaConstants.PROCESS_ENTITY);
+
+        if (processEntity != null){
+            return executeDocumentationExpressionFromProcessEntity(taskInstance, processEntity);
+        }
+
+        Object processInstance = runtimeService.getVariable(taskInstance.getProcessInstance().getCamundaProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE);
+
+        return executeDocumentationExpressionFromProcessInstance(taskInstance, processInstance);
+
+
+    }
+
+    public String executeDocumentationExpressionFromProcessEntity(TaskInstance taskInstance, Object processEntity) {
+
+        Binding binding = bindingBuilder.buildBindingFromProcessEntity(processEntity);
+        GroovyShell shell = new GroovyShell(binding);
+
+        String expression = taskInstance.getTaskDefinition().getDocumentation();
+
+        if (!expression.contains("\"\"\"")) {
+            expression = "\"\"\"" + expression + "\"\"\"";
+        }
+
+        return shell.evaluate(expression).toString();
+    }
+
+    public String executeDocumentationExpressionFromProcessInstance(TaskInstance taskInstance, Object processInstance) {
+
+        if (taskInstance.getTaskDefinition().getDocumentation() == null){
+            return "";
+        }
+
+        Binding binding = bindingBuilder.buildBindingFromProcessInstance(processInstance);
+        GroovyShell shell = new GroovyShell(binding);
+
+        String expression = taskInstance.getTaskDefinition().getDocumentation();
+
+        if (!expression.contains("\"\"\"")) {
+            expression = "\"\"\"" + expression + "\"\"\"";
+        }
+
+        return shell.evaluate(expression).toString();
+    }
+
     public Optional<TaskInstanceDTO> claim(Long id) {
         log.debug("Request to claim TaskInstance : {}", id);
         Optional<TaskInstance> optionalTaskInstance = taskInstanceRepository.findById(id);
         if (optionalTaskInstance.isPresent()) {
             TaskInstance taskInstance = optionalTaskInstance.get();
-            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getCandidateGroups()));
+
+            taskInstance.setDescription(executeDocumentationExpression(taskInstance));
+
+            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getComputedCandidateGroups()), taskInstance.getProcessDefinition().getProcessVisibilityType());
 
             taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
             taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
@@ -137,25 +206,39 @@ public class TaskInstanceService {
 
     /***
      * Check whether the current user can claim this task according to the candidate group list
-     * @param candidateGroups candidateGroups
+     * @param computedCandidateGroups candidateGroups
      */
-    private void checkCurrentUserPermission(List<String> candidateGroups) {
-        if (candidateGroups.isEmpty()) {
+    private void checkCurrentUserPermission(List<String> computedCandidateGroups, ProcessVisibilityType processVisibilityType) {
+        if (computedCandidateGroups.isEmpty()) {
             return;
         }
 
-        if (candidateGroups.contains(ANONYMOUS_USER)) {
+        if (computedCandidateGroups.contains(ANONYMOUS_USER)) {
             return;
         }
 
-        List<String> authoritiesCurrentUser = SecurityUtils.getAuthorities();
-        for (String authority : authoritiesCurrentUser) {
-            if (candidateGroups.contains(authority)) {
+        for (String authority : getAuthorities(processVisibilityType)) {
+            if (computedCandidateGroups.contains(authority)) {
                 return;
             }
         }
 
-        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", candidateGroups));
+        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", computedCandidateGroups));
+    }
+
+    private List<String> getAuthorities(ProcessVisibilityType processVisibilityType){
+        if (ProcessVisibilityType.PUBLIC.equals(processVisibilityType)){
+            List<String> authorities = new ArrayList<>();
+            //add wildcard for public processes
+            authorities.add("*");
+            authorities.addAll(SecurityUtils.getAuthorities());
+            return authorities;
+        }
+        if (ProcessVisibilityType.PRIVATE.equals(processVisibilityType)){
+            return processMemberService.getProcessRolesByUsername(SecurityUtils.getCurrentUserLogin().get());
+        }
+
+        return tenantMemberService.getTenantRolesByUsername(SecurityUtils.getCurrentUserLogin().get());
     }
 
     public void complete(TaskInstanceDTO taskInstanceDTO) {

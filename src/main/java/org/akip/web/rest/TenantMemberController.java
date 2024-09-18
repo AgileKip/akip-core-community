@@ -24,6 +24,13 @@ public class TenantMemberController {
 
     private static final String ENTITY_NAME = "tenantMember";
 
+    private static final String MESSAGE_TENANT_MEMBER_UPDATED = "Tenant Member Successfully Updated";
+
+    private static final String MESSAGE_TENANT_MEMBER_CREATED = "Tenant Member Successfully Created";
+
+    private static final String MESSAGE_TENANT_MEMBER_REMOVED = "Tenant Member Successfully Removed";
+
+
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
@@ -34,12 +41,12 @@ public class TenantMemberController {
     }
 
     @GetMapping("/tenant/{tenantId}/members")
-    public List<TenantMemberDTO> retrieveTenantMembers(@PathVariable("tenantId") Long tenantId) throws URISyntaxException {
+    public List<TenantMemberDTO> getTenantMembers(@PathVariable("tenantId") Long tenantId) throws URISyntaxException {
         log.debug("REST request to save TentantMember : {}{}", tenantId);
         return tenantMemberService.getTenantMembers(tenantId);
     }
 
-    @PostMapping("/tenant/{tenantId}/member")
+    @PostMapping("/tenant/{tenantId}/members")
     public ResponseEntity<TenantMemberDTO> createTenantMember(@PathVariable("tenantId") Long tenantId, @RequestBody TenantMemberDTO tenantMember) throws URISyntaxException {
         log.debug("REST request to save TentantMember : {}{}", tenantId, tenantMember.getUsername());
         TenantMemberDTO result = tenantMemberService.save(tenantId, tenantMember);
@@ -49,13 +56,23 @@ public class TenantMemberController {
             .body(result);
     }
 
-    @DeleteMapping("/tenant/{tenantId}/member/{tenantMemberId}")
-    public ResponseEntity<Void> deleteTentantUser(@PathVariable("tenantId") Long tenantId, @PathVariable("tenantMemberId") Long tenantMemberId) {
+    @PutMapping("/tenant/{tenantId}/members")
+    public ResponseEntity<TenantMemberDTO> updateTenantMember(@PathVariable Long tenantId, @RequestBody TenantMemberDTO tenantMember) throws URISyntaxException {
+        log.debug("REST request to save ProcessMember : {}", tenantMember.getUsername());
+        TenantMemberDTO result = tenantMemberService.save(tenantId, tenantMember);
+        return ResponseEntity
+                .ok()
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, tenantMember.getId() != null ? MESSAGE_TENANT_MEMBER_UPDATED : MESSAGE_TENANT_MEMBER_CREATED, result.getId().toString()))
+                .body(result);
+    }
+
+    @DeleteMapping("/tenant/{tenantId}/members/{tenantMemberId}")
+    public ResponseEntity<Void> deleteTenantMember(@PathVariable("tenantId") Long tenantId, @PathVariable("tenantMemberId") Long tenantMemberId) {
         log.debug("REST request to delete TenantMember : {}{}", tenantId, tenantMemberId);
         tenantMemberService.delete(tenantId, tenantMemberId);
         return ResponseEntity
             .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, tenantMemberId.toString()))
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_TENANT_MEMBER_REMOVED, String.valueOf(tenantId)))
             .build();
     }
 }
