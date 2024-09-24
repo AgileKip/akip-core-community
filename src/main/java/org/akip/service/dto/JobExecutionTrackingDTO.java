@@ -2,7 +2,7 @@ package org.akip.service.dto;
 
 import org.akip.event.JobExecutionTrackingConstants;
 
-import javax.persistence.Lob;
+import jakarta.persistence.Lob;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashMap;

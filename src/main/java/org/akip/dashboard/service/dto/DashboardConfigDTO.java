@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Lob;
+import jakarta.persistence.Lob;
 
 /**
  * A DTO for the {@link DashboardConfig} entity.

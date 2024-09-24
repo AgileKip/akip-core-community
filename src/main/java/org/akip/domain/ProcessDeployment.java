@@ -4,9 +4,8 @@ import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDeployment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -37,7 +36,6 @@ public class ProcessDeployment implements Serializable {
     private String specificationFileContentType;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "camunda_deployment_message")
     private String camundaDeploymentMessage;
 
@@ -57,7 +55,6 @@ public class ProcessDeployment implements Serializable {
     private LocalDateTime inactivationDate;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "props")
     private String props;
 

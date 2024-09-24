@@ -9,7 +9,7 @@ import org.springframework.core.env.Environment
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 
-import javax.persistence.EntityManager
+import jakarta.persistence.EntityManager
 
 @Component
 class BindingBuilder {

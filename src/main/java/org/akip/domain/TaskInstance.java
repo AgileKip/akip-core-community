@@ -2,9 +2,8 @@ package org.akip.domain;
 
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
@@ -40,7 +39,6 @@ public class TaskInstance implements Serializable {
     private TypeTaskInstance type;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "description")
     private String description;
 

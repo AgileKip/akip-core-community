@@ -7,7 +7,6 @@ import org.akip.domain.JobExecutionTracking;
 import org.akip.service.dto.JobExecutionTrackingDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -3,7 +3,7 @@ package org.akip.dao.filter;
 import com.owse.searchFramework.ListFilter;
 import org.akip.domain.Tenant;
 
-import javax.persistence.Query;
+import jakarta.persistence.Query;
 
 public class TenantFilter extends ListFilter {
 

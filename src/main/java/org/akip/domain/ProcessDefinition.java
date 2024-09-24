@@ -4,9 +4,8 @@ import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -28,7 +27,6 @@ public class ProcessDefinition implements Serializable {
     private String name;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "description")
     private String description;
 

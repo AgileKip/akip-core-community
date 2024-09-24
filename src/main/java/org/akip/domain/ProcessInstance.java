@@ -4,9 +4,8 @@ import org.akip.domain.enumeration.StatusProcessInstance;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,17 +42,14 @@ public class ProcessInstance implements Serializable {
     private String camundaProcessInstanceId;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "camunda_process_variables")
     private String camundaProcessVariables;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "props")
     private String props;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "data")
     private String data;
 

@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * Spring Data SQL repository for the Tenant entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface TenantRepository extends JpaRepository<Tenant, Long> {
 

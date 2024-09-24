@@ -27,7 +27,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;

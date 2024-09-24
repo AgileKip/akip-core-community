@@ -1,6 +1,6 @@
 package org.akip.service.dto;
 
-import javax.persistence.Lob;
+import jakarta.persistence.Lob;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;

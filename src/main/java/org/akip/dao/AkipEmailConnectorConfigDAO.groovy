@@ -7,7 +7,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
-import javax.persistence.EntityManager
+import jakarta.persistence.EntityManager
 
 @Service("akipEmailConnectorConfig")
 class AkipEmailConnectorConfigDAO extends AbstractDAO<AkipEmailConnectorConfigSearchDTO> {

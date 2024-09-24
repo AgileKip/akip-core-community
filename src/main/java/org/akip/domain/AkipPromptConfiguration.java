@@ -2,11 +2,10 @@ package org.akip.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import java.io.Serializable;
 
 /**
@@ -54,12 +53,10 @@ public class AkipPromptConfiguration implements Serializable {
     private Float frequencyPenalty;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "params")
     private String params;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "messages")
     private String messages;
 

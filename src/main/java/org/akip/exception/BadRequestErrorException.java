@@ -1,12 +1,13 @@
 package org.akip.exception;
 
-import org.zalando.problem.AbstractThrowableProblem;
-import org.zalando.problem.Status;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.ErrorResponseException;
+import tech.jhipster.web.rest.errors.ProblemDetailWithCause;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class BadRequestErrorException extends AbstractThrowableProblem {
+public class BadRequestErrorException extends ErrorResponseException {
 
     private static final long serialVersionUID = 1L;
 
@@ -15,9 +16,19 @@ public class BadRequestErrorException extends AbstractThrowableProblem {
     private final String[] params;
 
     public BadRequestErrorException(String errorKey, String... params) {
-        super(ErrorConstants.DEFAULT_TYPE, errorKey, Status.BAD_REQUEST, null, null, null, getErrorParameters(errorKey, params));
-        this.params = params;
+        super(
+                HttpStatus.BAD_REQUEST,
+                ProblemDetailWithCause.ProblemDetailWithCauseBuilder.instance()
+                        .withStatus(HttpStatus.BAD_REQUEST.value())
+                        .withType(ErrorConstants.DEFAULT_TYPE)
+                        .withTitle(errorKey)
+                        .withProperty("message", "error." + errorKey)
+                        .withProperty("params", params)
+                        .build(),
+                null
+        );
         this.errorKey = errorKey;
+        this.params = params;
     }
 
     public String getErrorKey() {

@@ -3,9 +3,8 @@ package org.akip.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.akip.domain.enumeration.KipAppStatus;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 
@@ -31,7 +30,6 @@ public class KipApp implements Serializable {
     private String identifier;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "description")
     private String description;
 

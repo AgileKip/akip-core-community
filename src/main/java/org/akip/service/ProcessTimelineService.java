@@ -118,7 +118,6 @@ public class ProcessTimelineService {
 
     private void calculateStatusWithParameters(ProcessInstance processInstance, ProcessTimelineItemDTO timelineItem)
         throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        String expression = timelineItem.getItemDefinition().getCheckStatusExpression().split("\\s+")[0];
         String params = timelineItem.getItemDefinition().getCheckStatusExpression().split("\\s+")[1];
         Method checkStatusMethod =
             ProcessTimelineService.class.getMethod(

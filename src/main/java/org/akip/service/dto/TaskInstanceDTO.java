@@ -3,7 +3,7 @@ package org.akip.service.dto;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 
-import javax.persistence.Lob;
+import jakarta.persistence.Lob;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
