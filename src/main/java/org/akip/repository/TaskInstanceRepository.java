@@ -19,7 +19,7 @@ import java.util.Optional;
 public interface TaskInstanceRepository extends JpaRepository<TaskInstance, Long> {
     Optional<TaskInstance> findByTaskId(String taskId);
 
-    @Query("from TaskInstance where processDefinition.id = ?1 or processDefinition.bpmnProcessDefinitionId = ?1")
+    @Query("from TaskInstance where cast(processDefinition.id as char) = ?1 or processDefinition.bpmnProcessDefinitionId = ?1")
     List<TaskInstance> findByProcessDefinitionIdOrBpmnProcessDefinitionId(String idOrBpmnProcessDefinitionId);
 
     List<TaskInstance> findByTaskDefinitionKeyAndProcessInstanceIdAndProcessInstanceAccessTokenNumberOrderByIdDesc(String taskDefinitionKey, Long processInstanceId, String accessTokenNumber);
