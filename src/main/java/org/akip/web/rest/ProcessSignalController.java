@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/process-signal")
 public class ProcessSignalController {
@@ -33,5 +35,12 @@ public class ProcessSignalController {
         log.debug("Sending Signal {} to Process Instance: {}", signalName, processInstanceId);
         camundaSignalService.sendSignalToProcessInstance(signalName, processInstanceId);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/retrieve-bpmn-signal-events/{camundaDeploymentId}")
+    public List<String> retrieveSignalEvents(@PathVariable String camundaDeploymentId) {
+        log.debug("Retrieving the bpmn signal events from Camunda Deployment id: {}", camundaDeploymentId);
+        return camundaSignalService.retrieveSignalEvents(camundaDeploymentId);
     }
 }
