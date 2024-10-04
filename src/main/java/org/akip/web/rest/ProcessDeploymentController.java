@@ -128,7 +128,7 @@ public class ProcessDeploymentController {
     }
 
     @GetMapping("/process-deployment-without-tenant/{processDefinitionId}")
-    public Optional<ProcessDeployment> getProcessDeploymentWithoutTenant(@PathVariable Long processDefinitionId) {
+    public Optional<ProcessDeployment> getProcessDeploymentWithoutTenant(@PathVariable("processDefinitionId") Long processDefinitionId) {
         return processDeploymentService.getProcessDeploymentWithoutTenant(processDefinitionId);
     }
 }

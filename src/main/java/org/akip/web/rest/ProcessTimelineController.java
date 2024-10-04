@@ -45,7 +45,7 @@ public class ProcessTimelineController {
     }
 
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/process-instances/{processInstanceId}/timeline")
-    public ProcessTimelineDTO getTimeline(@PathVariable String bpmnProcessDefinitionId, @PathVariable Long processInstanceId) {
+    public ProcessTimelineDTO getTimeline(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId, @PathVariable("processInstanceId") Long processInstanceId) {
         log.debug("REST request to get a timeline");
         ProcessInstanceDTO processInstance = processInstanceService.findOne(processInstanceId).orElseThrow();
         return processTimelineService.buildTimeline(bpmnProcessDefinitionId, processInstance);

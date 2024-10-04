@@ -25,7 +25,7 @@ public class ProcessHistoricalActivityController {
 
 
     @GetMapping("/process-instance/{processInstanceId}/process-historical-activities")
-    public List<ProcessHistoricalActivityDTO> getByProcessInstanceId(@PathVariable Long processInstanceId) {
+    public List<ProcessHistoricalActivityDTO> getByProcessInstanceId(@PathVariable("processInstanceId") Long processInstanceId) {
         log.debug("REST request to get CamundaHistoricActivities by process instance id: {}", processInstanceId);
         return processHistoricalActivityService.getByProcessInstanceId(processInstanceId);
     }
