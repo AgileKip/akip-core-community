@@ -53,7 +53,7 @@ public class ProcessTimelineController {
 
     @PostMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline")
     public ResponseEntity<ProcessTimelineDefinitionDTO> create(
-            @PathVariable String bpmnProcessDefinitionId,
+            @PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId,
             @RequestBody ProcessTimelineDefinitionDTO processTimelineDefinition
     ) throws URISyntaxException {
         log.debug("REST request creating new ProcessTimelineDefinition");
@@ -73,21 +73,21 @@ public class ProcessTimelineController {
     }
 
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline")
-    public List<ProcessTimelineDefinitionDTO> findAll(@PathVariable String bpmnProcessDefinitionId) {
+    public List<ProcessTimelineDefinitionDTO> findAll(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId) {
         log.debug("REST request to list ProcessTimelineDefinition");
         return processTimelineDefinitionService.findByProcessDefinitionBpmnProcessDefinitionId(bpmnProcessDefinitionId);
     }
 
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/tasks")
-    public List<TaskInstanceDTO> getBpmnUserTasks(@PathVariable String bpmnProcessDefinitionId) {
+    public List<TaskInstanceDTO> getBpmnUserTasks(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId) {
         log.debug("REST request to list process tasks");
         return processDefinitionService.getBpmnUserTasks(bpmnProcessDefinitionId);
     }
 
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/{processTimelineDefinitionId}")
     public ResponseEntity<ProcessTimelineDefinitionDTO> findOne(
-            @PathVariable String bpmnProcessDefinitionId,
-            @PathVariable Long processTimelineDefinitionId
+            @PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId,
+            @PathVariable("processTimelineDefinitionId") Long processTimelineDefinitionId
     ) {
         log.debug("REST request to find one ProcessTimelineDefinition");
         Optional<ProcessTimelineDefinitionDTO> processTimelineDefinition = processTimelineDefinitionService.findOne(processTimelineDefinitionId);
@@ -96,7 +96,7 @@ public class ProcessTimelineController {
 
     @PutMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/edit")
     public ResponseEntity<ProcessTimelineDefinitionDTO> updateTimeline(
-            @PathVariable String bpmnProcessDefinitionId,
+            @PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId,
             @RequestBody ProcessTimelineDefinitionDTO processTimelineDefinitionDTO
     ) {
         log.debug("REST request to update a ProcessTimelineDefinition");
@@ -109,8 +109,8 @@ public class ProcessTimelineController {
 
     @DeleteMapping("/process-definitions/{bpmnProcessDefinitionId}/timeline/{processTimelineDefinitionId}")
     public ResponseEntity<Void> deleteProcessTimeline(
-            @PathVariable String bpmnProcessDefinitionId,
-            @PathVariable Long processTimelineDefinitionId
+            @PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId,
+            @PathVariable("processTimelineDefinitionId") Long processTimelineDefinitionId
     ) {
         log.debug("REST request to delete a ProcessTimelineDefinition : {}", processTimelineDefinitionId);
         processTimelineDefinitionService.delete(processTimelineDefinitionId);
