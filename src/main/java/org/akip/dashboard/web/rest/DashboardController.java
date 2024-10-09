@@ -23,7 +23,7 @@ public class DashboardController {
     }
 
     @GetMapping("/process-definition/{idOrBpmnProcessDefinitionId}/dashboard")
-    public DashboardResponseModel getDashboardByDefaultInterval(@PathVariable String idOrBpmnProcessDefinitionId) {
+    public DashboardResponseModel getDashboardByDefaultInterval(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
         log.debug("REST request to get a dashboard of the process definition {}", idOrBpmnProcessDefinitionId);
         DashboardRequestModel dashboardRequest = new DashboardRequestModel()
             .processDefinitionIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
@@ -33,8 +33,8 @@ public class DashboardController {
 
     @GetMapping("/process-definition/{idOrBpmnProcessDefinitionId}/dashboard/{interval}")
     public DashboardResponseModel getDashboardByInterval(
-        @PathVariable String idOrBpmnProcessDefinitionId,
-        @PathVariable DashboardInterval interval
+        @PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId,
+        @PathVariable("interval") DashboardInterval interval
     ) {
         log.debug("REST request to get a dashboard of the process definition {}", idOrBpmnProcessDefinitionId);
         DashboardRequestModel dashboardRequest = new DashboardRequestModel()
@@ -45,13 +45,13 @@ public class DashboardController {
 
     @GetMapping("/process-definition/{idOrBpmnProcessDefinitionId}/dashboard/{startDate}/{endDate}")
     public DashboardResponseModel getDashboardByDates(
-        @PathVariable String processDefinitionIdOrBpmnProcessDefinitionId,
-        @PathVariable LocalDate startDate,
-        @PathVariable LocalDate endDate
+        @PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId,
+        @PathVariable("startDate") LocalDate startDate,
+        @PathVariable("endDate") LocalDate endDate
     ) {
-        log.debug("REST request to get a dashboard of the process definition {}", processDefinitionIdOrBpmnProcessDefinitionId);
+        log.debug("REST request to get a dashboard of the process definition {}", idOrBpmnProcessDefinitionId);
         DashboardRequestModel dashboardRequest = new DashboardRequestModel()
-            .processDefinitionIdOrBpmnProcessDefinitionId(processDefinitionIdOrBpmnProcessDefinitionId)
+            .processDefinitionIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
             .interval(DashboardInterval.CUSTOM)
             .startDate(startDate)
             .endDate(endDate);

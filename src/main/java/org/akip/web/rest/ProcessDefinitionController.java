@@ -65,20 +65,6 @@ public class ProcessDefinitionController {
     }
 
     /**
-     * {@code GET  /process-definitions/:id} : get the "id" processDefinition.
-     *
-     * @param idOrBpmnProcessDefinitionId the id of the processDefinitionDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processDefinitionDTO, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}/dashboard/")
-    public ProcessDefinitionDTO getDashboardByProcessDefinition(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
-        log.debug("REST request to get Dashboard by ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
-        return processDefinitionService
-                .findByIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
-                .orElseThrow();
-    }
-
-    /**
      * {@code GET  /process-definitions/:bpmnProcessDefinitionId} : get the "bpmnProcessDefinitionId" processDefinition.
      *
      * @param idOrBpmnProcessDefinitionId the id of the processDefinitionDTO to retrieve.
