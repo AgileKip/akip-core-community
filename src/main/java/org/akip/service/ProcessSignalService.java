@@ -3,12 +3,16 @@ package org.akip.service;
 import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProcessSignalService {
     private final RuntimeService runtimeService;
+    private final ProcessDefinitionService processDefinitionService;
 
-    public ProcessSignalService(RuntimeService runtimeService) {
+    public ProcessSignalService(RuntimeService runtimeService, ProcessDefinitionService processDefinitionService) {
         this.runtimeService = runtimeService;
+        this.processDefinitionService = processDefinitionService;
     }
 
     public void sendBroadcastSignal(String signalName) {
@@ -26,5 +30,9 @@ public class ProcessSignalService {
                     runtimeService.signalEventReceived(signalName, eventSubscription.getExecutionId());
                 }
             );
+    }
+
+    public List<String> retrieveSignalEvents(String camundaDeploymentId) {
+        return processDefinitionService.getBpmnSignalEvents(camundaDeploymentId);
     }
 }
