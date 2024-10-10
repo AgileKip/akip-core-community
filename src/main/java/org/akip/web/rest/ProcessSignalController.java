@@ -39,7 +39,7 @@ public class ProcessSignalController {
 
 
     @GetMapping("/retrieve-bpmn-signal-events/{camundaDeploymentId}")
-    public List<String> retrieveSignalEvents(@PathVariable String camundaDeploymentId) {
+    public List<String> retrieveSignalEvents(@PathVariable("camundaDeploymentId") String camundaDeploymentId) {
         log.debug("Retrieving the bpmn signal events from Camunda Deployment id: {}", camundaDeploymentId);
         return camundaSignalService.retrieveSignalEvents(camundaDeploymentId);
     }

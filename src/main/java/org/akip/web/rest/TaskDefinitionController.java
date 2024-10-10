@@ -23,7 +23,7 @@ public class TaskDefinitionController {
     }
 
     @GetMapping("/task-definition/{id}")
-    public TaskDefinitionDTO find(@PathVariable Long id) {
+    public TaskDefinitionDTO find(@PathVariable("id") Long id) {
         log.debug("REST request to get TaskDefinition of the TaskDefinitionId : {} ", id);
         return taskDefinitionService.findById(id);
     }
