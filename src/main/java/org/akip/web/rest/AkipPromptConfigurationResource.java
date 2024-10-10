@@ -119,14 +119,14 @@ public class AkipPromptConfigurationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the akipPromptConfigurationDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/akip-prompt-configurations/{id}")
-    public ResponseEntity<AkipPromptConfigurationDTO> getAkipPromptConfiguration(@PathVariable Long id) {
+    public ResponseEntity<AkipPromptConfigurationDTO> getAkipPromptConfiguration(@PathVariable("id") Long id) {
         log.debug("REST request to get AkipPromptConfiguration : {}", id);
         Optional<AkipPromptConfigurationDTO> akipPromptConfigurationDTO = akipPromptConfigurationService.findOne(id);
         return ResponseUtil.wrapOrNotFound(akipPromptConfigurationDTO);
     }
 
     @GetMapping("/akip-prompt-configurations/name/{name}")
-    public AkipPromptConfigurationDTO getAkipPromptConfigurationByName(@PathVariable String name) {
+    public AkipPromptConfigurationDTO getAkipPromptConfigurationByName(@PathVariable("name") String name) {
         log.debug("REST request to get AkipPromptConfiguration by name : {}", name);
         return akipPromptConfigurationService.findByName(name);
     }
@@ -138,7 +138,7 @@ public class AkipPromptConfigurationResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/akip-prompt-configurations/{id}")
-    public ResponseEntity<Void> deleteAkipPromptConfiguration(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAkipPromptConfiguration(@PathVariable("id") Long id) {
         log.debug("REST request to delete AkipPromptConfiguration : {}", id);
         akipPromptConfigurationService.delete(id);
         return ResponseEntity

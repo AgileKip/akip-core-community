@@ -100,7 +100,7 @@ public class DashboardConfigResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the dashboardConfigDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}/dashboard-config")
-    public DashboardConfigDTO getDashboardConfig(@PathVariable String idOrBpmnProcessDefinitionId) {
+    public DashboardConfigDTO getDashboardConfig(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
         log.debug("REST request to get DashboardConfig : {}", idOrBpmnProcessDefinitionId);
         return dashboardConfigService.findByProcessDefinition(idOrBpmnProcessDefinitionId);
     }
@@ -112,7 +112,7 @@ public class DashboardConfigResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/dashboard-configs/{id}")
-    public ResponseEntity<Void> deleteDashboardConfig(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDashboardConfig(@PathVariable("id") Long id) {
         log.debug("REST request to delete DashboardConfig : {}", id);
         dashboardConfigService.delete(id);
         return ResponseEntity
