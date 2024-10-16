@@ -48,9 +48,9 @@ public class MigrationController {
 
     @GetMapping("/migration/migrate/{processDefinitionIdOld}/{processDefinitionIdNew}/{processInstanceId}")
     public String migrate(
-        @PathVariable String processDefinitionIdOld,
-        @PathVariable String processDefinitionIdNew,
-        @PathVariable String processInstanceId
+        @PathVariable("processDefinitionIdOld") String processDefinitionIdOld,
+        @PathVariable("processDefinitionIdNew") String processDefinitionIdNew,
+        @PathVariable("processInstanceId") String processInstanceId
     ) {
         if (
             processDefinitionIdOld.isEmpty() ||

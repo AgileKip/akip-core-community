@@ -76,7 +76,7 @@ public class TaskInstanceController {
     }
 
     @GetMapping("/task-instances/{id}/redo")
-    public ResponseEntity<Void> redoTaskInstance(@PathVariable Long id) {
+    public ResponseEntity<Void> redoTaskInstance(@PathVariable("id") Long id) {
         log.debug("REST request to redo TaskInstance : {}", id);
         taskInstanceService.redo(id);
         return ResponseEntity
