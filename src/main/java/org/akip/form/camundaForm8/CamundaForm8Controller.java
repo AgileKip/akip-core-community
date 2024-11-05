@@ -22,7 +22,7 @@ public class CamundaForm8Controller {
     }
 
     @GetMapping("/camunda-form-8/form-definition/{formDefinitionId}")
-    public CamundaForm8Def getCamundaForm8(@PathVariable Long formDefinitionId) throws JsonProcessingException {
+    public CamundaForm8Def getCamundaForm8(@PathVariable("formDefinitionId") Long formDefinitionId) throws JsonProcessingException {
         log.debug("REST request CamundaForm8 with id : {} ", formDefinitionId);
         return camundaForm8Service.getCamundaForm8(formDefinitionId);
     }

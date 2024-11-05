@@ -24,7 +24,7 @@ public class ProcessInstanceResource {
     }
 
     @GetMapping("process-instances/{processBpmnId}/create-temporary-process-instance")
-    public ResponseEntity<TemporaryProcessInstanceDTO> createTemporaryProcessInstance(@PathVariable String processBpmnId) {
+    public ResponseEntity<TemporaryProcessInstanceDTO> createTemporaryProcessInstance(@PathVariable("processBpmnId") String processBpmnId) {
         log.debug("REST request to create a temporary process instance for the process ProcessInstance");
         TemporaryProcessInstanceDTO result = temporaryProcessInstanceService.create(processBpmnId);
         return ResponseEntity.ok(result);
