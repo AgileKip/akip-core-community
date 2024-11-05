@@ -45,7 +45,8 @@ public class ProcessDefinition implements Serializable {
     @Column(name = "start_form_is_enabled")
     private Boolean startFormIsEnabled;
 
-    @ManyToOne
+    @ManyToOne()
+    @JoinColumn(name = "start_form_definition_id")
     private FormDefinition startFormDefinition;
 
     @Enumerated(EnumType.STRING)

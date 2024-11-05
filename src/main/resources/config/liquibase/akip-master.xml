@@ -44,6 +44,9 @@
     <include file="config/liquibase/changelog/00000000000036_added_entity_ProcessMemberProcessRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000037_added_entity_TenantMemberTenantRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000038_alter_entity_ProcessDeployment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000039_added_entity_DomainEntityDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000040_added_entity_EntityFieldDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000041_added_entity_constraints_EntityFieldDefinition.xml" relativeToChangelogFile="false"/>
 
 
     <!-- Include constraints here -->

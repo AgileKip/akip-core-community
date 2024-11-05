@@ -9,6 +9,7 @@ import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.repository.*;
 import org.akip.security.SecurityUtils;
 import org.akip.service.dto.*;
+import org.akip.service.mapper.ProcessDeploymentMapper;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.camunda.bpm.engine.RuntimeService;
 import org.slf4j.Logger;
@@ -41,6 +42,8 @@ public class ProcessInstanceService {
 
     private final ProcessInstanceMapper processInstanceMapper;
 
+    private final ProcessDeploymentMapper processDeploymentMapper;
+
     private final RuntimeService runtimeService;
 
     private final AttachmentEntityRepository attachmentEntityRepository;
@@ -55,25 +58,26 @@ public class ProcessInstanceService {
     private final MongoService mongoService;
 
     public ProcessInstanceService(
-        ProcessDeploymentService processDeploymentService,
-        TaskInstanceService taskInstanceService,
-        ProcessDefinitionRepository processDefinitionRepository,
-        ProcessDeploymentRepository processDeploymentRepository,
-        ProcessInstanceRepository processInstanceRepository,
-        ProcessInstanceMapper processInstanceMapper,
-        RuntimeService runtimeService,
-        AttachmentEntityRepository attachmentEntityRepository,
-        AttachmentRepository attachmentRepository,
-        NoteRepository noteRepository,
-        NoteEntityRepository noteEntityRepository,
-        TemporaryProcessInstanceRepository temporaryProcessInstanceRepository,
-        MongoService mongoService){
+            ProcessDeploymentService processDeploymentService,
+            TaskInstanceService taskInstanceService,
+            ProcessDefinitionRepository processDefinitionRepository,
+            ProcessDeploymentRepository processDeploymentRepository,
+            ProcessInstanceRepository processInstanceRepository,
+            ProcessInstanceMapper processInstanceMapper, ProcessDeploymentMapper processDeploymentMapper,
+            RuntimeService runtimeService,
+            AttachmentEntityRepository attachmentEntityRepository,
+            AttachmentRepository attachmentRepository,
+            NoteRepository noteRepository,
+            NoteEntityRepository noteEntityRepository,
+            TemporaryProcessInstanceRepository temporaryProcessInstanceRepository,
+            MongoService mongoService){
         this.processDeploymentService = processDeploymentService;
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
         this.processDeploymentRepository = processDeploymentRepository;
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
+        this.processDeploymentMapper = processDeploymentMapper;
         this.runtimeService = runtimeService;
         this.attachmentEntityRepository = attachmentEntityRepository;
         this.attachmentRepository = attachmentRepository;
@@ -151,6 +155,8 @@ public class ProcessInstanceService {
         ProcessDeployment processDeployment = processDeploymentRepository
                 .findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(processDefinition.getId())
                 .orElseThrow();
+
+        this.mongoService.checkValidations(processInstanceDTO.getData(), processDeploymentMapper.toDto(processDeployment).getProps().get("domainEntityName"));
 
         ProcessInstance processInstance = processInstanceMapper.toEntity(processInstanceDTO);
         processInstance.setProcessDefinition(processDefinition);

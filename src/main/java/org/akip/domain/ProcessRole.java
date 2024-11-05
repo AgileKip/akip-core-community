@@ -19,6 +19,7 @@ public class ProcessRole implements Serializable {
     private String name;
 
     @ManyToOne
+    @JoinColumn(name = "process_definition_id")
     private ProcessDefinition processDefinition;
 
     public Long getId() {

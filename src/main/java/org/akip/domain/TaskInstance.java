@@ -94,6 +94,7 @@ public class TaskInstance implements Serializable {
     private ProcessDefinition processDefinition;
 
     @ManyToOne
+    @JoinColumn(name = "task_definition_id")
     private TaskDefinition taskDefinition;
 
     @ManyToOne

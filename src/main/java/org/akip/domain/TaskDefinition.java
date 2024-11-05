@@ -59,6 +59,7 @@ public class TaskDefinition implements Serializable {
     private Boolean dynamicFormIsEnabled;
 
     @ManyToOne
+    @JoinColumn(name = "form_definition_id")
     private FormDefinition formDefinition;
 
     public TaskDefinition(){}

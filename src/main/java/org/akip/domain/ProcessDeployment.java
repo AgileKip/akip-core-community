@@ -66,7 +66,7 @@ public class ProcessDeployment implements Serializable {
     private ProcessDefinition processDefinition;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "processVisibilityType")
+    @Column(name = "process_visibility_type")
     private ProcessVisibilityType processVisibilityType;
 
     @ManyToOne

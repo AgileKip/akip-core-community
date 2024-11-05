@@ -27,6 +27,7 @@ public class ProcessMember implements Serializable {
     private String username;
 
     @ManyToOne
+    @JoinColumn(name = "process_definition_id")
     private ProcessDefinition processDefinition;
 
     @JsonIgnore
