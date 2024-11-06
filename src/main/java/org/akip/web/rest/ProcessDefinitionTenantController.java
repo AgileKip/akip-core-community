@@ -24,7 +24,7 @@ public class ProcessDefinitionTenantController {
     }
 
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/tenants")
-    public List<TenantDTO> getTenants(@PathVariable String bpmnProcessDefinitionId) {
+    public List<TenantDTO> getTenants(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId) {
         return tenantService.findByProcessDefinitionAndDeploymentActive(bpmnProcessDefinitionId);
     }
 

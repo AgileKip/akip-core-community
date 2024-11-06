@@ -85,11 +85,10 @@ public class ProcessDefinitionController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processDefinitionDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}/instances")
-    public ProcessDefinitionDTO getInstances(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
+    public List<ProcessInstanceDTO> getInstances(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
         log.debug("REST request to get instances by ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
         return processDefinitionService
-                .findByIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
-                .orElseThrow();
+                .findByProcessDefinition(idOrBpmnProcessDefinitionId);
     }
 
     /**
