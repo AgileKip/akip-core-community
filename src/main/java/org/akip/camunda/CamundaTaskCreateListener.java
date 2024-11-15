@@ -34,30 +34,24 @@ public class CamundaTaskCreateListener implements TaskListener {
 
     private final TaskDefinitionRepository taskDefinitionRepository;
 
-    private final ProcessRoleRepository processRoleRepository;
 
     private final ProcessDeploymentRepository processDeploymentRepository;
 
-    private final TenantRoleRepository tenantRoleRepository;
 
     public CamundaTaskCreateListener(
             TaskInstanceService taskInstanceService,
             ProcessDefinitionRepository processDefinitionRepository,
             ProcessDefinitionMapper processDefinitionMapper,
             TaskDefinitionRepository taskDefinitionRepository, TaskDefinitionMapper taskDefinitionMapper,
-            ProcessRoleRepository processRoleRepository,
-            ProcessDeploymentRepository processDeploymentRepository,
-            TenantRoleRepository tenantRoleRepository
-    ) {
+             ProcessDeploymentRepository processDeploymentRepository
+     ) {
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
         this.processDefinitionMapper = processDefinitionMapper;
         this.taskDefinitionRepository = taskDefinitionRepository;
         this.taskDefinitionMapper = taskDefinitionMapper;
-        this.processRoleRepository = processRoleRepository;
-        this.processDeploymentRepository = processDeploymentRepository;
-        this.tenantRoleRepository = tenantRoleRepository;
-    }
+         this.processDeploymentRepository = processDeploymentRepository;
+     }
 
     public void notify(DelegateTask delegateTask) {
         TaskInstanceDTO taskInstanceDTO = delegateTaskToTaskInstanceDTO(delegateTask);
