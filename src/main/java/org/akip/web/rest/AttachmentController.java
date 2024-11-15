@@ -50,14 +50,14 @@ public class AttachmentController {
     }
 
     @GetMapping("/attachments/{attachmentId}")
-    public ResponseEntity<AttachmentDTO> get(@PathVariable Long attachmentId) {
+    public ResponseEntity<AttachmentDTO> get(@PathVariable("attachmentId") Long attachmentId) {
         log.debug("REST request to get attachment: {}", attachmentId);
         AttachmentDTO attachment = attachmentService.get(attachmentId);
         return ResponseEntity.ok().body(attachment);
     }
 
     @DeleteMapping("/attachments/{attachmentId}")
-    public ResponseEntity<Void> delete(@PathVariable Long attachmentId) {
+    public ResponseEntity<Void> delete(@PathVariable("attachmentId") Long attachmentId) {
         log.debug("REST request to get attachment: {}", attachmentId);
         attachmentService.delete(attachmentId);
         return ResponseEntity
@@ -67,16 +67,16 @@ public class AttachmentController {
     }
 
     @GetMapping("/{entityName}/{entityId}/attachments")
-    public List<AttachmentDTO> getAttachmentsByEntityNameAndEntityId(@PathVariable String entityName, @PathVariable Long entityId) {
+    public List<AttachmentDTO> getAttachmentsByEntityNameAndEntityId(@PathVariable("entityName") String entityName, @PathVariable("entityId") Long entityId) {
         log.debug("REST request to getAttachmentsByEntityNameAndEntitiesIds: entityName={}, entitiesIds={}", entityName, entityId);
         return attachmentService.findByEntityNameAndEntityId(entityName, entityId);
     }
 
     @GetMapping("/{entityName}/{entityId}/{attachmentTypes}/attachments")
     public List<AttachmentDTO> getAttachmentsByEntityNameAndEntityIdAndTypes(
-        @PathVariable String entityName,
-        @PathVariable Long entityId,
-        @PathVariable List<String> attachmentTypes
+        @PathVariable("entityName") String entityName,
+        @PathVariable("entityId") Long entityId,
+        @PathVariable("attachmentTypes") List<String> attachmentTypes
     ) {
         log.debug(
             "REST request to getAttachmentsByEntityIdAndEntityNameAndTypes: entityName={}, entityId={}, types={}",

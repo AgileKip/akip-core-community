@@ -1,5 +1,8 @@
 package org.akip.web.rest;
 
+import org.akip.domain.ProcessDeployment;
+import org.akip.domain.enumeration.ProcessVisibilityType;
+import org.akip.exception.BadRequestErrorException;
 import org.akip.service.ProcessDeploymentService;
 import org.akip.service.dto.ProcessDeploymentBpmnModelDTO;
 import org.akip.service.dto.ProcessDeploymentDTO;
@@ -12,6 +15,7 @@ import tech.jhipster.web.util.HeaderUtil;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * REST controller for managing {@link org.akip.domain.ProcessDeployment}.
@@ -41,7 +45,9 @@ public class ProcessDeploymentController {
     public ResponseEntity<Void> deploy(@RequestBody ProcessDeploymentDTO processDeploymentDTO) throws URISyntaxException {
         log.debug("REST request to deploy ProcessDeployment : {}", processDeploymentDTO);
         ProcessDeploymentDTO result = processDeploymentService.deploy(processDeploymentDTO);
-
+        if(ProcessVisibilityType.INTERNAL.equals(processDeploymentDTO.getProcessVisibilityType()) && processDeploymentDTO.getTenant() == null){
+            throw new BadRequestErrorException("Internal process requires a tenant", "deployInternalProcess", "tenantIsNull");
+        }
         return ResponseEntity
                 .created(new URI("/api/process-deployment/" + result.getId()))
                 .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, buildDeployedMessage(result), result.getCamundaProcessDefinitionId()))
@@ -59,7 +65,7 @@ public class ProcessDeploymentController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/process-deployment/{id}")
-    public ProcessDeploymentDTO getProcessDeployment(@PathVariable Long id) {
+    public ProcessDeploymentDTO getProcessDeployment(@PathVariable("id") Long id) {
         log.debug("REST request to get ProcessDeployment : {}", id);
         return processDeploymentService.findOne(id).orElseThrow();
     }
@@ -71,7 +77,7 @@ public class ProcessDeploymentController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/process-deployment/{id}/bpmnModel")
-    public ProcessDeploymentBpmnModelDTO getProcessDeploymentBpmnModel(@PathVariable Long id) {
+    public ProcessDeploymentBpmnModelDTO getProcessDeploymentBpmnModel(@PathVariable("id") Long id) {
         log.debug("REST request to get ProcessDeployment : {}", id);
         return processDeploymentService.findBpmnModel(id).orElseThrow();
     }
@@ -83,7 +89,7 @@ public class ProcessDeploymentController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/process-deployment/{id}/active")
-    public ResponseEntity<Void> activeProcessDeployment(@PathVariable Long id) {
+    public ResponseEntity<Void> activeProcessDeployment(@PathVariable("id") Long id) {
         log.debug("REST request to inactive ProcessDeployment : {}", id);
         processDeploymentService.activate(id);
         return ResponseEntity
@@ -98,7 +104,7 @@ public class ProcessDeploymentController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/process-deployment/{id}/inactive")
-    public ResponseEntity<Void> inactiveProcessDeployment(@PathVariable Long id) {
+    public ResponseEntity<Void> inactiveProcessDeployment(@PathVariable("id") Long id) {
         log.debug("REST request to inactive ProcessDeployment : {}", id);
         processDeploymentService.inactivate(id);
         return ResponseEntity
@@ -107,12 +113,22 @@ public class ProcessDeploymentController {
     }
 
     @PutMapping("/process-deployment/{id}/properties")
-    public ResponseEntity<Void> saveProperties(@PathVariable Long id, @RequestBody Map<String, String> properties) {
+    public ResponseEntity<Void> saveProperties(@PathVariable("id") Long id, @RequestBody Map<String, String> properties) {
         log.debug("REST request to save ProcessDeployment properties: {}", id);
         processDeploymentService.saveProperties(id, properties);
         return ResponseEntity
                 .noContent()
                 .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_PROPERTIES_SAVED, id.toString()))
                 .build();
+    }
+
+    @GetMapping("/process-deployment/{tenantId}/{processDefinitionId}")
+    public Optional<ProcessDeployment> getProcessDeployment(@PathVariable Long tenantId, @PathVariable Long processDefinitionId) {
+        return processDeploymentService.getProcessDeployment(tenantId, processDefinitionId);
+    }
+
+    @GetMapping("/process-deployment-without-tenant/{processDefinitionId}")
+    public Optional<ProcessDeployment> getProcessDeploymentWithoutTenant(@PathVariable Long processDefinitionId) {
+        return processDeploymentService.getProcessDeploymentWithoutTenant(processDefinitionId);
     }
 }

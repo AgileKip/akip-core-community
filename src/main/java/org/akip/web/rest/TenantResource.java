@@ -51,7 +51,7 @@ public class TenantResource {
     public ResponseEntity<TenantDTO> createTenant(@RequestBody TenantDTO tenantDTO) throws URISyntaxException {
         log.debug("REST request to save Tenant : {}", tenantDTO);
         if (tenantDTO.getId() != null) {
-            throw new BadRequestErrorException("A nsew tenant cannot already have an ID", ENTITY_NAME, "idexists");
+            throw new BadRequestErrorException("A new tenant cannot already have an ID", ENTITY_NAME, "idexists");
         }
         TenantDTO result = tenantService.save(tenantDTO);
         return ResponseEntity
@@ -112,7 +112,7 @@ public class TenantResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tenantDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/tenants/{id}")
-    public ResponseEntity<TenantDTO> getTenant(@PathVariable Long id) {
+    public ResponseEntity<TenantDTO> getTenant(@PathVariable("id") Long id) {
         log.debug("REST request to get Tenant : {}", id);
         Optional<TenantDTO> tenantDTO = tenantService.findOne(id);
         return ResponseUtil.wrapOrNotFound(tenantDTO);
@@ -125,7 +125,7 @@ public class TenantResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/tenants/{id}")
-    public ResponseEntity<Void> deleteTenant(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTenant(@PathVariable("id") Long id) {
         log.debug("REST request to delete Tenant : {}", id);
         tenantService.delete(id);
         return ResponseEntity

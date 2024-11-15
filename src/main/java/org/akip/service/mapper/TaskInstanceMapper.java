@@ -16,13 +16,14 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity {@link TaskInstance} and its DTO {@link TaskInstanceDTO}.
  */
-@Mapper(componentModel = "spring", uses = { ProcessDefinitionMapper.class, ProcessInstanceMapper.class })
+@Mapper(componentModel = "spring", uses = { ProcessDefinitionMapper.class, ProcessInstanceMapper.class, TaskDefinitionMapper.class })
 public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskInstance> {
 
     final String delimiter = ",";
 
     @Mapping(target = "processDefinition", source = "processDefinition", qualifiedByName = "name")
     @Mapping(target = "processInstance", source = "processInstance", qualifiedByName = "businessKey")
+    @Mapping(target = "taskDefinition", source = "taskDefinition")
     TaskInstanceDTO toDto(TaskInstance s);
 
     @Named("loadTaskContext")
@@ -38,9 +39,9 @@ public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskIn
         Arrays
             .stream(string.split(delimiter))
             .forEach(
-                candidateGroup -> {
-                    if (candidateGroup.length() > 0) {
-                        list.add(candidateGroup);
+                computedCandidateGroup -> {
+                    if (computedCandidateGroup.length() > 0) {
+                        list.add(computedCandidateGroup);
                     }
                 }
             );

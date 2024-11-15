@@ -28,6 +28,9 @@ public interface ProcessInstanceMapper extends EntityMapper<ProcessInstanceDTO, 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     @Mapping(target = "businessKey", source = "businessKey")
+    @Mapping(target = "tenant", source = "tenant")
+    @Mapping(target = "data", source = "data")
+    @Mapping(target = "camundaProcessInstanceId", source = "camundaProcessInstanceId")
     ProcessInstanceDTO toDtoBusinessKey(ProcessInstance processInstance);
 
     @Named("loadTaskContext")
@@ -40,6 +43,7 @@ public interface ProcessInstanceMapper extends EntityMapper<ProcessInstanceDTO, 
     @Mapping(target = "startDate", source = "startDate")
     @Mapping(target = "endDate", source = "endDate")
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "data", source = "data")
     @Mapping(target = "processDefinition", source = "processDefinition", qualifiedByName = "loadTaskContext")
     ProcessInstanceDTO toDTOLoadTaskContext(ProcessInstance processInstance);
 

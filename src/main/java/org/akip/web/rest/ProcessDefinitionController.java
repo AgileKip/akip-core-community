@@ -1,13 +1,9 @@
 package org.akip.web.rest;
 
-import org.akip.service.ProcessDefinitionService;
-import org.akip.service.ProcessDeploymentService;
-import org.akip.service.ProcessInstanceService;
-import org.akip.service.TaskInstanceService;
-import org.akip.service.dto.ProcessDefinitionDTO;
-import org.akip.service.dto.ProcessDeploymentDTO;
-import org.akip.service.dto.ProcessInstanceDTO;
-import org.akip.service.dto.TaskInstanceDTO;
+import org.akip.domain.TaskDefinition;
+import org.akip.service.*;
+import org.akip.service.dto.*;
+import org.simpleframework.xml.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -28,20 +24,19 @@ public class ProcessDefinitionController {
 
     private final ProcessDeploymentService processDeploymentService;
 
-    private final ProcessInstanceService processInstanceService;
-
     private final TaskInstanceService taskInstanceService;
 
+    private final TaskDefinitionService taskDefinitionService;
+
     public ProcessDefinitionController(
-        ProcessDefinitionService processDefinitionService,
-        ProcessDeploymentService processDeploymentService,
-        ProcessInstanceService processInstanceService,
-        TaskInstanceService taskInstanceService
+            ProcessDefinitionService processDefinitionService,
+            ProcessDeploymentService processDeploymentService,
+            TaskInstanceService taskInstanceService, TaskDefinitionService taskDefinitionService
     ) {
         this.processDefinitionService = processDefinitionService;
         this.processDeploymentService = processDeploymentService;
-        this.processInstanceService = processInstanceService;
         this.taskInstanceService = taskInstanceService;
+        this.taskDefinitionService = taskDefinitionService;
     }
 
     /**
@@ -62,7 +57,7 @@ public class ProcessDefinitionController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processDefinitionDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}")
-    public ProcessDefinitionDTO getProcessDefinition(@PathVariable String idOrBpmnProcessDefinitionId) {
+    public ProcessDefinitionDTO getProcessDefinition(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
         log.debug("REST request to get ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
         return processDefinitionService
                 .findByIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
@@ -76,23 +71,11 @@ public class ProcessDefinitionController {
      * @return the list of processInstanceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}/deployments")
-    public List<ProcessDeploymentDTO> getProcessDeployments(@PathVariable String idOrBpmnProcessDefinitionId) {
+    public List<ProcessDeploymentDTO> getProcessDeployments(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
         log.debug("REST request to get ProcessDeployments of the ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
         return processDeploymentService.findByProcessDefinition(idOrBpmnProcessDefinitionId);
     }
 
-    //TODO: replace for the search framework
-//    /**
-//     * {@code GET  /process-definitions/:idOrBpmnProcessDefinitionId/instances} : get the "idOrBpmnProcessDefinitionId" processDefinition.
-//     *
-//     * @param idOrBpmnProcessDefinitionId the id of the processDefinitionDTO owner of the ProcessInstances.
-//     * @return the list of processInstanceDTO, or with status {@code 404 (Not Found)}.
-//     */
-//    @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}/instances")
-//    public List<ProcessInstanceDTO> getProcessInstances(@PathVariable String idOrBpmnProcessDefinitionId) {
-//        log.debug("REST request to get ProcessInstances of the ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
-//        return processInstanceService.findByProcessDefinition(idOrBpmnProcessDefinitionId);
-//    }
 
     /**
      * {@code GET  /process-definition/:idOrBpmnProcessDefinitionId/tasks} : get the "id" processInstance.
@@ -101,9 +84,15 @@ public class ProcessDefinitionController {
      * @return the list of processInstanceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/process-definition/{idOrBpmnProcessDefinitionId}/tasks")
-    public List<TaskInstanceDTO> getTaskInstances(@PathVariable String idOrBpmnProcessDefinitionId) {
+    public List<TaskInstanceDTO> getTaskInstances(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
         log.debug("REST request to get TaskInstances of the ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
         return taskInstanceService.findByProcessDefinition(idOrBpmnProcessDefinitionId);
+    }
+
+    @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/tasks-definitions")
+    public List<TaskDefinition> getTasksDefinition(@PathVariable String bpmnProcessDefinitionId) {
+        log.debug("REST request to get TaskInstances of the ProcessDefinition : {}", bpmnProcessDefinitionId);
+        return taskDefinitionService.findByProcessDefinition(bpmnProcessDefinitionId);
     }
 
     /**
@@ -113,7 +102,7 @@ public class ProcessDefinitionController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/process-definitions/{id}")
-    public ResponseEntity<Void> deleteProcessDefinition(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProcessDefinition(@PathVariable("id") Long id) {
         log.debug("REST request to delete ProcessDefinition : {}", id);
         processDefinitionService.delete(id);
         return ResponseEntity

@@ -14,10 +14,10 @@ import java.util.List;
 @Repository
 public interface NoteRepository extends JpaRepository<Note, Long> {
 
-	@Query("select ne.note from NoteEntity ne where ne.entityName = ?1 and ne.entityId = ?2")
+	@Query("select ne.note from NoteEntity ne where ne.entityName = ?1 and ne.entityId = ?2 order by ne.note.date asc")
 	List<Note> findByEntityNameAndEntityId(String entityName, Long entityId);
 
-	@Query("select ne.note from NoteEntity ne where ne.entityName = ?1 and ne.entityId = ?2 and ne.note.type in ?3")
+	@Query("select ne.note from NoteEntity ne where ne.entityName = ?1 and ne.entityId = ?2 and ne.note.type in ?3 order by ne.note.date asc ")
 	List<Note> findByEntityNameAndEntityIdAndTypeIn(String entityName, Long entityId, List<String> types);
 
 	@Modifying

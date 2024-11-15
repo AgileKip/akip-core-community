@@ -55,18 +55,6 @@ public class ProcessInstanceController {
         return "Process initialized successfully: " + processInstance.getCamundaProcessInstanceId();
     }
 
-    // TODO: replace for a search framework based service
-//    /**
-//     * {@code GET  /process-instances} : get all the processInstances.
-//     *
-//     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of processInstances in body.
-//     */
-//    @GetMapping("/process-instances")
-//    public List<ProcessInstanceDTO> getAllProcessInstances() {
-//        log.debug("REST request to get all ProcessInstances");
-//        return processInstanceService.findAll();
-//    }
-
     /**
      * {@code GET  /process-instances/:id/tasks} : get the "id" processInstance.
      *
@@ -74,7 +62,7 @@ public class ProcessInstanceController {
      * @return the list of processInstanceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/process-instances/{id}/tasks")
-    public List<TaskInstanceDTO> getTaskInstances(@PathVariable Long id) {
+    public List<TaskInstanceDTO> getTaskInstances(@PathVariable("id") Long id) {
         log.debug("REST request to get TaskInstances of ProcessInstance : {}", id);
         return taskInstanceService.findByProcessInstance(id);
     }
@@ -86,7 +74,7 @@ public class ProcessInstanceController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processInstanceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/process-instances/{id}")
-    public ProcessInstanceDTO getProcessInstance(@PathVariable Long id) {
+    public ProcessInstanceDTO getProcessInstance(@PathVariable("id") Long id) {
         log.debug("REST request to get ProcessInstance : {}", id);
         return processInstanceService.findOne(id).orElseThrow();
     }
@@ -98,7 +86,7 @@ public class ProcessInstanceController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processInstanceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/process-instances/{id}/bpmnModel")
-    public ProcessInstanceBpmnModelDTO getProcessInstanceBpmnModel(@PathVariable Long id) {
+    public ProcessInstanceBpmnModelDTO getProcessInstanceBpmnModel(@PathVariable("id") Long id) {
         log.debug("REST request to get the BPMNModel of the ProcessInstance : {}", id);
         return processInstanceService.findBpmnModel(id).orElseThrow();
     }

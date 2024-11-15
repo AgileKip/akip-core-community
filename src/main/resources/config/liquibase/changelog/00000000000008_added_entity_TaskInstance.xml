@@ -23,6 +23,9 @@
             <column name="status" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="description" type="${clobType}">
                 <constraints nullable="true" />
             </column>
@@ -60,6 +63,15 @@
                 <constraints nullable="true" />
             </column>
             <column name="candidate_groups" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="connector_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="connector_config_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="form_fields" type="${clobType}">
                 <constraints nullable="true" />
             </column>
             <column name="process_definition_id" type="bigint">

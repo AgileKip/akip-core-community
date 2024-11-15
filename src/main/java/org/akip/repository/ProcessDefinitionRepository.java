@@ -13,4 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ProcessDefinitionRepository extends JpaRepository<ProcessDefinition, Long> {
     Optional<ProcessDefinition> findByBpmnProcessDefinitionId(String bpmnProcessDefinitionId);
+
+    Optional<ProcessDefinition> findByStartFormDefinitionId(Long startFormDefinitionId);
+
 }

@@ -6,8 +6,7 @@
 
   <groupId>org.akip</groupId>
   <artifactId>akip-core</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
+  <version>1.11.0</version>
   <name>akip-core</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
@@ -149,7 +148,28 @@
       <version>${commons-compress.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.owse</groupId>
+      <artifactId>search-framework-server-side</artifactId>
+      <version>1.2.8</version>
+    </dependency>
+
   </dependencies>
+
+  <distributionManagement>
+    <repository>
+<!--      <id>kip4you-repository</id>-->
+      <id>kip4you-nexus-maven-release</id>
+      <name>Nexus Release KIP4You</name>
+<!--      <url>https://pkgs.dev.azure.com/kip4you/kip4you-repository/_packaging/kip4you-repository/maven/v1</url>-->
+      <url>http://192.168.3.3:8787/repository/kip4you-maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>kip4you-nexus-maven-snapshot</id>
+      <name>Nexus Snapshot KIP4You</name>
+      <url>http://192.168.3.3:8787/repository/kip4you-maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
@@ -167,6 +187,35 @@
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.0</version>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+            <compilerId>groovy-eclipse-compiler</compilerId>
+            <compilerVersion>3.3.0-01</compilerVersion>
+<!--            <verbose>true</verbose>-->
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.groovy</groupId>
+              <artifactId>groovy-eclipse-compiler</artifactId>
+              <version>3.7.0</version>
+            </dependency>
+            <dependency>
+              <groupId>org.codehaus.groovy</groupId>
+              <artifactId>groovy-eclipse-batch</artifactId>
+              <version>3.0.8-01</version>
+            </dependency>
+            <dependency>
+              <groupId>org.mapstruct</groupId>
+              <artifactId>mapstruct-processor</artifactId>
+              <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-configuration-processor</artifactId>
+              <version>${spring-boot.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>

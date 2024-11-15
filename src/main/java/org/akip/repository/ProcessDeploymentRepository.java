@@ -21,14 +21,22 @@ public interface ProcessDeploymentRepository extends JpaRepository<ProcessDeploy
 
     Optional<ProcessDeployment> findByCamundaProcessDefinitionId(String camundaProcessDefinitionId);
 
+    Optional<ProcessDeployment> findByCamundaDeploymentId(String camundaDeploymentId);
+
     @Query("from ProcessDeployment where processDefinition.id = ?1 and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE")
     Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusIsActive(Long processDefinitionId);
 
     @Query("from ProcessDeployment where processDefinition.id = ?1 and tenant is null and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE")
     Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(Long processDefinitionId);
 
-    @Query("from ProcessDeployment where processDefinition.id = ?1 and tenant = ?2 and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE")
+    @Query("from ProcessDeployment where processDefinition.id = ?1 and tenant is not null and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE")
+    Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNotNull(Long processDefinitionId);
+
+    @Query("from ProcessDeployment where processDefinition.id = ?1 and tenant.id = ?2 and status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE")
     Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusIsActiveAndTenantId(Long processDefinitionId, Long tenantId);
+
+    @Query("from ProcessDeployment where status = org.akip.domain.enumeration.StatusProcessDeployment.ACTIVE and tenant.id = ?1 and processDefinition.id = ?2")
+    Optional<ProcessDeployment> findByProcessDefinitionIdAndStatusAndTenantId(Long tenantId, Long processDefinitionId);
 
     List<ProcessDeployment> findByProcessDefinitionIdAndStatusAndTenantIsNull(Long processDefinitionId, StatusProcessDeployment status);
 

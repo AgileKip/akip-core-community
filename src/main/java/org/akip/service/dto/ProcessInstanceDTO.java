@@ -4,6 +4,7 @@ import org.akip.domain.enumeration.StatusProcessInstance;
 
 import javax.persistence.Lob;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +15,8 @@ import java.util.Objects;
 public class ProcessInstanceDTO implements Serializable {
 
     private Long id;
+
+    private TemporaryProcessInstanceDTO temporaryProcessInstance;
 
     private String businessKey;
 
@@ -36,9 +39,14 @@ public class ProcessInstanceDTO implements Serializable {
 
     private StatusProcessInstance status;
 
+    private String accessTokenNumber;
+
+    private LocalDate accessTokenExpirationDate;
+
     private ProcessDefinitionDTO processDefinition;
 
     private TenantDTO tenant;
+
 
     public Long getId() {
         return id;
@@ -46,6 +54,13 @@ public class ProcessInstanceDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    public TemporaryProcessInstanceDTO getTemporaryProcessInstance() {
+        return temporaryProcessInstance;
+    }
+
+    public void setTemporaryProcessInstance(TemporaryProcessInstanceDTO temporaryProcessInstance) {
+        this.temporaryProcessInstance = temporaryProcessInstance;
     }
 
     public String getBusinessKey() {
@@ -88,7 +103,6 @@ public class ProcessInstanceDTO implements Serializable {
         this.camundaProcessVariables = camundaProcessVariables;
     }
 
-
     public Map<String, String> getProps() {
         return props;
     }
@@ -127,6 +141,22 @@ public class ProcessInstanceDTO implements Serializable {
 
     public void setStatus(StatusProcessInstance status) {
         this.status = status;
+    }
+
+    public String getAccessTokenNumber() {
+        return accessTokenNumber;
+    }
+
+    public void setAccessTokenNumber(String accessTokenNumber) {
+        this.accessTokenNumber = accessTokenNumber;
+    }
+
+    public LocalDate getAccessTokenExpirationDate() {
+        return accessTokenExpirationDate;
+    }
+
+    public void setAccessTokenExpirationDate(LocalDate accessTokenExpirationDate) {
+        this.accessTokenExpirationDate = accessTokenExpirationDate;
     }
 
     public ProcessDefinitionDTO getProcessDefinition() {

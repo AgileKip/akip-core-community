@@ -1,5 +1,6 @@
 package org.akip.service.dto;
 
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 
 import javax.persistence.Lob;
@@ -23,6 +24,14 @@ public class ProcessDefinitionDTO implements Serializable {
     private String bpmnProcessDefinitionId;
 
     private Boolean canBeManuallyStarted;
+
+    private Boolean startFormIsEnabled;
+
+    private FormDefinitionDTO startFormDefinition;
+
+    private ProcessVisibilityType processVisibilityType;
+
+    private KipAppDTO kipApp;
 
     public Long getId() {
         return id;
@@ -70,6 +79,38 @@ public class ProcessDefinitionDTO implements Serializable {
 
     public void setCanBeManuallyStarted(Boolean canBeManuallyStarted) {
         this.canBeManuallyStarted = canBeManuallyStarted;
+    }
+
+    public Boolean getStartFormIsEnabled() {
+        return startFormIsEnabled;
+    }
+
+    public void setStartFormIsEnabled(Boolean startFormIsEnabled) {
+        this.startFormIsEnabled = startFormIsEnabled;
+    }
+
+    public FormDefinitionDTO getStartFormDefinition() {
+        return startFormDefinition;
+    }
+
+    public void setStartFormDefinition(FormDefinitionDTO startFormDefinition) {
+        this.startFormDefinition = startFormDefinition;
+    }
+
+    public ProcessVisibilityType getProcessVisibilityType() {
+        return processVisibilityType;
+    }
+
+    public void setProcessVisibilityType(ProcessVisibilityType processVisibilityType) {
+        this.processVisibilityType = processVisibilityType;
+    }
+
+    public KipAppDTO getKipApp() {
+        return kipApp;
+    }
+
+    public void setKipApp(KipAppDTO kipApp) {
+        this.kipApp = kipApp;
     }
 
     @Override

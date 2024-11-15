@@ -9,6 +9,13 @@ import java.util.Objects;
  */
 public class TenantDTO implements Serializable {
 
+    public TenantDTO() {
+    }
+
+    public TenantDTO(Long id) {
+        this.id = id;
+    }
+
     private static final long serialVersionUID = -5986534733199831083L;
 
     private Long id;
