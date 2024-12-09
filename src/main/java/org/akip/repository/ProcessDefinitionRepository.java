@@ -16,4 +16,5 @@ public interface ProcessDefinitionRepository extends JpaRepository<ProcessDefini
 
     Optional<ProcessDefinition> findByStartFormDefinitionId(Long startFormDefinitionId);
 
+    boolean existsByName(String name);
 }

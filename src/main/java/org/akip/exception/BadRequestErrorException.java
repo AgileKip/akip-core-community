@@ -2,7 +2,7 @@ package org.akip.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.ErrorResponseException;
-import tech.jhipster.web.rest.errors.ProblemDetailWithCause;
+import tech.jhipster.web.rest.errors.ProblemDetailWithCause.ProblemDetailWithCauseBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class BadRequestErrorException extends ErrorResponseException {
     public BadRequestErrorException(String errorKey, String... params) {
         super(
                 HttpStatus.BAD_REQUEST,
-                ProblemDetailWithCause.ProblemDetailWithCauseBuilder.instance()
+                ProblemDetailWithCauseBuilder.instance()
                         .withStatus(HttpStatus.BAD_REQUEST.value())
                         .withType(ErrorConstants.DEFAULT_TYPE)
                         .withTitle(errorKey)

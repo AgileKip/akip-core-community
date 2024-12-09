@@ -100,6 +100,10 @@ public class ProcessDefinitionService {
             processDefinition.setDescription(process.getDocumentations().iterator().next().getRawTextContent());
         }
 
+        if (processDefinitionRepository.existsByName(processDefinition.getName())){
+            throw new BadRequestErrorException("processNameDuplicated", processDefinition.getName());
+        }
+
         /**
          * If the start form definition comes in the BPMN, we consider it a CamundaForm7Builder.
          * Other builders are configured in the ProcessDefinition edit view.
