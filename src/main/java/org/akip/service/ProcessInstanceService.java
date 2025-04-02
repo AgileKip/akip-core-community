@@ -164,7 +164,6 @@ public class ProcessInstanceService {
                 .setVariables(params)
                 .execute();
 
-
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
         synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO.getTemporaryProcessInstance(), processInstanceSaved);
@@ -175,9 +174,13 @@ public class ProcessInstanceService {
     private ProcessInstance createWithoutTenant(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity) {
         log.debug("Request to create a processInstance by bpmnProcessDefinitionId: {}", bpmnProcessDefinitionId);
 
+        //TODO: These methods (create) should be refactored: 1. different return types, handling domain and DTO,
+        TemporaryProcessInstanceDTO temporaryProcessInstance = processEntity.getProcessInstance().getTemporaryProcessInstance();
+
         ProcessDefinition processDefinition = processDefinitionRepository
                 .findByBpmnProcessDefinitionId(bpmnProcessDefinitionId)
                 .orElseThrow();
+
         ProcessDeployment processDeployment = processDeploymentRepository
                 .findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(processDefinition.getId())
                 .orElseThrow();
@@ -206,7 +209,7 @@ public class ProcessInstanceService {
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
 
         ProcessInstance processInstanceSaved = processInstanceRepository.save(processInstance);
-        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processEntity.getProcessInstance().getTemporaryProcessInstance(), processInstanceMapper.toDto(processInstanceSaved));
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(temporaryProcessInstance, processInstanceMapper.toDto(processInstanceSaved));
 
         return processInstanceSaved;
     }
