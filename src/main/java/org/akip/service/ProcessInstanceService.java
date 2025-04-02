@@ -348,6 +348,7 @@ public class ProcessInstanceService {
         if (notes.isEmpty()) {
             return;
         }
+        //Linking Note with ProcessInstance
         notes.forEach(
                 note -> {
                     NoteEntity noteEntityProcessInstance = new NoteEntity();
@@ -355,6 +356,14 @@ public class ProcessInstanceService {
                     noteEntityProcessInstance.setEntityName(ProcessInstance.class.getSimpleName());
                     noteEntityProcessInstance.setEntityId(processInstanceId);
                     noteEntityRepository.save(noteEntityProcessInstance);
+                }
+        );
+
+        //Closing Notes
+        notes.forEach(
+                note -> {
+                    note.setStatus("CLOSED");
+                    noteRepository.save(note);
                 }
         );
     }
