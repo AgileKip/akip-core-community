@@ -1,6 +1,8 @@
 package org.akip.web.rest;
 
+import org.akip.domain.ProcessDefinition;
 import org.akip.domain.TaskDefinition;
+import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.akip.service.*;
 import org.akip.service.dto.*;
 import org.simpleframework.xml.Path;
@@ -135,5 +137,17 @@ public class ProcessDefinitionController {
         return ResponseEntity
             .noContent()
             .build();
+    }
+
+    @PostMapping("/suspend/{processDefinitionKey}")
+    public ResponseEntity<String> suspendProcessDefinition(@PathVariable("processDefinitionKey") String processDefinitionKey) {
+        processDefinitionService.suspendProcess(processDefinitionKey);
+        return ResponseEntity.ok("Process definition suspended successfully");
+    }
+
+    @PostMapping("/activate/{processDefinitionKey}")
+    public ResponseEntity<String> activateProcessDefinition(@PathVariable("processDefinitionKey") String processDefinitionKey) {
+        processDefinitionService.activateProcess(processDefinitionKey);
+        return ResponseEntity.ok("Process definition activated successfully");
     }
 }

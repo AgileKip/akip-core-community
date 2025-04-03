@@ -12,6 +12,7 @@ import org.akip.service.dto.*;
 import org.akip.service.mapper.ProcessDefinitionMapper;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
@@ -50,6 +51,8 @@ public class ProcessDefinitionService {
 
     private final ProcessInstanceMapper processInstanceMapper;
 
+    private final RepositoryService repositoryService;
+
 
     public ProcessDefinitionService(
             ProcessDefinitionRepository processDefinitionRepository,
@@ -57,7 +60,7 @@ public class ProcessDefinitionService {
             ProcessDeploymentRepository processDeploymentRepository,
             TaskDefinitionService taskDefinitionService,
             CamundaForm7Service camundaForm7Service,
-            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper) {
+            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, RepositoryService repositoryService) {
         this.processDefinitionRepository = processDefinitionRepository;
         this.processDefinitionMapper = processDefinitionMapper;
         this.processDeploymentRepository = processDeploymentRepository;
@@ -65,6 +68,7 @@ public class ProcessDefinitionService {
         this.camundaForm7Service = camundaForm7Service;
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
+        this.repositoryService = repositoryService;
     }
 
     public ProcessDefinition createOrUpdateProcessDefinition(ProcessVisibilityType processVisibilityType, BpmnModelInstance bpmnModelInstance) {
@@ -295,6 +299,20 @@ public class ProcessDefinitionService {
         }
         taskDefinition.setDynamicFormIsEnabled(Boolean.TRUE);
         taskDefinition.setFormDefinition(optionalFormDefinition.get());
+    }
+
+    public void suspendProcess(String processDefinitionKey) {
+        ProcessDefinition processDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(processDefinitionKey).orElseThrow();
+        processDefinition.setStatus(StatusProcessDefinition.INACTIVE);
+        processDefinitionRepository.save(processDefinition);
+        repositoryService.suspendProcessDefinitionByKey(processDefinitionKey, true, null);
+    }
+
+    public void activateProcess(String processDefinitionKey){
+        ProcessDefinition processDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(processDefinitionKey).orElseThrow();
+        processDefinition.setStatus(StatusProcessDefinition.ACTIVE);
+        processDefinitionRepository.save(processDefinition);
+        repositoryService.activateProcessDefinitionByKey(processDefinitionKey, true, null);
     }
 
 }
