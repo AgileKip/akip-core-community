@@ -194,7 +194,7 @@
     <dependency>
       <groupId>com.owse</groupId>
       <artifactId>search-framework-server-side-jdk17</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.1-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <groupId>javax.persistence</groupId>
@@ -218,7 +218,7 @@
       <url>http://192.168.3.3:8787/repository/kip4you-maven-releases/</url>
     </repository>
     <snapshotRepository>
-      <id>kip4you-nexus-maven-snapshot</id>
+      <id>owse-nexus-snapshot</id>
       <name>Nexus Snapshot KIP4You</name>
       <url>http://192.168.3.3:8787/repository/kip4you-maven-snapshots/</url>
     </snapshotRepository>
