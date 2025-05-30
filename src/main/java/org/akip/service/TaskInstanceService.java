@@ -145,6 +145,10 @@ public class TaskInstanceService {
 
         String expression = taskInstance.getTaskDefinition().getDocumentation();
 
+        if(expression == null) {
+            return "";
+        }
+
         if (!expression.contains("\"\"\"")) {
             expression = "\"\"\"" + expression + "\"\"\"";
         }
