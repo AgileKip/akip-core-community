@@ -20,6 +20,8 @@ public class ProcessInstanceDTO implements Serializable {
 
     private String businessKey;
 
+    private String username;
+
     private String camundaDeploymentId;
 
     private String camundaProcessDefinitionId;
@@ -69,6 +71,14 @@ public class ProcessInstanceDTO implements Serializable {
 
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getCamundaDeploymentId() {
