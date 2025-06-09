@@ -17,4 +17,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="00000000000033-2" author="akip">
+        <preConditions onFail="MARK_RAN">
+            <tableIsEmpty tableName="process_definition"/>
+        </preConditions>
+        <dropColumn tableName="process_definition"
+                        columnName="can_be_manually_started" />
+        <addColumn tableName="process_definition">
+            <column name="can_be_manually_started" type="boolean" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
