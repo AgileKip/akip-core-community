@@ -4,7 +4,7 @@ import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
-import io.minio.credentials.AwsEnvironmentProvider;
+import io.minio.credentials.IamAwsProvider;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.MinioException;
 import org.akip.exception.BadRequestErrorException;
@@ -82,6 +82,7 @@ public class S3Service implements IDocumentStorageService {
     }
 
     private void validateMaxFileSize(byte[] bytes) {
+        log.debug("Validating file size {} {}", (bytes != null) ? bytes.length : "bytes is empty", maxFileSizeInBytes);
         if (bytes.length > this.maxFileSizeInBytes * 1024) {
             BigDecimal oneMB = new BigDecimal(1024);
             throw new BadRequestErrorException("error.s3.maxFileSize", new BigDecimal(this.maxFileSizeInBytes).divide(oneMB, 2, RoundingMode.HALF_DOWN) + " MB",  new BigDecimal(bytes.length).divide(oneMB).divide(oneMB, 2, RoundingMode.HALF_DOWN) + " MB");
@@ -160,8 +161,9 @@ public class S3Service implements IDocumentStorageService {
         }
         log.debug("Creating S3 client without credentials");
         return MinioClient.builder()
-                .credentialsProvider(new AwsEnvironmentProvider())
-                .endpoint(endpoint)
+                .endpoint("https://s3.amazonaws.com")
+                .credentialsProvider(new IamAwsProvider(null, null))
+                .region("ca-central-1")
                 .build();
     }
 
