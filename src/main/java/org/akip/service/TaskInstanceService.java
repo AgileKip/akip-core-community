@@ -125,6 +125,10 @@ public class TaskInstanceService {
 
     public String executeDocumentationExpression(TaskInstance taskInstance) {
 
+        if (StringUtils.isEmpty(taskInstance.getTaskDefinition().getDocumentation())) {
+            return "";
+        }
+
         Object processEntity = runtimeService.getVariable(taskInstance.getProcessInstance().getCamundaProcessInstanceId(), CamundaConstants.PROCESS_ENTITY);
 
         if (processEntity != null){
