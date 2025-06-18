@@ -1,5 +1,8 @@
 # Changelog
 
+* 1.12.0 (WIP)
+  * To be defined
+
 * 1.11.0
   * Implement New Model (Process Definition/Tenant/User/Role) #17
     * Including a new process visibility type (public, internal, private)
