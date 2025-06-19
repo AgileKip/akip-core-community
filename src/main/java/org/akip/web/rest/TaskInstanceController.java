@@ -62,7 +62,7 @@ public class TaskInstanceController {
 
     @GetMapping("/task-instances/{id}/claim")
     public TaskInstanceDTO claimTaskInstance(@PathVariable("id") Long id) {
-        log.debug("REST request to get TaskInstance : {}", id);
+        log.debug("REST request to get claimTaskInstance : {}", id);
         return taskInstanceService.claim(id).orElseThrow();
     }
 

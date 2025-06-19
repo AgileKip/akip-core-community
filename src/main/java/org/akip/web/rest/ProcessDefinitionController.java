@@ -1,6 +1,8 @@
 package org.akip.web.rest;
 
+import org.akip.domain.ProcessDefinition;
 import org.akip.domain.TaskDefinition;
+import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.akip.service.*;
 import org.akip.service.dto.*;
 import org.simpleframework.xml.Path;
@@ -85,11 +87,10 @@ public class ProcessDefinitionController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processDefinitionDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}/instances")
-    public ProcessDefinitionDTO getInstances(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
+    public List<ProcessInstanceDTO> getInstances(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
         log.debug("REST request to get instances by ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
         return processDefinitionService
-                .findByIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
-                .orElseThrow();
+                .findByProcessDefinition(idOrBpmnProcessDefinitionId);
     }
 
     /**
@@ -136,5 +137,17 @@ public class ProcessDefinitionController {
         return ResponseEntity
             .noContent()
             .build();
+    }
+
+    @PostMapping("/suspend/{processDefinitionKey}")
+    public ResponseEntity<String> suspendProcessDefinition(@PathVariable("processDefinitionKey") String processDefinitionKey) {
+        processDefinitionService.suspendProcess(processDefinitionKey);
+        return ResponseEntity.ok("Process definition suspended successfully");
+    }
+
+    @PostMapping("/activate/{processDefinitionKey}")
+    public ResponseEntity<String> activateProcessDefinition(@PathVariable("processDefinitionKey") String processDefinitionKey) {
+        processDefinitionService.activateProcess(processDefinitionKey);
+        return ResponseEntity.ok("Process definition activated successfully");
     }
 }

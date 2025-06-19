@@ -6,7 +6,7 @@
 
   <groupId>org.akip</groupId>
   <artifactId>akip-core</artifactId>
-  <version>1.12.0-jdk17-SNAPSHOT</version>
+  <version>1.12.1-jdk17-SNAPSHOT</version>
   <name>akip-core</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
@@ -19,7 +19,7 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
-    <spring-boot.version>3.3.1</spring-boot.version>
+    <spring-boot.version>3.4.2</spring-boot.version>
     <camunda.version>7.21.0</camunda.version>
     <mapstruct.version>1.5.5.Final</mapstruct.version>
     <commons-lang3.version>3.14.0</commons-lang3.version>
@@ -28,7 +28,7 @@
     <jakarta.annotation.version>2.1.1</jakarta.annotation.version>
     <jakarta.validation.version>3.0.2</jakarta.validation.version>
     <jhipster.version>8.6.0</jhipster.version>
-    <liquibase.version>4.27.0</liquibase.version>
+    <liquibase.version>4.29.2</liquibase.version>
     <minio.version>7.1.4</minio.version>
 
     <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -59,7 +59,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <dependency>
         <groupId>org.camunda.bpm</groupId>
         <artifactId>camunda-bom</artifactId>
@@ -93,6 +92,21 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -194,7 +208,7 @@
     <dependency>
       <groupId>com.owse</groupId>
       <artifactId>search-framework-server-side-jdk17</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.1-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <groupId>javax.persistence</groupId>
@@ -218,7 +232,7 @@
       <url>http://192.168.3.3:8787/repository/kip4you-maven-releases/</url>
     </repository>
     <snapshotRepository>
-      <id>kip4you-nexus-maven-snapshot</id>
+      <id>owse-nexus-snapshot</id>
       <name>Nexus Snapshot KIP4You</name>
       <url>http://192.168.3.3:8787/repository/kip4you-maven-snapshots/</url>
     </snapshotRepository>
