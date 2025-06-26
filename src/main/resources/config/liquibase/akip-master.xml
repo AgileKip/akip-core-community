@@ -44,7 +44,17 @@
     <include file="config/liquibase/changelog/00000000000036_added_entity_ProcessMemberProcessRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000037_added_entity_TenantMemberTenantRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000038_alter_entity_ProcessDeployment.xml" relativeToChangelogFile="false"/>
-
+    <include file="config/liquibase/changelog/00000000001001_added_entity_DashboardConfig.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000001002_added_entity_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000002001_added_entity_AkipEmailConnectorConfig.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000003001_added_entity_AkipPromptConfiguration.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000004001_added_entity_DomainEntityDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000004002_added_entity_DomainEntityFieldDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000004003_added_entity_constraints_DomainEntityFieldDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000004004_added_entity_DomainEntityHasARelationDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000004005_added_entity_constraints_DomainEntityHasARelationDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000004006_added_entity_DomainEntityHasManyRelationDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000004007_added_entity_constraints_DomainEntityHasManyRelationDefinition.xml" relativeToChangelogFile="false"/>
 
     <!-- Include constraints here -->
     <include file="config/liquibase/changelog/00000000000004_added_entity_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>
@@ -58,14 +68,11 @@
     <include file="config/liquibase/changelog/00000000000029_added_constraints_ProcessRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000031_added_constraints_TenantRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000035_added_constraints_ProcessMember.xml" relativeToChangelogFile="false"/>
-
-
-    <include file="config/liquibase/changelog/00000000001001_added_entity_DashboardConfig.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/00000000001002_added_entity_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000001003_added_entity_constraints_DashboardGroupConfig.xml" relativeToChangelogFile="false"/>
 
-    <include file="config/liquibase/changelog/00000000002001_added_entity_AkipEmailConnectorConfig.xml" relativeToChangelogFile="false"/>
 
-    <include file="config/liquibase/changelog/00000000003001_added_entity_AkipPromptConfiguration.xml" relativeToChangelogFile="false"/>
+
+
+
 
 </databaseChangeLog>

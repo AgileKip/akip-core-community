@@ -45,7 +45,7 @@ public class ProcessDeploymentController {
     public ResponseEntity<Void> deploy(@RequestBody ProcessDeploymentDTO processDeploymentDTO) throws URISyntaxException {
         log.debug("REST request to deploy ProcessDeployment : {}", processDeploymentDTO);
         ProcessDeploymentDTO result = processDeploymentService.deploy(processDeploymentDTO);
-        if(ProcessVisibilityType.INTERNAL.equals(processDeploymentDTO.getProcessVisibilityType()) && processDeploymentDTO.getTenant() == null){
+        if (ProcessVisibilityType.INTERNAL.equals(processDeploymentDTO.getProcessVisibilityType()) && processDeploymentDTO.getTenant() == null){
             throw new BadRequestErrorException("Internal process requires a tenant", "deployInternalProcess", "tenantIsNull");
         }
         return ResponseEntity
