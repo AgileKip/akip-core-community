@@ -13,6 +13,7 @@ import tech.jhipster.web.util.HeaderUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -33,6 +34,14 @@ public class DomainEntityDefinitionDataController {
     public DomainEntityDefinitionDataController(DomainEntityDefinitionDataService domainEntityDefinitionDataService, DomainEntityDefinitionService domainEntityDefinitionService) {
         this.domainEntityDefinitionDataService = domainEntityDefinitionDataService;
         this.domainEntityDefinitionService = domainEntityDefinitionService;
+    }
+
+    @GetMapping("/{domainEntityDefinitionName}/data")
+    public List<Map<String, Object>> getAllDomainEntityData(@PathVariable("domainEntityDefinitionName") String domainEntityDefinitionName) {
+        LOG.debug("REST request to get all data from Domain Entity: {}", domainEntityDefinitionName);
+        var result = domainEntityDefinitionDataService.findAll(domainEntityDefinitionName);
+        LOG.debug("REST request to get all data from Domain Entity {} retrieved {} lines", domainEntityDefinitionName, result.size());
+        return result;
     }
 
     @GetMapping("/{domainEntityDefinitionName}/data/{domainEntityId}")
