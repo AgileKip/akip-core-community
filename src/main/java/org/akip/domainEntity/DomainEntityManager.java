@@ -67,11 +67,12 @@ public class DomainEntityManager {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(domainEntityDefinition.getTableName());
         simpleJdbcInsert.usingColumns(columns.toArray(new String[columns.size()]));
-        insertHasManyRelations(domainEntityDefinition, data);
 
         if (data.get("id") == null) {
             data.put("id", nextIdFromSequence("sequence_generator"));
         }
+
+        insertHasManyRelations(domainEntityDefinition, data);
 
         return simpleJdbcInsert.execute(data);
     }
