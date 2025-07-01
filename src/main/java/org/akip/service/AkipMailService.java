@@ -1,6 +1,8 @@
 package org.akip.service;
 
+import jakarta.mail.util.ByteArrayDataSource;
 import org.akip.resolver.AkipUserDTO;
+import org.akip.service.dto.AttachmentDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -16,6 +18,8 @@ import tech.jhipster.config.JHipsterProperties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -57,14 +61,23 @@ public class AkipMailService {
         this.sendEmail(to, subject, content, false, true);
     }
 
+    public void sendEmail(String to, String subject, String content, List<AttachmentDTO> attachments) {
+        this.sendEmail(to, subject, content, true, true, attachments);
+    }
+
     @Async
     public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
+        sendEmail(to, subject, content, isMultipart, isHtml, Collections.emptyList());
+    }
+
+    @Async
+    public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml, List<AttachmentDTO> attachments) {
         log.debug(
-            "Send email[multipart '{}' and html '{}'] to '{}' with subject '{}'",
-            isMultipart,
-            isHtml,
-            to,
-            subject
+                "Send email[multipart '{}' and html '{}'] to '{}' with subject '{}'",
+                isMultipart,
+                isHtml,
+                to,
+                subject
         );
 
         // Prepare message using a Spring helper
@@ -75,6 +88,12 @@ public class AkipMailService {
             message.setFrom(jHipsterProperties.getMail().getFrom());
             message.setSubject(subject);
             message.setText(content, isHtml);
+
+            for (AttachmentDTO attachment : attachments) {
+                ByteArrayDataSource bads = new ByteArrayDataSource(attachment.getBytes(), attachment.getBytesContentType());
+                message.addAttachment(attachment.getName(), bads);
+            }
+
             javaMailSender.send(mimeMessage);
             log.debug("Sent email to User '{}'", to);
         } catch (MailException | MessagingException e) {
