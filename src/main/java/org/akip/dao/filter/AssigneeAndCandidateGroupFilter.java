@@ -15,8 +15,10 @@ public class AssigneeAndCandidateGroupFilter extends ListFilter {
 		StringBuilder hql = new StringBuilder();
 		hql.append("  ( ");
 		hql.append("    entity.assignee = :assignee ");
+		hql.append("    or ");
+		hql.append("    entity.assignee is null ");
 		hql.append("  ) ");
-		hql.append(" or ");
+		hql.append(" and ");
 		hql.append("  ( ");
 		hql.append("    entity.computedCandidateGroups is null ");
 		for (Object authority:getValues()) {
