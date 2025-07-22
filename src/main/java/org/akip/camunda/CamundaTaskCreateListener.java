@@ -17,6 +17,7 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -79,6 +80,11 @@ public class CamundaTaskCreateListener implements TaskListener {
 
         delegateTask.getCandidates()
                 .stream()
+                .filter(identityLink -> identityLink.getUserId() != null)
+                .forEach(identityLink -> taskInstanceDTO.getCandidateUsers().add(identityLink.getUserId()));
+
+        delegateTask.getCandidates()
+                .stream()
                 .filter(identityLink -> identityLink.getGroupId() != null)
                 .forEach(identityLink -> taskInstanceDTO.getCandidateGroups().add(identityLink.getGroupId()));
 
@@ -99,30 +105,33 @@ public class CamundaTaskCreateListener implements TaskListener {
     }
 
     private void mountComputedCandidateGroups(ProcessDefinitionDTO processDefinitionDTO ,TaskInstanceDTO taskInstanceDTO){
-        if (taskInstanceDTO.getCandidateGroups().isEmpty()){
-            taskInstanceDTO.getCandidateGroups().add("*");
-        }
-
         taskInstanceDTO.getComputedCandidateGroups().addAll(calculateCandidateGroups(processDefinitionMapper.toEntity(processDefinitionDTO), taskInstanceDTO.getCandidateGroups()));
     }
 
     private List<String> calculateCandidateGroups(ProcessDefinition processDefinition, List<String> candidateGroups){
 
+        List<String> list = new ArrayList<>();
+
         if (processDefinition.getProcessVisibilityType() == ProcessVisibilityType.PRIVATE){
-            return candidateGroups
+            list.addAll(candidateGroups
                     .stream()
                     .map(candidateGroup -> processDefinition.getBpmnProcessDefinitionId() + "." + candidateGroup)
-                    .collect(Collectors.toList());
+                    .toList());
+            list.add(processDefinition.getBpmnProcessDefinitionId() + "." + "*");
+            return list;
         }
 
         if (processDefinition.getProcessVisibilityType() == ProcessVisibilityType.INTERNAL){
 
             ProcessDeployment processDeployment = processDeploymentRepository.findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNotNull(processDefinition.getId()).get();
 
-            return candidateGroups
+            list.addAll(candidateGroups
                     .stream()
                     .map(candidateGroup -> processDeployment.getTenant().getIdentifier() + "." + candidateGroup)
-                    .collect(Collectors.toList());
+                    .toList()
+            );
+            list.add(processDeployment.getTenant().getIdentifier() + "." + "*");
+            return list;
         }
 
         return candidateGroups;

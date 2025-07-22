@@ -50,6 +50,8 @@ public class TaskInstanceDTO implements Serializable {
 
     private Integer priority;
 
+    private List<String> candidateUsers = new ArrayList<>();
+
     private List<String> candidateGroups = new ArrayList<>();
 
     private List<String> computedCandidateGroups = new ArrayList<>();
@@ -198,6 +200,14 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public List<String> getCandidateUsers() {
+        return candidateUsers;
+    }
+
+    public void setCandidateUsers(List<String> candidateUsers) {
+        this.candidateUsers = candidateUsers;
     }
 
     public List<String> getCandidateGroups() {

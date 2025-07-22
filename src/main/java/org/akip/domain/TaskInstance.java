@@ -75,6 +75,9 @@ public class TaskInstance implements Serializable {
     @Column(name = "priority")
     private Integer priority;
 
+    @Column(name = "candidate_users")
+    private String candidateUsers;
+
     @Column(name = "candidateGroups")
     private String candidateGroups;
 
@@ -317,6 +320,19 @@ public class TaskInstance implements Serializable {
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public String getCandidateUsers() {
+        return candidateUsers;
+    }
+
+    public TaskInstance candidateUsers(String candidateUsers) {
+        this.candidateUsers = candidateUsers;
+        return this;
+    }
+
+    public void setCandidateUsers(String candidateUsers) {
+        this.candidateUsers = candidateUsers;
     }
 
     public String getCandidateGroups() {

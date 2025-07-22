@@ -114,6 +114,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         fields.add("entity.taskDefinitionKey");
         fields.add("entity.suspended");
         fields.add("entity.priority");
+        fields.add("entity.candidateUsers");
         fields.add("entity.candidateGroups");
         fields.add("entity.processDefinition.name");
         fields.add("entity.processDefinition.bpmnProcessDefinitionId");
@@ -273,6 +274,14 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         resultColumnPriority.setVisible(false);
         resultColumnPriority.setType("String");
         resultColumns.add(resultColumnPriority);
+
+        ResultColumn resultColumnCandidateUsers = new ResultColumn();
+        resultColumnCandidateUsers.setId("candidateUsers");
+        resultColumnCandidateUsers.setTitle("Candidate Users");
+        resultColumnCandidateUsers.setDtoField("candidateUsers");
+        resultColumnCandidateUsers.setVisible(false);
+        resultColumnCandidateUsers.setType("Custom");
+        resultColumns.add(resultColumnCandidateUsers);
 
         ResultColumn resultColumnCandidateGroups = new ResultColumn();
         resultColumnCandidateGroups.setId("candidateGroups");
