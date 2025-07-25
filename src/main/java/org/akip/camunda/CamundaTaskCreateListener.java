@@ -117,7 +117,9 @@ public class CamundaTaskCreateListener implements TaskListener {
                     .stream()
                     .map(candidateGroup -> processDefinition.getBpmnProcessDefinitionId() + "." + candidateGroup)
                     .toList());
-            list.add(processDefinition.getBpmnProcessDefinitionId() + "." + "*");
+            if(candidateGroups.isEmpty()){
+                list.add(processDefinition.getBpmnProcessDefinitionId() + "." + "*");
+            }
             return list;
         }
 
@@ -130,7 +132,9 @@ public class CamundaTaskCreateListener implements TaskListener {
                     .map(candidateGroup -> processDeployment.getTenant().getIdentifier() + "." + candidateGroup)
                     .toList()
             );
-            list.add(processDeployment.getTenant().getIdentifier() + "." + "*");
+            if (candidateGroups.isEmpty()){
+                list.add(processDeployment.getTenant().getIdentifier() + "." + "*");
+            }
             return list;
         }
 

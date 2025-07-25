@@ -182,7 +182,7 @@ public class TaskInstanceService {
 
             taskInstance.setDescription(executeDocumentationExpression(taskInstance));
 
-            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getComputedCandidateGroups()), taskInstance.getProcessDefinition().getProcessVisibilityType());
+            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getComputedCandidateGroups()), taskInstanceMapper.stringToList(taskInstance.getCandidateUsers()), taskInstance.getProcessDefinition().getProcessVisibilityType());
 
             taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
             taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
@@ -203,7 +203,12 @@ public class TaskInstanceService {
      * Check whether the current user can claim this task according to the candidate group list
      * @param computedCandidateGroups candidateGroups
      */
-    private void checkCurrentUserPermission(List<String> computedCandidateGroups, ProcessVisibilityType processVisibilityType) {
+    private void checkCurrentUserPermission(List<String> computedCandidateGroups, List<String> candidateUsers, ProcessVisibilityType processVisibilityType) {
+
+        if (!candidateUsers.isEmpty() && !candidateUsers.contains(SecurityUtils.getCurrentUserLogin().get())) {
+            throw new BadRequestErrorException("Task reserved for users " + String.join(", ", candidateUsers));
+        }
+
         if (computedCandidateGroups.isEmpty()) {
             return;
         }
