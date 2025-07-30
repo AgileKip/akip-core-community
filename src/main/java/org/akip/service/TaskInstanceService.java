@@ -206,7 +206,7 @@ public class TaskInstanceService {
     private void checkCurrentUserPermission(List<String> computedCandidateGroups, List<String> candidateUsers, ProcessVisibilityType processVisibilityType) {
 
         if (!candidateUsers.isEmpty() && !candidateUsers.contains(SecurityUtils.getCurrentUserLogin().get())) {
-            throw new BadRequestErrorException("Task reserved for users " + String.join(", ", candidateUsers));
+            throw new BadRequestErrorException("akip.userDontHavePermission", String.join(", ", candidateUsers));
         }
 
         if (computedCandidateGroups.isEmpty()) {
@@ -223,7 +223,7 @@ public class TaskInstanceService {
             }
         }
 
-        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", computedCandidateGroups));
+        throw new BadRequestErrorException("akip.userDontHavePermission", String.join(", ", computedCandidateGroups));
     }
 
     private List<String> getAuthorities(ProcessVisibilityType processVisibilityType){
