@@ -139,6 +139,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         statusFilterDef.setId("status");
         statusFilterDef.setEnumType(StatusTaskInstance.class);
         statusFilterDef.setOptions(Arrays.asList(StatusTaskInstance.values()));
+        statusFilterDef.setDefaultValues(List.of(StatusTaskInstance.NEW,  StatusTaskInstance.ASSIGNED));
         statusFilterDef.setFilterType(FilterType.DEFAULT);
         filters.add(statusFilterDef);
 

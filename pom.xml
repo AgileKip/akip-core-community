@@ -6,7 +6,7 @@
 
   <groupId>org.akip</groupId>
   <artifactId>akip-core</artifactId>
-  <version>1.12.2-jdk17-SNAPSHOT</version>
+  <version>1.12.3-jdk17-SNAPSHOT</version>
   <name>akip-core</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
@@ -229,12 +229,12 @@
       <id>kip4you-nexus-maven-release</id>
       <name>Nexus Release KIP4You</name>
 <!--      <url>https://pkgs.dev.azure.com/kip4you/kip4you-repository/_packaging/kip4you-repository/maven/v1</url>-->
-      <url>http://192.168.3.3:8787/repository/kip4you-maven-releases/</url>
+      <url>http://nexus.owse.io:8787/repository/kip4you-maven-releases/</url>
     </repository>
     <snapshotRepository>
       <id>owse-nexus-snapshot</id>
       <name>Nexus Snapshot KIP4You</name>
-      <url>http://192.168.3.3:8787/repository/kip4you-maven-snapshots/</url>
+      <url>http://nexus.owse.io:8787/repository/kip4you-maven-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
