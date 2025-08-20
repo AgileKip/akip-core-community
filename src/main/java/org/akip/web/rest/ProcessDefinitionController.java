@@ -8,8 +8,10 @@ import org.akip.service.dto.*;
 import org.simpleframework.xml.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.HeaderUtil;
 
 import java.util.List;
 
@@ -22,6 +24,9 @@ public class ProcessDefinitionController {
 
     private final Logger log = LoggerFactory.getLogger(ProcessDefinitionController.class);
 
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
     private final ProcessDefinitionService processDefinitionService;
 
     private final ProcessDeploymentService processDeploymentService;
@@ -30,15 +35,18 @@ public class ProcessDefinitionController {
 
     private final TaskDefinitionService taskDefinitionService;
 
+    private final FormDefinitionService formDefinitionService;
+
     public ProcessDefinitionController(
             ProcessDefinitionService processDefinitionService,
             ProcessDeploymentService processDeploymentService,
-            TaskInstanceService taskInstanceService, TaskDefinitionService taskDefinitionService
+            TaskInstanceService taskInstanceService, TaskDefinitionService taskDefinitionService, FormDefinitionService formDefinitionService
     ) {
         this.processDefinitionService = processDefinitionService;
         this.processDeploymentService = processDeploymentService;
         this.taskInstanceService = taskInstanceService;
         this.taskDefinitionService = taskDefinitionService;
+        this.formDefinitionService = formDefinitionService;
     }
 
     /**
@@ -119,9 +127,40 @@ public class ProcessDefinitionController {
     }
 
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/tasks-definitions")
-    public List<TaskDefinition> getTasksDefinition(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId) {
+    public List<TaskDefinitionDTO> getTasksDefinition(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId) {
         log.debug("REST request to get TaskInstances of the ProcessDefinition : {}", bpmnProcessDefinitionId);
         return taskDefinitionService.findByProcessDefinition(bpmnProcessDefinitionId);
+    }
+
+
+    @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/forms-definitions")
+    public List<FormDefinitionDTO> getFormsDefinition(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId) {
+        log.debug("REST request to get TaskInstances of the ProcessDefinition : {}", bpmnProcessDefinitionId);
+        return formDefinitionService.findByProcessDefinitionId(bpmnProcessDefinitionId);
+    }
+
+    @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/domain-entity-definition")
+    public DomainEntityDefinitionDTO getDomainEntityDefinition(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId) {
+        log.debug("REST request to get DomainEntityDefinition of the ProcessDefinition : {}", bpmnProcessDefinitionId);
+        return processDefinitionService.findDomainEntityDefinitionByProcessDefinitionId(bpmnProcessDefinitionId);
+    }
+
+    @PostMapping("/process-definitions/{bpmnProcessDefinitionId}/domain-entity-definition")
+    public ResponseEntity<Void>  setDomainEntityDefinition(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId, @RequestBody DomainEntityDefinitionDTO domainEntityDefinition) {
+        log.debug("REST request to set DomainEntityDefinition of the ProcessDefinition : {}", bpmnProcessDefinitionId);
+        processDefinitionService.setDomainEntityDefinition(domainEntityDefinition, bpmnProcessDefinitionId);
+        return ResponseEntity.noContent()
+                .headers(HeaderUtil.createAlert(applicationName, "domainEntityDefinition.updated", bpmnProcessDefinitionId))
+                .build();
+    }
+
+    @DeleteMapping("/process-definitions/{bpmnProcessDefinitionId}/domain-entity-definition")
+    public ResponseEntity<Void> removeDomainEntityDefinition(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId) {
+        log.debug("REST request to remove DomainEntityDefinition of the ProcessDefinition : {}", bpmnProcessDefinitionId);
+        processDefinitionService.removeDomainEntityDefinition(bpmnProcessDefinitionId);
+        return ResponseEntity.noContent()
+                .headers(HeaderUtil.createAlert(applicationName, "domainEntityDefinition.deleted", bpmnProcessDefinitionId))
+                .build();
     }
 
     /**
@@ -150,4 +189,6 @@ public class ProcessDefinitionController {
         processDefinitionService.activateProcess(processDefinitionKey);
         return ResponseEntity.ok("Process definition activated successfully");
     }
+
+
 }

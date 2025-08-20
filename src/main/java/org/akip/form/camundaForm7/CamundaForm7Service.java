@@ -88,7 +88,7 @@ public class CamundaForm7Service {
         }
 
         return formDefinitionService
-                .findByProcessDefinitionId(processDefinition.getId())
+                .findStartFormByProcessDefinitionId(processDefinition.getId())
                 .orElse(new FormDefinitionDTO());
     }
 
@@ -98,7 +98,7 @@ public class CamundaForm7Service {
         }
 
         return formDefinitionService
-                .findByTaskDefinitionId(taskDefinition.getId())
+                .findTaskFormByTaskDefinitionId(taskDefinition.getId())
                 .orElse(new FormDefinitionDTO());
     }
 

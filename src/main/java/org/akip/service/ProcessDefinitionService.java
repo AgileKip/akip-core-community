@@ -9,6 +9,7 @@ import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.repository.ProcessDeploymentRepository;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.service.dto.*;
+import org.akip.service.mapper.DomainEntityDefinitionMapper;
 import org.akip.service.mapper.ProcessDefinitionMapper;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -53,6 +54,8 @@ public class ProcessDefinitionService {
 
     private final RepositoryService repositoryService;
 
+    private final DomainEntityDefinitionMapper domainEntityDefinitionMapper;
+
 
     public ProcessDefinitionService(
             ProcessDefinitionRepository processDefinitionRepository,
@@ -60,7 +63,7 @@ public class ProcessDefinitionService {
             ProcessDeploymentRepository processDeploymentRepository,
             TaskDefinitionService taskDefinitionService,
             CamundaForm7Service camundaForm7Service,
-            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, RepositoryService repositoryService) {
+            ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, RepositoryService repositoryService, DomainEntityDefinitionMapper domainEntityDefinitionMapper) {
         this.processDefinitionRepository = processDefinitionRepository;
         this.processDefinitionMapper = processDefinitionMapper;
         this.processDeploymentRepository = processDeploymentRepository;
@@ -69,6 +72,7 @@ public class ProcessDefinitionService {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
         this.repositoryService = repositoryService;
+        this.domainEntityDefinitionMapper = domainEntityDefinitionMapper;
     }
 
     public ProcessDefinition createOrUpdateProcessDefinition(ProcessVisibilityType processVisibilityType, BpmnModelInstance bpmnModelInstance) {
@@ -319,4 +323,18 @@ public class ProcessDefinitionService {
         repositoryService.activateProcessDefinitionByKey(processDefinitionKey, true, null);
     }
 
+    public DomainEntityDefinitionDTO findDomainEntityDefinitionByProcessDefinitionId(String bpmnProcessDefinitionId) {
+        ProcessDefinition processDefinition = processDefinitionRepository
+                .findByBpmnProcessDefinitionId(bpmnProcessDefinitionId)
+                .orElseThrow();
+        return domainEntityDefinitionMapper.toDto(processDefinition.getDomainEntityDefinition());
+    }
+
+    public void setDomainEntityDefinition(DomainEntityDefinitionDTO domainEntityDefinition, String bpmnProcessDefinitionId) {
+        processDefinitionRepository.updateDomainEntityDefinition(domainEntityDefinitionMapper.toEntity(domainEntityDefinition), bpmnProcessDefinitionId);
+    }
+
+    public void removeDomainEntityDefinition(String bpmnProcessDefinitionId) {
+        processDefinitionRepository.removeDomainEntityDefinition(bpmnProcessDefinitionId);
+    }
 }

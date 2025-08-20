@@ -22,6 +22,15 @@ public interface DomainEntityDefinitionMapper extends EntityMapper<DomainEntityD
     @Mapping(target = "domainEntityDefinition", ignore = true)
     DomainEntityFieldDefinitionDTO toDtoDomainEntityFieldDefinition(DomainEntityFieldDefinition s);
 
+    @Named("domainEntityDefinitionIdAndName")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "version", source = "version")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "executionDate", source = "executionDate")
+    DomainEntityDefinitionDTO toSimpleDto(DomainEntityDefinition entity);
+
     @Mapping(target = "domainEntityDefinition", ignore = true)
     DomainEntityHasARelationDefinitionDTO toDtoDomainEntityHasARelationDefinition(DomainEntityHasARelationDefinition s);
 
@@ -40,6 +49,8 @@ public interface DomainEntityDefinitionMapper extends EntityMapper<DomainEntityD
     @Named("domainEntityDefinitionId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
-    DomainEntityDefinition toEntityDomainEntityDefinitionId(DomainEntityDefinitionDTO dto);
+    DomainEntityDefinition toEntityWithId(DomainEntityDefinitionDTO dto);
+
+
 
 }

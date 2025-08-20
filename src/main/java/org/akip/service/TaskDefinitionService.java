@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -27,9 +28,13 @@ public class TaskDefinitionService {
         this.taskDefinitionRepository = taskDefinitionRepository;
     }
 
-    public List<TaskDefinition> findByProcessDefinition(String bpmnProcessDefinitionId){
+    public List<TaskDefinitionDTO> findByProcessDefinition(String bpmnProcessDefinitionId){
         log.debug("Request to get TaskDefinitions of the ProcessDefinition : {}", bpmnProcessDefinitionId);
-        return taskDefinitionRepository.findByBpmnProcessDefinitionId(bpmnProcessDefinitionId);
+        return taskDefinitionRepository
+                .findByBpmnProcessDefinitionId(bpmnProcessDefinitionId)
+                .stream()
+                .map(taskDefinitionMapper::toDto)
+                .collect(Collectors.toList());
         }
 
     public Optional<TaskDefinitionDTO> findByBpmnProcessDefinitionIdAndTaskId(String bpmnProcessDefinitionId, String taskDefinitionId) {

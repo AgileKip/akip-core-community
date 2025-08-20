@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -40,12 +42,20 @@ public class FormDefinitionService {
         return formDefinitionRepository.findById(id).map(formDefinitionMapper::toDto);
     }
 
-    public Optional<FormDefinitionDTO> findByProcessDefinitionId(Long processDefinitionId) {
-        return formDefinitionRepository.findByProcessDefinitionId(processDefinitionId).map(formDefinitionMapper::toDto);
+    public List<FormDefinitionDTO> findByProcessDefinitionId(String bpmnProcessDefinitionId) {
+        return formDefinitionRepository
+                .findByProcessDefinitionId(bpmnProcessDefinitionId)
+                .stream()
+                .map(formDefinitionMapper::toDto)
+                .toList();
     }
 
-    public Optional<FormDefinitionDTO> findByTaskDefinitionId(Long taskDefinitionId) {
-        return formDefinitionRepository.findByTaskDefinitionId(taskDefinitionId).map(formDefinitionMapper::toDto);
+    public Optional<FormDefinitionDTO> findStartFormByProcessDefinitionId(Long processDefinitionId) {
+        return formDefinitionRepository.findStartFormByProcessDefinitionId(processDefinitionId).map(formDefinitionMapper::toDto);
+    }
+
+    public Optional<FormDefinitionDTO> findTaskFormByTaskDefinitionId(Long taskDefinitionId) {
+        return formDefinitionRepository.findTaskFormByTaskDefinitionId(taskDefinitionId).map(formDefinitionMapper::toDto);
     }
 
     public FormDefinitionDTO saveWithProcessDefinition(Long processDefinitionId, FormDefinitionDTO formDefinitionDTO){
@@ -109,5 +119,7 @@ public class FormDefinitionService {
 
         formDefinition.setFormVersion("0");
     }
+
+
 
 }

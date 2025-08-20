@@ -11,10 +11,11 @@ import org.mapstruct.Named;
 /**
  * Mapper for the entity {@link ProcessDefinition} and its DTO {@link ProcessDefinitionDTO}.
  */
-@Mapper(componentModel = "spring", uses = {FormDefinitionMapper.class, MapUtilMapper.class})
+@Mapper(componentModel = "spring", uses = {FormDefinitionMapper.class, MapUtilMapper.class, DomainEntityDefinitionMapper.class})
 public interface ProcessDefinitionMapper extends EntityMapper<ProcessDefinitionDTO, ProcessDefinition> {
 
     @Mapping(target = "startFormDefinition", source = "startFormDefinition", qualifiedByName = "name")
+    @Mapping(target = "domainEntityDefinition", source = "domainEntityDefinition", qualifiedByName = "domainEntityDefinitionIdAndName")
     ProcessDefinitionDTO toDto(ProcessDefinition processDefinition);
 
     @Named("name")
@@ -22,6 +23,7 @@ public interface ProcessDefinitionMapper extends EntityMapper<ProcessDefinitionD
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "bpmnProcessDefinitionId", source = "bpmnProcessDefinitionId")
+    @Mapping(target = "domainEntityDefinition", source = "domainEntityDefinition", qualifiedByName = "domainEntityDefinitionIdAndName")
     ProcessDefinitionDTO toDtoName(ProcessDefinition processDefinition);
 
     @Named("loadTaskContext")
@@ -29,5 +31,8 @@ public interface ProcessDefinitionMapper extends EntityMapper<ProcessDefinitionD
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "bpmnProcessDefinitionId", source = "bpmnProcessDefinitionId")
+    @Mapping(target = "domainEntityDefinition", source = "domainEntityDefinition", qualifiedByName = "domainEntityDefinitionIdAndName")
     ProcessDefinitionDTO toDTOLoadTaskContext(ProcessDefinition processDefinition);
+
+
 }

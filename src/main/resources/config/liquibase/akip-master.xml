@@ -55,6 +55,7 @@
     <include file="config/liquibase/changelog/00000000004005_added_entity_constraints_DomainEntityHasARelationDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000004006_added_entity_DomainEntityHasManyRelationDefinition.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000004007_added_entity_constraints_DomainEntityHasManyRelationDefinition.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000004008_alter_entity_ProcessDefinition.xml" relativeToChangelogFile="false"/>
 
     <!-- Include constraints here -->
     <include file="config/liquibase/changelog/00000000000004_added_entity_constraints_ProcessDefinition.xml" relativeToChangelogFile="false"/>

@@ -3,7 +3,6 @@ package org.akip.service.dto;
 import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 
-import jakarta.persistence.Lob;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -16,7 +15,6 @@ public class ProcessDefinitionDTO implements Serializable {
 
     private String name;
 
-    @Lob
     private String description;
 
     private StatusProcessDefinition status;
@@ -27,9 +25,11 @@ public class ProcessDefinitionDTO implements Serializable {
 
     private Boolean startFormIsEnabled;
 
-    private FormDefinitionDTO startFormDefinition;
-
     private ProcessVisibilityType processVisibilityType;
+
+    private DomainEntityDefinitionDTO domainEntityDefinition;
+
+    private FormDefinitionDTO startFormDefinition;
 
     private KipAppDTO kipApp;
 
@@ -89,20 +89,28 @@ public class ProcessDefinitionDTO implements Serializable {
         this.startFormIsEnabled = startFormIsEnabled;
     }
 
-    public FormDefinitionDTO getStartFormDefinition() {
-        return startFormDefinition;
-    }
-
-    public void setStartFormDefinition(FormDefinitionDTO startFormDefinition) {
-        this.startFormDefinition = startFormDefinition;
-    }
-
     public ProcessVisibilityType getProcessVisibilityType() {
         return processVisibilityType;
     }
 
     public void setProcessVisibilityType(ProcessVisibilityType processVisibilityType) {
         this.processVisibilityType = processVisibilityType;
+    }
+
+    public DomainEntityDefinitionDTO getDomainEntityDefinition() {
+        return domainEntityDefinition;
+    }
+
+    public void setDomainEntityDefinition(DomainEntityDefinitionDTO domainEntityDefinition) {
+        this.domainEntityDefinition = domainEntityDefinition;
+    }
+
+    public FormDefinitionDTO getStartFormDefinition() {
+        return startFormDefinition;
+    }
+
+    public void setStartFormDefinition(FormDefinitionDTO startFormDefinition) {
+        this.startFormDefinition = startFormDefinition;
     }
 
     public KipAppDTO getKipApp() {

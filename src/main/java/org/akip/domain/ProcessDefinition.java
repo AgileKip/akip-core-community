@@ -43,12 +43,15 @@ public class ProcessDefinition implements Serializable {
     @Column(name = "start_form_is_enabled")
     private Boolean startFormIsEnabled;
 
-    @ManyToOne
-    private FormDefinition startFormDefinition;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "process_visibility_type")
     private ProcessVisibilityType processVisibilityType;
+
+    @ManyToOne
+    private DomainEntityDefinition domainEntityDefinition;
+
+    @ManyToOne
+    private FormDefinition startFormDefinition;
 
     @ManyToOne
     private KipApp kipApp;
@@ -115,20 +118,28 @@ public class ProcessDefinition implements Serializable {
         this.startFormIsEnabled = startFormIsEnabled;
     }
 
-    public FormDefinition getStartFormDefinition() {
-        return startFormDefinition;
-    }
-
-    public void setStartFormDefinition(FormDefinition startFormDefinition) {
-        this.startFormDefinition = startFormDefinition;
-    }
-
     public ProcessVisibilityType getProcessVisibilityType() {
         return processVisibilityType;
     }
 
     public void setProcessVisibilityType(ProcessVisibilityType processVisibilityType) {
         this.processVisibilityType = processVisibilityType;
+    }
+
+    public DomainEntityDefinition getDomainEntityDefinition() {
+        return domainEntityDefinition;
+    }
+
+    public void setDomainEntityDefinition(DomainEntityDefinition domainEntityDefinition) {
+        this.domainEntityDefinition = domainEntityDefinition;
+    }
+
+    public FormDefinition getStartFormDefinition() {
+        return startFormDefinition;
+    }
+
+    public void setStartFormDefinition(FormDefinition startFormDefinition) {
+        this.startFormDefinition = startFormDefinition;
     }
 
     public KipApp getKipApp() {

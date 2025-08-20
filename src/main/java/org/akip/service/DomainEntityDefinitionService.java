@@ -100,7 +100,7 @@ public class DomainEntityDefinitionService {
         return domainEntityDefinitionRepository
             .findAll()
             .stream()
-            .map(domainEntityDefinitionMapper::toDto)
+            .map(domainEntityDefinitionMapper::toSimpleDto)
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
