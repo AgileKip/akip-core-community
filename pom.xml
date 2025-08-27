@@ -169,12 +169,12 @@
       <id>kip4you-nexus-maven-release</id>
       <name>Nexus Release KIP4You</name>
 <!--      <url>https://pkgs.dev.azure.com/kip4you/kip4you-repository/_packaging/kip4you-repository/maven/v1</url>-->
-      <url>http://192.168.3.3:8787/repository/kip4you-maven-releases/</url>
+      <url>https://nexus.owse.com.br/repository/kip4you-maven-releases/</url>
     </repository>
     <snapshotRepository>
       <id>kip4you-nexus-maven-snapshot</id>
       <name>Nexus Snapshot KIP4You</name>
-      <url>http://192.168.3.3:8787/repository/kip4you-maven-snapshots/</url>
+      <url>https://nexus.owse.com.br/repository/kip4you-maven-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
