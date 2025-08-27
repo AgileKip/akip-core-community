@@ -3,7 +3,7 @@ package org.akip.service;
 import org.akip.domain.Attachment;
 import org.akip.domain.AttachmentEntity;
 import org.akip.exception.BadRequestErrorException;
-import org.akip.minio.IDocumentStorageService;
+import org.akip.documentstorage.IDocumentStorageService;
 import org.akip.repository.AttachmentEntityRepository;
 import org.akip.repository.AttachmentRepository;
 import org.akip.service.dto.AttachmentDTO;

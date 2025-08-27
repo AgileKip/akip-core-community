@@ -1,4 +1,4 @@
-package org.akip.minio;
+package org.akip.documentstorage;
 
 import java.time.LocalDateTime;
 

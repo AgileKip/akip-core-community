@@ -1,7 +1,13 @@
 # Changelog
+* 1.13.0 (WIP)
 
-* 1.12.0 (WIP)
-  * To be defined
+
+* 1.12.2
+  * Fixing bug: Notes created in the start form were not closed when the process is started
+  * Including support to S3 and updating minio.library.
+  * Including support to attachments in emails
+  * Fixing changeset for creating table in the Postgres database
+  * Including an InMemoryDocumentStorage
 
 * 1.11.0
   * Implement New Model (Process Definition/Tenant/User/Role) #17
