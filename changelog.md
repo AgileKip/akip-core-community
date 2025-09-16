@@ -1,9 +1,25 @@
 # Changelog
+* 1.13.0 (WIP)
 
-* 0.1.10 (WIP)
-  * Including RecSys
 
-* 0.1.9 (WIP)
+* 1.12.2
+  * Fixing bug: Notes created in the start form were not closed when the process is started
+  * Including support to S3 and updating minio.library.
+  * Including support to attachments in emails
+  * Fixing changeset for creating table in the Postgres database
+  * Including an InMemoryDocumentStorage
+
+* 1.11.0
+  * Implement New Model (Process Definition/Tenant/User/Role) #17
+    * Including a new process visibility type (public, internal, private)
+    * Including ProcessMember and TenantMember entities
+    * Including ProcessRole and TenantRole entities
+
+* 0.1.10
+  * Including a feature to notify users about their open tasks (#10)
+  * Including JobExecutionTracking entity
+
+* 0.1.9
   * Fixing bugs (#82)
   * Including TaskDefinition entity
   * Including FormDefinition entity

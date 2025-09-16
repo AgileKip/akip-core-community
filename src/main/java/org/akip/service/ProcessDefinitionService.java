@@ -3,6 +3,7 @@ package org.akip.service;
 import org.akip.exception.BadRequestErrorException;
 import org.akip.form.camundaForm7.CamundaForm7Service;
 import org.akip.domain.ProcessDefinition;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.akip.repository.ProcessDefinitionRepository;
 import org.akip.repository.ProcessDeploymentRepository;
@@ -60,15 +61,15 @@ public class ProcessDefinitionService {
         this.camundaForm7Service = camundaForm7Service;
     }
 
-    public ProcessDefinition createOrUpdateProcessDefinition(BpmnModelInstance bpmnModelInstance) {
+    public ProcessDefinition createOrUpdateProcessDefinition(ProcessVisibilityType processVisibilityType, BpmnModelInstance bpmnModelInstance) {
         Process process = extractAndValidProcessFromModel(bpmnModelInstance);
         Optional<ProcessDefinition> optionalProcessDefinition = processDefinitionRepository.findByBpmnProcessDefinitionId(process.getId());
 
         if (optionalProcessDefinition.isPresent()) {
-            return updateProcessDefinition(process, bpmnModelInstance);
+            return updateProcessDefinition(processVisibilityType, process, bpmnModelInstance);
         }
 
-        return createProcessDefinition(process, bpmnModelInstance);
+        return createProcessDefinition(processVisibilityType, process, bpmnModelInstance);
     }
 
     private Process extractAndValidProcessFromModel(BpmnModelInstance modelInstance) {
@@ -88,12 +89,13 @@ public class ProcessDefinitionService {
 
 
 
-    private ProcessDefinition createProcessDefinition(Process process, BpmnModelInstance bpmnModelInstance) {
+    private ProcessDefinition createProcessDefinition(ProcessVisibilityType processVisibilityType, Process process, BpmnModelInstance bpmnModelInstance) {
         ProcessDefinitionDTO processDefinition = new ProcessDefinitionDTO();
         processDefinition.setBpmnProcessDefinitionId(process.getId());
         processDefinition.setName(process.getName());
         processDefinition.setCanBeManuallyStarted(process.isCamundaStartableInTasklist());
         processDefinition.setStatus(StatusProcessDefinition.ACTIVE);
+        processDefinition.setProcessVisibilityType(processVisibilityType);
         if (!process.getDocumentations().isEmpty()) {
             processDefinition.setDescription(process.getDocumentations().iterator().next().getRawTextContent());
         }
@@ -112,11 +114,12 @@ public class ProcessDefinitionService {
         return processDefinitionSaved;
     }
 
-    private ProcessDefinition updateProcessDefinition(Process process, BpmnModelInstance bpmnModelInstance) {
+    private ProcessDefinition updateProcessDefinition(ProcessVisibilityType processVisibilityType, Process process, BpmnModelInstance bpmnModelInstance) {
         ProcessDefinitionDTO processDefinition = processDefinitionMapper.toDto(processDefinitionRepository.findByBpmnProcessDefinitionId(process.getId()).orElseThrow());
         processDefinition.setName(process.getName());
         processDefinition.setCanBeManuallyStarted(process.isCamundaStartableInTasklist());
         processDefinition.setStatus(StatusProcessDefinition.ACTIVE);
+        processDefinition.setProcessVisibilityType(processVisibilityType);
         if (!process.getDocumentations().isEmpty()) {
             processDefinition.setDescription(process.getDocumentations().iterator().next().getRawTextContent());
         }

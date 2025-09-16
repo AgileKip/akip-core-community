@@ -3,6 +3,7 @@ package org.akip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.domain.ProcessDefinition;
 import org.akip.domain.ProcessDeployment;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDeployment;
 import org.akip.exception.BadRequestErrorException;
 import org.akip.repository.ProcessDeploymentRepository;
@@ -68,7 +69,7 @@ public class ProcessDeploymentService {
         BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(
                 new ByteArrayInputStream(processDeploymentDTO.getSpecificationFile())
         );
-        ProcessDefinition processDefinition = processDefinitionService.createOrUpdateProcessDefinition(bpmnModelInstance);
+        ProcessDefinition processDefinition = processDefinitionService.createOrUpdateProcessDefinition(processDeploymentDTO.getProcessVisibilityType(), bpmnModelInstance);
 
         org.camunda.bpm.engine.repository.Deployment camundaDeployment = deployInCamunda(
                 processDeploymentDTO,

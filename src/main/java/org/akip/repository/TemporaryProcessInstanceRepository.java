@@ -15,6 +15,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TemporaryProcessInstanceRepository extends JpaRepository<TemporaryProcessInstance, Long> {
     @Modifying
-    @Query("update TemporaryProcessInstance t set t.processInstance = :processInstance where t.id = :temporaryProcessId")
-    void updateProcessInstanceIdById(@Param("processInstance") ProcessInstance processInstance, @Param("temporaryProcessId") Long temporaryProcessId);
+    @Query("update TemporaryProcessInstance t set t.processInstance.id = :processInstanceId where t.id = :temporaryProcessInstance")
+    void updateProcessInstanceIdById(@Param("processInstanceId") Long processInstanceId, @Param("temporaryProcessInstance") Long temporaryProcessInstance);
 }

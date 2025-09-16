@@ -39,9 +39,9 @@ public interface TaskInstanceMapper extends EntityMapper<TaskInstanceDTO, TaskIn
         Arrays
             .stream(string.split(delimiter))
             .forEach(
-                candidateGroup -> {
-                    if (candidateGroup.length() > 0) {
-                        list.add(candidateGroup);
+                computedCandidateGroup -> {
+                    if (computedCandidateGroup.length() > 0) {
+                        list.add(computedCandidateGroup);
                     }
                 }
             );

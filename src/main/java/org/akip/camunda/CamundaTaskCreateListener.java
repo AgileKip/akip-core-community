@@ -1,9 +1,11 @@
 package org.akip.camunda;
 
+import org.akip.domain.ProcessDefinition;
+import org.akip.domain.ProcessDeployment;
+import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
-import org.akip.repository.ProcessDefinitionRepository;
-import org.akip.repository.TaskDefinitionRepository;
+import org.akip.repository.*;
 import org.akip.service.TaskInstanceService;
 import org.akip.service.dto.ProcessDefinitionDTO;
 import org.akip.service.dto.ProcessInstanceDTO;
@@ -15,6 +17,9 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class CamundaTaskCreateListener implements TaskListener {
@@ -25,20 +30,33 @@ public class CamundaTaskCreateListener implements TaskListener {
 
     private final ProcessDefinitionMapper processDefinitionMapper;
 
+    private final TaskDefinitionMapper taskDefinitionMapper;
+
     private final TaskDefinitionRepository taskDefinitionRepository;
 
-    private final TaskDefinitionMapper taskDefinitionMapper;
+    private final ProcessRoleRepository processRoleRepository;
+
+    private final ProcessDeploymentRepository processDeploymentRepository;
+
+    private final TenantRoleRepository tenantRoleRepository;
 
     public CamundaTaskCreateListener(
             TaskInstanceService taskInstanceService,
             ProcessDefinitionRepository processDefinitionRepository,
-            ProcessDefinitionMapper processDefinitionMapper, TaskDefinitionRepository taskDefinitionRepository, TaskDefinitionMapper taskDefinitionMapper
+            ProcessDefinitionMapper processDefinitionMapper,
+            TaskDefinitionRepository taskDefinitionRepository, TaskDefinitionMapper taskDefinitionMapper,
+            ProcessRoleRepository processRoleRepository,
+            ProcessDeploymentRepository processDeploymentRepository,
+            TenantRoleRepository tenantRoleRepository
     ) {
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
         this.processDefinitionMapper = processDefinitionMapper;
         this.taskDefinitionRepository = taskDefinitionRepository;
         this.taskDefinitionMapper = taskDefinitionMapper;
+        this.processRoleRepository = processRoleRepository;
+        this.processDeploymentRepository = processDeploymentRepository;
+        this.tenantRoleRepository = tenantRoleRepository;
     }
 
     public void notify(DelegateTask delegateTask) {
@@ -73,10 +91,40 @@ public class CamundaTaskCreateListener implements TaskListener {
                 .findByBpmnProcessDefinitionId(delegateTask.getProcessDefinitionId().split(":")[0])
                 .map(processDefinitionMapper::toDto)
                 .get();
+        mountComputedCandidateGroups(processDefinitionDTO, taskInstanceDTO);
         taskInstanceDTO.setProcessDefinition(processDefinitionDTO);
         taskInstanceDTO.setTaskDefinition(taskDefinitionMapper.toDto(taskDefinitionRepository.findByBpmnProcessDefinitionIdAndTaskId(processDefinitionDTO.getBpmnProcessDefinitionId(), delegateTask.getTaskDefinitionKey()).orElseThrow()));
 
         return taskInstanceDTO;
     }
 
+    private void mountComputedCandidateGroups(ProcessDefinitionDTO processDefinitionDTO ,TaskInstanceDTO taskInstanceDTO){
+        if (taskInstanceDTO.getCandidateGroups().isEmpty()){
+            taskInstanceDTO.getCandidateGroups().add("*");
+        }
+
+        taskInstanceDTO.getComputedCandidateGroups().addAll(calculateCandidateGroups(processDefinitionMapper.toEntity(processDefinitionDTO), taskInstanceDTO.getCandidateGroups()));
+    }
+
+    private List<String> calculateCandidateGroups(ProcessDefinition processDefinition, List<String> candidateGroups){
+
+        if (processDefinition.getProcessVisibilityType() == ProcessVisibilityType.PRIVATE){
+            return candidateGroups
+                    .stream()
+                    .map(candidateGroup -> processDefinition.getBpmnProcessDefinitionId() + "." + candidateGroup)
+                    .collect(Collectors.toList());
+        }
+
+        if (processDefinition.getProcessVisibilityType() == ProcessVisibilityType.INTERNAL){
+
+            ProcessDeployment processDeployment = processDeploymentRepository.findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNotNull(processDefinition.getId()).get();
+
+            return candidateGroups
+                    .stream()
+                    .map(candidateGroup -> processDeployment.getTenant().getIdentifier() + "." + candidateGroup)
+                    .collect(Collectors.toList());
+        }
+
+        return candidateGroups;
+    }
 }
