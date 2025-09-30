@@ -25,7 +25,7 @@ public class CompletedTaskEventListener {
 
     @Async
     @EventListener
-    public void onApplicationEvent(TaskCompletedEvent event) throws InterruptedException {
+    public void onApplicationEvent(TaskCompletedEvent event) {
         TaskInstanceDTO completedTask = (TaskInstanceDTO) event.getSource();
         taskCompletedNotificationService.notifyUsers(completedTask ,completedTask.getProcessInstance().getId());
     }

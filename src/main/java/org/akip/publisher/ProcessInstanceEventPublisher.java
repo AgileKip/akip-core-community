@@ -1,15 +1,11 @@
 package org.akip.publisher;
 
 import org.akip.event.*;
-import org.akip.service.dto.AttachmentDTO;
-import org.akip.service.dto.NoteDTO;
-import org.akip.service.dto.TaskInstanceDTO;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProcessInstanceEventPublisher {
-
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public ProcessInstanceEventPublisher(ApplicationEventPublisher applicationEventPublisher) {

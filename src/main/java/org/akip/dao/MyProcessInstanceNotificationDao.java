@@ -94,7 +94,7 @@ class MyProcessInstanceNotificationDao extends AbstractDAO<ProcessInstanceNotifi
         readDateFilterDef.setFilterType(FilterType.ADVANCED);
         filters.add(readDateFilterDef);
 
-        EnumListFilterDef statusFilterDef = new EnumListFilterDef();
+        EnumFilterDef statusFilterDef = new EnumFilterDef();
         statusFilterDef.setId("status");
         statusFilterDef.setOptions(Arrays.asList(ProcessInstanceNotificationStatus.values()));
         statusFilterDef.setFilterType(FilterType.DEFAULT);
