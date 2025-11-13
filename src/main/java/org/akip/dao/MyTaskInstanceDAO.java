@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -114,6 +114,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         fields.add("entity.taskDefinitionKey");
         fields.add("entity.suspended");
         fields.add("entity.priority");
+        fields.add("entity.candidateUsers");
         fields.add("entity.candidateGroups");
         fields.add("entity.processDefinition.name");
         fields.add("entity.processDefinition.bpmnProcessDefinitionId");
@@ -138,6 +139,7 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         statusFilterDef.setId("status");
         statusFilterDef.setEnumType(StatusTaskInstance.class);
         statusFilterDef.setOptions(Arrays.asList(StatusTaskInstance.values()));
+        statusFilterDef.setDefaultValues(List.of(StatusTaskInstance.NEW,  StatusTaskInstance.ASSIGNED));
         statusFilterDef.setFilterType(FilterType.DEFAULT);
         filters.add(statusFilterDef);
 
@@ -273,6 +275,14 @@ class MyTaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         resultColumnPriority.setVisible(false);
         resultColumnPriority.setType("String");
         resultColumns.add(resultColumnPriority);
+
+        ResultColumn resultColumnCandidateUsers = new ResultColumn();
+        resultColumnCandidateUsers.setId("candidateUsers");
+        resultColumnCandidateUsers.setTitle("Candidate Users");
+        resultColumnCandidateUsers.setDtoField("candidateUsers");
+        resultColumnCandidateUsers.setVisible(false);
+        resultColumnCandidateUsers.setType("Custom");
+        resultColumns.add(resultColumnCandidateUsers);
 
         ResultColumn resultColumnCandidateGroups = new ResultColumn();
         resultColumnCandidateGroups.setId("candidateGroups");

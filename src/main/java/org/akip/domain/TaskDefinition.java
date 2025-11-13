@@ -2,9 +2,8 @@ package org.akip.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -27,7 +26,6 @@ public class TaskDefinition implements Serializable {
     private String name;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "documentation")
     private String documentation;
 
@@ -35,12 +33,10 @@ public class TaskDefinition implements Serializable {
     private String assignee;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "candidate_users")
     private String candidateUsers;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "candidate_groups")
     private String candidateGroups;
 
@@ -48,7 +44,6 @@ public class TaskDefinition implements Serializable {
     private Integer priority;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "props")
     private String props;
 

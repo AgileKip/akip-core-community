@@ -3,7 +3,7 @@ package org.akip.service.dto;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 
-import javax.persistence.Lob;
+import jakarta.persistence.Lob;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -49,6 +49,8 @@ public class TaskInstanceDTO implements Serializable {
     private Boolean suspended;
 
     private Integer priority;
+
+    private List<String> candidateUsers = new ArrayList<>();
 
     private List<String> candidateGroups = new ArrayList<>();
 
@@ -198,6 +200,14 @@ public class TaskInstanceDTO implements Serializable {
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public List<String> getCandidateUsers() {
+        return candidateUsers;
+    }
+
+    public void setCandidateUsers(List<String> candidateUsers) {
+        this.candidateUsers = candidateUsers;
     }
 
     public List<String> getCandidateGroups() {

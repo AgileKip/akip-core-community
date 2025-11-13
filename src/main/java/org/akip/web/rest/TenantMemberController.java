@@ -57,7 +57,7 @@ public class TenantMemberController {
     }
 
     @PutMapping("/tenant/{tenantId}/members")
-    public ResponseEntity<TenantMemberDTO> updateTenantMember(@PathVariable Long tenantId, @RequestBody TenantMemberDTO tenantMember) throws URISyntaxException {
+    public ResponseEntity<TenantMemberDTO> updateTenantMember(@PathVariable("tenantId") Long tenantId, @RequestBody TenantMemberDTO tenantMember) throws URISyntaxException {
         log.debug("REST request to save ProcessMember : {}", tenantMember.getUsername());
         TenantMemberDTO result = tenantMemberService.save(tenantId, tenantMember);
         return ResponseEntity

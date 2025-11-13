@@ -2,9 +2,8 @@ package org.akip.domain;
 
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
@@ -40,7 +39,6 @@ public class TaskInstance implements Serializable {
     private TypeTaskInstance type;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "description")
     private String description;
 
@@ -76,6 +74,9 @@ public class TaskInstance implements Serializable {
 
     @Column(name = "priority")
     private Integer priority;
+
+    @Column(name = "candidate_users")
+    private String candidateUsers;
 
     @Column(name = "candidateGroups")
     private String candidateGroups;
@@ -319,6 +320,19 @@ public class TaskInstance implements Serializable {
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public String getCandidateUsers() {
+        return candidateUsers;
+    }
+
+    public TaskInstance candidateUsers(String candidateUsers) {
+        this.candidateUsers = candidateUsers;
+        return this;
+    }
+
+    public void setCandidateUsers(String candidateUsers) {
+        this.candidateUsers = candidateUsers;
     }
 
     public String getCandidateGroups() {

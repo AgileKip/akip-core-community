@@ -3,12 +3,10 @@ package org.akip.domain;
 import org.akip.domain.enumeration.StatusDecisionDeployment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @Entity
 @Table(name = "decision_deployment")
@@ -33,7 +31,6 @@ public class DecisionDeployment implements Serializable {
     private String specificationFileContentType;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "camunda_deployment_message")
     private String camundaDeploymentMessage;
 

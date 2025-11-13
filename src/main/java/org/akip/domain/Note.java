@@ -3,9 +3,8 @@ package org.akip.domain;
 import org.akip.security.SecurityUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -28,7 +27,6 @@ public class Note implements Serializable {
     private String author;
 
     @Column(name = "text")
-    @Type(type = "org.hibernate.type.TextType")
     private String text;
 
     @Column(name = "type")

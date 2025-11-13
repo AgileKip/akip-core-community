@@ -23,6 +23,7 @@ public class TaskInstanceSearchDTO {
     private String taskDefinitionKey;
     private String suspended;
     private Integer priority;
+    private List<String> candidateUsers = new ArrayList<>();
     private List<String> candidateGroups = new ArrayList<>();
     private String processDefinitionName;
     private String processDefinitionBpmnProcessDefinitionId;
@@ -44,6 +45,7 @@ public class TaskInstanceSearchDTO {
                                  String taskDefinitionKey,
                                  Boolean suspended,
                                  Integer priority,
+                                 String candidateUsers,
                                  String candidateGroups,
                                  String processDefinitionName,
                                  String processDefinitionBpmnProcessDefinitionId,
@@ -65,6 +67,7 @@ public class TaskInstanceSearchDTO {
         this.taskDefinitionKey = taskDefinitionKey;
         this.suspended = (suspended!=null ? suspended.toString() : null);
         this.priority = priority;
+        this.candidateUsers = StringToListUtil.stringToList(candidateUsers);
         this.candidateGroups = StringToListUtil.stringToList(candidateGroups);
         this.processDefinitionName = processDefinitionName;
         this.processDefinitionBpmnProcessDefinitionId = processDefinitionBpmnProcessDefinitionId;
@@ -183,6 +186,14 @@ public class TaskInstanceSearchDTO {
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public List<String> getCandidateUsers() {
+        return candidateUsers;
+    }
+
+    public void setCandidateUsers(List<String> candidateUsers) {
+        this.candidateUsers = candidateUsers;
     }
 
     public List<String> getCandidateGroups() {

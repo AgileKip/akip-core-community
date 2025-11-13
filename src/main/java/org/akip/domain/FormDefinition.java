@@ -2,9 +2,8 @@ package org.akip.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -30,7 +29,6 @@ public class FormDefinition implements Serializable {
     private String formVersion;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "form_schema")
     private String formSchema;
 

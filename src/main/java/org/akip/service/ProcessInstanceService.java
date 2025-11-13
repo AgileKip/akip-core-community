@@ -1,13 +1,16 @@
 package org.akip.service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.akip.camunda.CamundaConstants;
 import org.akip.domain.*;
 import org.akip.domain.enumeration.StatusProcessInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
+import org.akip.exception.BadRequestErrorException;
 import org.akip.repository.*;
 import org.akip.security.SecurityUtils;
 import org.akip.service.dto.*;
+import org.akip.service.mapper.MapUtilMapper;
 import org.akip.service.mapper.ProcessInstanceMapper;
 import org.camunda.bpm.engine.RuntimeService;
 import org.slf4j.Logger;
@@ -49,21 +52,27 @@ public class ProcessInstanceService {
 
     private final NoteEntityRepository noteEntityRepository;
 
+    private final NoteService noteService;
+
     private final TemporaryProcessInstanceRepository temporaryProcessInstanceRepository;
 
+    private final MapUtilMapper mapUtilMapper;
+
     public ProcessInstanceService(
-        ProcessDeploymentService processDeploymentService,
-        TaskInstanceService taskInstanceService,
-        ProcessDefinitionRepository processDefinitionRepository,
-        ProcessDeploymentRepository processDeploymentRepository,
-        ProcessInstanceRepository processInstanceRepository,
-        ProcessInstanceMapper processInstanceMapper,
-        RuntimeService runtimeService,
-        AttachmentEntityRepository attachmentEntityRepository,
-        AttachmentRepository attachmentRepository,
-        NoteRepository noteRepository,
-        NoteEntityRepository noteEntityRepository,
-        TemporaryProcessInstanceRepository temporaryProcessInstanceRepository) {
+            ProcessDeploymentService processDeploymentService,
+            TaskInstanceService taskInstanceService,
+            ProcessDefinitionRepository processDefinitionRepository,
+            ProcessDeploymentRepository processDeploymentRepository,
+            ProcessInstanceRepository processInstanceRepository,
+            ProcessInstanceMapper processInstanceMapper,
+            RuntimeService runtimeService,
+            AttachmentEntityRepository attachmentEntityRepository,
+            AttachmentRepository attachmentRepository,
+            NoteRepository noteRepository,
+            NoteEntityRepository noteEntityRepository,
+            TemporaryProcessInstanceRepository temporaryProcessInstanceRepository,
+            MapUtilMapper mapUtilMapper,
+            NoteService noteService) {
         this.processDeploymentService = processDeploymentService;
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
@@ -75,7 +84,9 @@ public class ProcessInstanceService {
         this.attachmentRepository = attachmentRepository;
         this.noteRepository = noteRepository;
         this.noteEntityRepository = noteEntityRepository;
+        this.noteService = noteService;
         this.temporaryProcessInstanceRepository = temporaryProcessInstanceRepository;
+        this.mapUtilMapper = mapUtilMapper;
     }
 
     public ProcessInstanceDTO create(ProcessInstanceDTO processInstanceDTO) {
@@ -169,6 +180,7 @@ public class ProcessInstanceService {
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
         synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO.getTemporaryProcessInstance(), processInstanceSaved);
         runtimeService.setVariable(camundaProcessInstance.getProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstanceSaved);
+        noteService.closeNotesAssociatedToEntity(ProcessInstance.class.getSimpleName(), processInstanceSaved.getId());
         return processInstanceSaved;
     }
 
@@ -366,6 +378,35 @@ public class ProcessInstanceService {
         temporaryProcessInstance.setProcessInstance(new ProcessInstance());
         temporaryProcessInstance.getProcessInstance().setId(processInstanceSaved.getId());
         temporaryProcessInstanceRepository.save(temporaryProcessInstance);
+    }
+
+    public void cancelProcessInstance(String camundaProcessInstanceId) {
+        try {
+            runtimeService.deleteProcessInstance(camundaProcessInstanceId, "Process cancelled");
+        } catch (Exception e) {
+            throw new BadRequestErrorException(e.getMessage());
+        }
+    }
+
+    public void saveProperties(Long id, Map<String, String> properties) {
+        try {
+            String propertiesAsString = mapUtilMapper.mapToString(properties);
+            processInstanceRepository.updatePropertiesById(propertiesAsString, id);
+            ProcessInstanceDTO processInstance = findOne(id).orElseThrow();
+            processInstance.setProps(properties);
+
+            IProcessEntity processEntity = (IProcessEntity) runtimeService.getVariable(processInstance.getCamundaProcessInstanceId(), CamundaConstants.PROCESS_ENTITY);
+
+            if (processEntity != null) {
+                processEntity.setProcessInstance(processInstance);
+                runtimeService.setVariable(processInstance.getCamundaProcessInstanceId(), CamundaConstants.PROCESS_ENTITY, processEntity);
+                return;
+            }
+
+            runtimeService.setVariable(processInstance.getCamundaProcessInstanceId(), CamundaConstants.PROCESS_INSTANCE, processInstance);
+        } catch (JsonProcessingException e) {
+            throw new BadRequestErrorException(e.getMessage());
+        }
     }
 
 }

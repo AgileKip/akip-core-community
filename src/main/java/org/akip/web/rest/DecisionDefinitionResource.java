@@ -52,7 +52,7 @@ public class DecisionDefinitionResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the decisionDefinitionDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/decision-definitions/{idOrDmnDecisionDefinitionId}")
-    public ResponseEntity<DecisionDefinitionDTO> getDecisionDefinition(@PathVariable String idOrDmnDecisionDefinitionId) {
+    public ResponseEntity<DecisionDefinitionDTO> getDecisionDefinition(@PathVariable("idOrDmnDecisionDefinitionId") String idOrDmnDecisionDefinitionId) {
         log.debug("REST request to get DecisionDefinition : {}", idOrDmnDecisionDefinitionId);
         Optional<DecisionDefinitionDTO> decisionDefinitionDTO = decisionDefinitionService.findByIdOrDmnDecisionDefinitionId(
             idOrDmnDecisionDefinitionId
@@ -67,7 +67,7 @@ public class DecisionDefinitionResource {
      * @return the list of tenantsDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/decision-definitions/{idOrDmnDecisionDefinitionId}/active-deployments")
-    public List<DecisionDeploymentDTO> getActiveDecisionDeployments(@PathVariable String idOrDmnDecisionDefinitionId) {
+    public List<DecisionDeploymentDTO> getActiveDecisionDeployments(@PathVariable("idOrDmnDecisionDefinitionId") String idOrDmnDecisionDefinitionId) {
         log.debug("REST request to get Tenants of the DecisionDefinition : {}", idOrDmnDecisionDefinitionId);
         return decisionDeploymentService.findActiveByDecisionDefinition(idOrDmnDecisionDefinitionId);
     }
@@ -79,7 +79,7 @@ public class DecisionDefinitionResource {
      * @return the list of decisionInstanceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/decision-definitions/{idOrDmnDecisionDefinitionId}/deployments")
-    public List<DecisionDeploymentDTO> getDecisionDeployments(@PathVariable String idOrDmnDecisionDefinitionId) {
+    public List<DecisionDeploymentDTO> getDecisionDeployments(@PathVariable("idOrDmnDecisionDefinitionId") String idOrDmnDecisionDefinitionId) {
         log.debug("REST request to get DecisionDeployments of the DecisionDefinition : {}", idOrDmnDecisionDefinitionId);
         return decisionDeploymentService.findByDecisionDefinition(idOrDmnDecisionDefinitionId);
     }
@@ -91,7 +91,7 @@ public class DecisionDefinitionResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/admin/decision-definitions/{id}")
-    public ResponseEntity<Void> deleteDecisionDefinition(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDecisionDefinition(@PathVariable("id") Long id) {
         log.debug("REST request to delete DecisionDefinition : {}", id);
         decisionDefinitionService.delete(id);
         return ResponseEntity

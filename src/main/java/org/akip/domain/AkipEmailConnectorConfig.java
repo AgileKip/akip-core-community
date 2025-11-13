@@ -2,9 +2,8 @@ package org.akip.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "akip_email_connector_config")
@@ -22,17 +21,14 @@ public class AkipEmailConnectorConfig {
     private String name;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "mailbox_expression")
     private String mailboxExpression;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "subject_expression")
     private String subjectExpression;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "content_expression")
     private String contentExpression;
 

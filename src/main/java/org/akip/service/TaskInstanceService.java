@@ -27,7 +27,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -145,6 +145,10 @@ public class TaskInstanceService {
 
         String expression = taskInstance.getTaskDefinition().getDocumentation();
 
+        if(expression == null) {
+            return "";
+        }
+
         if (!expression.contains("\"\"\"")) {
             expression = "\"\"\"" + expression + "\"\"\"";
         }
@@ -178,7 +182,7 @@ public class TaskInstanceService {
 
             taskInstance.setDescription(executeDocumentationExpression(taskInstance));
 
-            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getComputedCandidateGroups()), taskInstance.getProcessDefinition().getProcessVisibilityType());
+            checkCurrentUserPermission(taskInstanceMapper.stringToList(taskInstance.getComputedCandidateGroups()), taskInstanceMapper.stringToList(taskInstance.getCandidateUsers()), taskInstance.getProcessDefinition().getProcessVisibilityType());
 
             taskInstance.setStatus(StatusTaskInstance.ASSIGNED);
             taskInstance.setAssignee(SecurityUtils.getCurrentUserLogin().get());
@@ -199,7 +203,12 @@ public class TaskInstanceService {
      * Check whether the current user can claim this task according to the candidate group list
      * @param computedCandidateGroups candidateGroups
      */
-    private void checkCurrentUserPermission(List<String> computedCandidateGroups, ProcessVisibilityType processVisibilityType) {
+    private void checkCurrentUserPermission(List<String> computedCandidateGroups, List<String> candidateUsers, ProcessVisibilityType processVisibilityType) {
+
+        if (!candidateUsers.isEmpty() && !candidateUsers.contains(SecurityUtils.getCurrentUserLogin().get())) {
+            throw new BadRequestErrorException("akip.userDontHavePermission", String.join(", ", candidateUsers));
+        }
+
         if (computedCandidateGroups.isEmpty()) {
             return;
         }
@@ -214,7 +223,7 @@ public class TaskInstanceService {
             }
         }
 
-        throw new BadRequestErrorException("Task reserved for users " + String.join(", ", computedCandidateGroups));
+        throw new BadRequestErrorException("akip.userDontHavePermission", String.join(", ", computedCandidateGroups));
     }
 
     private List<String> getAuthorities(ProcessVisibilityType processVisibilityType){

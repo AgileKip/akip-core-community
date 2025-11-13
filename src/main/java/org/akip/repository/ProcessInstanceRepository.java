@@ -30,4 +30,8 @@ public interface ProcessInstanceRepository extends JpaRepository<ProcessInstance
     @Modifying
     @Query("update ProcessInstance set accessTokenNumber = ?1, accessTokenExpirationDate = ?2 where id = ?3")
     void updateAccessTokenInfoById(String accessTokenNumber, LocalDate localDate, Long id);
+
+    @Modifying
+    @Query("update ProcessInstance set props = ?1 where id = ?2")
+    void updatePropertiesById(String propertiesAsString, Long id);
 }

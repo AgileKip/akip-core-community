@@ -3,7 +3,7 @@ package org.akip.service.dto;
 import org.akip.domain.enumeration.ProcessVisibilityType;
 import org.akip.domain.enumeration.StatusProcessDefinition;
 
-import javax.persistence.Lob;
+import jakarta.persistence.Lob;
 import java.io.Serializable;
 import java.util.Objects;
 

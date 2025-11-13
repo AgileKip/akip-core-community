@@ -1,15 +1,11 @@
 package org.akip.web.rest;
 
-import org.akip.service.DecisionDeploymentService;
 import org.akip.service.TemporaryProcessInstanceService;
 import org.akip.service.dto.TemporaryProcessInstanceDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tech.jhipster.web.util.HeaderUtil;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -24,7 +20,7 @@ public class ProcessInstanceResource {
     }
 
     @GetMapping("process-instances/{processBpmnId}/create-temporary-process-instance")
-    public ResponseEntity<TemporaryProcessInstanceDTO> createTemporaryProcessInstance(@PathVariable String processBpmnId) {
+    public ResponseEntity<TemporaryProcessInstanceDTO> createTemporaryProcessInstance(@PathVariable("processBpmnId") String processBpmnId) {
         log.debug("REST request to create a temporary process instance for the process ProcessInstance");
         TemporaryProcessInstanceDTO result = temporaryProcessInstanceService.create(processBpmnId);
         return ResponseEntity.ok(result);

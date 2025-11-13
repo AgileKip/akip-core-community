@@ -1,10 +1,9 @@
 package org.akip.dashboard.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
 /**
  * A DashboardGroupConfig.
@@ -28,7 +27,6 @@ public class DashboardGroupConfig implements Serializable {
     private String groupBuilder;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "expression")
     private String expression;
 

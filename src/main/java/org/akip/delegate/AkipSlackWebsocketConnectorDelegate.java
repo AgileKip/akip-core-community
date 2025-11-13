@@ -19,8 +19,14 @@ public class AkipSlackWebsocketConnectorDelegate implements JavaDelegate {
 
     private final Logger log = LoggerFactory.getLogger(AkipSlackWebsocketConnectorDelegate.class);
 
+    private final ChangeExpressionToGetVariableWarningDelegate changeExpressionToGetVariableWarningDelegate;
+
     private Expression slackUrl;
     private Expression slackMessage;
+
+    public AkipSlackWebsocketConnectorDelegate(ChangeExpressionToGetVariableWarningDelegate changeExpressionToGetVariableWarningDelegate) {
+        this.changeExpressionToGetVariableWarningDelegate = changeExpressionToGetVariableWarningDelegate;
+    }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -29,9 +35,29 @@ public class AkipSlackWebsocketConnectorDelegate implements JavaDelegate {
         HttpHeaders httpHeaders = new HttpHeaders();
 
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        messageBuilder.put("text", (String) slackMessage.getValue(delegateExecution));
+        // TODO: This code will be updated in six months 33:37
+        messageBuilder.put("text", getText(delegateExecution, messageBuilder));
         HttpEntity<Map<String, String>> request = new HttpEntity<>(messageBuilder, httpHeaders);
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForEntity((String) slackUrl.getValue(delegateExecution), request, String.class);
+        // TODO: This code will be updated in six months 41:45
+        restTemplate.postForEntity(getSlackUrl(delegateExecution), request, String.class);
+    }
+
+    private String getText(DelegateExecution delegateExecution, Map<String, String> messageBuilder) {
+        if (delegateExecution.getVariable("slackMessage") != null) {
+            return (String) delegateExecution.getVariable("slackMessage");
+        }
+
+        changeExpressionToGetVariableWarningDelegate.castWarning();
+        return (String) slackMessage.getValue(delegateExecution);
+    }
+
+    private String getSlackUrl(DelegateExecution delegateExecution) {
+        if (delegateExecution.getVariable("slackUrl") != null) {
+            return (String) delegateExecution.getVariable("slackUrl");
+        } else {
+            changeExpressionToGetVariableWarningDelegate.castWarning();
+            return (String) slackUrl.getValue(delegateExecution);
+        }
     }
 }

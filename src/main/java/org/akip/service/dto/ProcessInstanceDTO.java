@@ -2,7 +2,7 @@ package org.akip.service.dto;
 
 import org.akip.domain.enumeration.StatusProcessInstance;
 
-import javax.persistence.Lob;
+import jakarta.persistence.Lob;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +19,8 @@ public class ProcessInstanceDTO implements Serializable {
     private TemporaryProcessInstanceDTO temporaryProcessInstance;
 
     private String businessKey;
+
+    private String username;
 
     private String camundaDeploymentId;
 
@@ -69,6 +71,14 @@ public class ProcessInstanceDTO implements Serializable {
 
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getCamundaDeploymentId() {

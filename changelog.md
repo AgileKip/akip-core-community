@@ -1,5 +1,15 @@
 # Changelog
 
+* 2.0.0
+  * Migrate to Java 22 and Spring Boot 3
+  * Including a feature to cancel a running process
+  * Including bulk process migration
+  * Fix thread safe bug in EmailConnectorDelegate
+  * Including a way to visualize camunda process jobs (incidents and timers)
+
+* 1.12.0 (WIP)
+  * To be defined
+
 * 1.11.0
   * Implement New Model (Process Definition/Tenant/User/Role) #17
     * Including a new process visibility type (public, internal, private)

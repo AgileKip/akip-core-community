@@ -24,21 +24,21 @@ public class CamundaSignalController {
     }
 
     @GetMapping("/send-broadcast-signal/{signalName}")
-    public ResponseEntity<Void> sendBroadcastSignal(@PathVariable String signalName) {
+    public ResponseEntity<Void> sendBroadcastSignal(@PathVariable("signalName") String signalName) {
         log.debug("Sending Broadcast Signal: {}", signalName);
         camundaSignalService.sendBroadcastSignal(signalName);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/send-signal-to-process-instance/{processInstanceId}/{signalName}")
-    public ResponseEntity<Void> sendSignalToProcessInstance(@PathVariable String signalName, @PathVariable String processInstanceId) {
+    public ResponseEntity<Void> sendSignalToProcessInstance(@PathVariable("signalName") String signalName, @PathVariable("processInstanceId") String processInstanceId) {
         log.debug("Sending Signal {} to Process Instance: {}", signalName, processInstanceId);
         camundaSignalService.sendSignalToProcessInstance(signalName, processInstanceId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/retrieve-bpmn-signal-events/{camundaDeploymentId}")
-    public List<String> retrieveSignalEvents(@PathVariable String camundaDeploymentId) {
+    public List<String> retrieveSignalEvents(@PathVariable("camundaDeploymentId") String camundaDeploymentId) {
         log.debug("Retrieving the bpmn signal events from Camunda Deployment id: {}", camundaDeploymentId);
         return camundaSignalService.retrieveSignalEvents(camundaDeploymentId);
     }

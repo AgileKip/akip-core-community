@@ -2,7 +2,7 @@ package org.akip.dao.filter;
 
 import com.owse.searchFramework.ListFilter;
 
-import javax.persistence.Query;
+import jakarta.persistence.Query;
 
 public class AuthorityFilter extends ListFilter {
 

@@ -15,6 +15,7 @@ import tech.jhipster.web.util.HeaderUtil;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST controller for managing {@link org.akip.domain.ProcessInstance}.
@@ -22,6 +23,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class ProcessInstanceController {
+
+    private static final String MESSAGE_PROPERTIES_SAVED = "Properties Successfully Saved";
 
     private final Logger log = LoggerFactory.getLogger(ProcessInstanceController.class);
 
@@ -89,5 +92,26 @@ public class ProcessInstanceController {
     public ProcessInstanceBpmnModelDTO getProcessInstanceBpmnModel(@PathVariable("id") Long id) {
         log.debug("REST request to get the BPMNModel of the ProcessInstance : {}", id);
         return processInstanceService.findBpmnModel(id).orElseThrow();
+    }
+
+    /**
+     * {@code GET  /process-instances/:id/bpmnModel} : request to cancel a process instance.
+     *
+     * @param camundaProcessInstanceId the id of the camundaProcessInstanceId to cancel.
+     */
+    @GetMapping("process-instances/{camundaProcessInstanceId}/cancel-process-instance")
+    public void cancelProcessInstance(@PathVariable("camundaProcessInstanceId") String camundaProcessInstanceId) {
+        log.debug("REST request to cancel a process instance by CamundaProcessInstanceId : {}", camundaProcessInstanceId);
+        processInstanceService.cancelProcessInstance(camundaProcessInstanceId);
+    }
+
+    @PutMapping("/process-instances/{id}/properties")
+    public ResponseEntity<Void> saveProperties(@PathVariable("id") Long id, @RequestBody Map<String, String> properties) {
+        log.debug("REST request to save ProcessInstance properties: {}", id);
+        processInstanceService.saveProperties(id, properties);
+        return ResponseEntity
+                .noContent()
+                .headers(HeaderUtil.createAlert(HeaderConstants.APPLICATION_NAME, MESSAGE_PROPERTIES_SAVED, id.toString()))
+                .build();
     }
 }

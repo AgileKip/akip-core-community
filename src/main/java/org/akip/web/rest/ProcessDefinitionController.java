@@ -1,6 +1,8 @@
 package org.akip.web.rest;
 
+import org.akip.domain.ProcessDefinition;
 import org.akip.domain.TaskDefinition;
+import org.akip.domain.enumeration.StatusProcessDefinition;
 import org.akip.service.*;
 import org.akip.service.dto.*;
 import org.simpleframework.xml.Path;
@@ -65,6 +67,33 @@ public class ProcessDefinitionController {
     }
 
     /**
+     * {@code GET  /process-definitions/:bpmnProcessDefinitionId} : get the "bpmnProcessDefinitionId" processDefinition.
+     *
+     * @param idOrBpmnProcessDefinitionId the id of the processDefinitionDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processDefinitionDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}/view")
+    public ProcessDefinitionDTO getByBpmnProcessDefinitionId(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
+        log.debug("REST request to get ProcessDefinitionByBpmnProcessDefinitionId : {}", idOrBpmnProcessDefinitionId);
+        return processDefinitionService
+                .findByIdOrBpmnProcessDefinitionId(idOrBpmnProcessDefinitionId)
+                .orElseThrow();
+    }
+
+    /**
+     * {@code GET  /process-definitions/:bpmnProcessDefinitionId} : get the "bpmnProcessDefinitionId" processDefinition.
+     *
+     * @param idOrBpmnProcessDefinitionId the id of the processDefinitionDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the processDefinitionDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/process-definitions/{idOrBpmnProcessDefinitionId}/instances")
+    public List<ProcessInstanceDTO> getInstances(@PathVariable("idOrBpmnProcessDefinitionId") String idOrBpmnProcessDefinitionId) {
+        log.debug("REST request to get instances by ProcessDefinition : {}", idOrBpmnProcessDefinitionId);
+        return processDefinitionService
+                .findByProcessDefinition(idOrBpmnProcessDefinitionId);
+    }
+
+    /**
      * {@code GET  /process-definitions/:idOrBpmnProcessDefinitionId/deployments} : get the "idOrBpmnProcessDefinitionId" processDefinition.
      *
      * @param idOrBpmnProcessDefinitionId the id of the processDefinitionDTO owner of the ProcessDeployments.
@@ -90,7 +119,7 @@ public class ProcessDefinitionController {
     }
 
     @GetMapping("/process-definitions/{bpmnProcessDefinitionId}/tasks-definitions")
-    public List<TaskDefinition> getTasksDefinition(@PathVariable String bpmnProcessDefinitionId) {
+    public List<TaskDefinition> getTasksDefinition(@PathVariable("bpmnProcessDefinitionId") String bpmnProcessDefinitionId) {
         log.debug("REST request to get TaskInstances of the ProcessDefinition : {}", bpmnProcessDefinitionId);
         return taskDefinitionService.findByProcessDefinition(bpmnProcessDefinitionId);
     }
@@ -108,5 +137,17 @@ public class ProcessDefinitionController {
         return ResponseEntity
             .noContent()
             .build();
+    }
+
+    @PostMapping("/suspend/{processDefinitionKey}")
+    public ResponseEntity<String> suspendProcessDefinition(@PathVariable("processDefinitionKey") String processDefinitionKey) {
+        processDefinitionService.suspendProcess(processDefinitionKey);
+        return ResponseEntity.ok("Process definition suspended successfully");
+    }
+
+    @PostMapping("/activate/{processDefinitionKey}")
+    public ResponseEntity<String> activateProcessDefinition(@PathVariable("processDefinitionKey") String processDefinitionKey) {
+        processDefinitionService.activateProcess(processDefinitionKey);
+        return ResponseEntity.ok("Process definition activated successfully");
     }
 }
