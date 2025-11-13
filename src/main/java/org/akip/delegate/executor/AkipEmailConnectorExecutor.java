@@ -5,8 +5,10 @@ import groovy.lang.GroovyShell;
 import org.akip.groovy.BindingBuilder;
 import org.akip.service.AkipMailService;
 import org.akip.service.dto.AkipEmailConnectorConfigDTO;
+import org.akip.service.dto.AttachmentDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,12 @@ public class AkipEmailConnectorExecutor {
     public AkipEmailConnectorExecutor(BindingBuilder bindingBuilder, AkipMailService akipMailService) {
         this.bindingBuilder = bindingBuilder;
         this.akipMailService = akipMailService;
+    }
+
+    public AkipEmailConnectorMessageDTO buildAndSendMessageFromProcessEntity(AkipEmailConnectorConfigDTO akipEmailConnectorConfig, Object processEntity, List<AttachmentDTO> attachments) {
+        AkipEmailConnectorMessageDTO akipEmailConnectorMessage = buildMessageFromProcessEntity(akipEmailConnectorConfig, processEntity);
+        akipMailService.sendEmail(akipEmailConnectorMessage.getMailboxes(), akipEmailConnectorMessage.getSubject(), akipEmailConnectorMessage.getContent(), attachments);
+        return akipEmailConnectorMessage;
     }
 
     public AkipEmailConnectorMessageDTO buildAndSendMessageFromProcessEntity(AkipEmailConnectorConfigDTO akipEmailConnectorConfig, Object processEntity) {

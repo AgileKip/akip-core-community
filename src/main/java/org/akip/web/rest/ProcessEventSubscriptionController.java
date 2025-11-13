@@ -28,7 +28,7 @@ public class ProcessEventSubscriptionController {
 
 
     @GetMapping("/process-instance/{processInstanceId}/process-event-subscriptions")
-    public List<ProcessEventSubscriptionDTO> getByProcessInstanceId(@PathVariable Long processInstanceId) {
+    public List<ProcessEventSubscriptionDTO> getByProcessInstanceId(@PathVariable("processInstanceId") Long processInstanceId) {
         log.debug("REST request to get EventSubscriptions by process instance id: {}", processInstanceId);
         return processEventSubscriptionService.getByProcessInstanceId(processInstanceId);
     }

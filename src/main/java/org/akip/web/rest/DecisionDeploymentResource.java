@@ -59,7 +59,7 @@ public class DecisionDeploymentResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/decision-deployment/{id}")
-    public ResponseEntity<DecisionDeploymentDTO> getDecisionDeployment(@PathVariable Long id) {
+    public ResponseEntity<DecisionDeploymentDTO> getDecisionDeployment(@PathVariable("id") Long id) {
         log.debug("REST request to get DecisionDeployment : {}", id);
         Optional<DecisionDeploymentDTO> result = decisionDeploymentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(result);
@@ -72,7 +72,7 @@ public class DecisionDeploymentResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/decision-deployment/{id}/dmnModel")
-    public ResponseEntity<DecisionDeploymentDmnModelDTO> getDecisionDeploymentDmnModel(@PathVariable Long id) {
+    public ResponseEntity<DecisionDeploymentDmnModelDTO> getDecisionDeploymentDmnModel(@PathVariable("id") Long id) {
         log.debug("REST request to get DecisionDeployment : {}", id);
         Optional<DecisionDeploymentDmnModelDTO> result = decisionDeploymentService.findDmnModel(id);
         return ResponseUtil.wrapOrNotFound(result);
@@ -85,7 +85,7 @@ public class DecisionDeploymentResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/decision-deployment/{id}/active")
-    public ResponseEntity<Void> activeDecisionDeployment(@PathVariable Long id) {
+    public ResponseEntity<Void> activeDecisionDeployment(@PathVariable("id") Long id) {
         log.debug("REST request to inactive DecisionDeployment : {}", id);
         decisionDeploymentService.active(id);
         return ResponseEntity
@@ -100,7 +100,7 @@ public class DecisionDeploymentResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @GetMapping("/decision-deployment/{id}/inactive")
-    public ResponseEntity<Void> inactiveDecisionDeployment(@PathVariable Long id) {
+    public ResponseEntity<Void> inactiveDecisionDeployment(@PathVariable("id") Long id) {
         log.debug("REST request to inactive DecisionDeployment : {}", id);
         decisionDeploymentService.inactive(id);
         return ResponseEntity
@@ -109,7 +109,7 @@ public class DecisionDeploymentResource {
     }
 
     @PutMapping("/admin/decision-deployment/{id}/properties")
-    public ResponseEntity<Void> saveProperties(@PathVariable Long id, @RequestBody Map<String, String> properties) {
+    public ResponseEntity<Void> saveProperties(@PathVariable("id") Long id, @RequestBody Map<String, String> properties) {
         log.debug("REST request to save DecisionDeployment properties: {}", id);
         return ResponseEntity
             .noContent()

@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,6 +77,7 @@ class TaskInstanceDAO extends AbstractDAO<TaskInstanceSearchDTO> {
         fields.add("entity.taskDefinitionKey");
         fields.add("entity.suspended");
         fields.add("entity.priority");
+        fields.add("entity.candidateUsers");
         fields.add("entity.candidateGroups");
         fields.add("entity.processDefinition.name");
         fields.add("entity.processDefinition.bpmnProcessDefinitionId");

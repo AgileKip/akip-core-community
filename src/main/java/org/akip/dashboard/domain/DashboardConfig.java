@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import org.akip.domain.ProcessDefinition;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
 /**
  * A DashboardConfig.
@@ -27,7 +26,6 @@ public class DashboardConfig implements Serializable {
     private Long id;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "calendar_properties")
     private String calendarProperties;
 

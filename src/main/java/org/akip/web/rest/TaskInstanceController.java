@@ -62,7 +62,7 @@ public class TaskInstanceController {
 
     @GetMapping("/task-instances/{id}/claim")
     public TaskInstanceDTO claimTaskInstance(@PathVariable("id") Long id) {
-        log.debug("REST request to get TaskInstance : {}", id);
+        log.debug("REST request to get claimTaskInstance : {}", id);
         return taskInstanceService.claim(id).orElseThrow();
     }
 
@@ -76,7 +76,7 @@ public class TaskInstanceController {
     }
 
     @GetMapping("/task-instances/{id}/redo")
-    public ResponseEntity<Void> redoTaskInstance(@PathVariable Long id) {
+    public ResponseEntity<Void> redoTaskInstance(@PathVariable("id") Long id) {
         log.debug("REST request to redo TaskInstance : {}", id);
         taskInstanceService.redo(id);
         return ResponseEntity

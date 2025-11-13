@@ -22,19 +22,19 @@ public class FormDefinitionController {
     }
 
     @GetMapping("/form-definition/{id}")
-    public FormDefinitionDTO find(@PathVariable Long id) {
+    public FormDefinitionDTO find(@PathVariable("id") Long id) {
         log.debug("REST request to get FormDefinition of the FormDefinitionId : {} ", id);
         return formDefinitionService.findById(id).get();
     }
 
     @GetMapping("/form-definition/process-definition/{processDefinitionId}")
-    public FormDefinitionDTO findByProcessDefinition(@PathVariable Long processDefinitionId) {
+    public FormDefinitionDTO findByProcessDefinition(@PathVariable("processDefinitionId") Long processDefinitionId) {
         log.debug("REST request to get FormDefinition of the ProcessDefinitionId : {} ", processDefinitionId);
         return formDefinitionService.findByProcessDefinitionId(processDefinitionId).get();
     }
 
     @GetMapping("/form-definition/task-definition/{taskDefinitionId}")
-    public FormDefinitionDTO findByTaskDefinition(@PathVariable Long taskDefinitionId) {
+    public FormDefinitionDTO findByTaskDefinition(@PathVariable("taskDefinitionId") Long taskDefinitionId) {
         log.debug("REST request to get FormDefinition of the TaskDefinitionId : {} ", taskDefinitionId);
         return formDefinitionService.findByTaskDefinitionId(taskDefinitionId).get();
     }

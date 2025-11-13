@@ -6,41 +6,59 @@
 
   <groupId>org.akip</groupId>
   <artifactId>akip-core</artifactId>
-  <version>1.11.0</version>
+  <version>2.0.0</version>
   <name>akip-core</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>11</java.version>
+    <java.version>22</java.version>
+    <groovy.version>4.0.22</groovy.version>
 
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
-    <spring-boot.version>2.4.4</spring-boot.version>
-    <camunda.version>7.14.0</camunda.version>
-    <mapstruct.version>1.4.2.Final</mapstruct.version>
-    <commons-lang3.version>3.11</commons-lang3.version>
-    <commons-compress.version>1.20</commons-compress.version>
-    <zalando.problem-spring-web.version>0.26.2</zalando.problem-spring-web.version>
-    <javax.annotation.version>1.3.2</javax.annotation.version>
-    <jhipster.version>7.0.1</jhipster.version>
-    <jhipster-dependencies.version>7.0.1</jhipster-dependencies.version>
-    <liquibase.version>4.3.2</liquibase.version>
+    <spring-boot.version>3.4.2</spring-boot.version>
+    <camunda.version>7.21.0</camunda.version>
+    <mapstruct.version>1.5.5.Final</mapstruct.version>
+    <commons-lang3.version>3.14.0</commons-lang3.version>
+    <commons-compress.version>1.25.0</commons-compress.version>
+<!--    <zalando.problem-spring-web.version>0.26.2</zalando.problem-spring-web.version>-->
+    <jakarta.annotation.version>2.1.1</jakarta.annotation.version>
+    <jakarta.validation.version>3.0.2</jakarta.validation.version>
+    <jhipster.version>8.6.0</jhipster.version>
+    <liquibase.version>4.29.2</liquibase.version>
     <minio.version>7.1.4</minio.version>
+
+    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
   </properties>
+
+
+  <repositories>
+    <repository>
+      <id>kip4you-nexus-maven-group</id>
+      <url>https://nexus.owse.com.br/repository/kip4you-maven-group/</url>
+    </repository>
+    <!-- jhipster-needle-maven-repository -->
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>groovy-plugins-release</id>
+      <url>https://groovy.jfrog.io/artifactory/plugins-release</url>
+    </pluginRepository>
+  </pluginRepositories>
+
 
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>tech.jhipster</groupId>
-        <artifactId>jhipster-dependencies</artifactId>
-        <version>${jhipster-dependencies.version}</version>
+        <artifactId>jhipster-framework</artifactId>
+        <version>${jhipster.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <dependency>
         <groupId>org.camunda.bpm</groupId>
         <artifactId>camunda-bom</artifactId>
@@ -54,12 +72,41 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>${groovy.version}</version>
+      <type>pom</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>${groovy.version}</version>
+    </dependency>
+
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -75,11 +122,21 @@
       <artifactId>spring-boot-starter-security</artifactId>
       <version>${spring-boot.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <version>${jakarta.annotation.version}</version>
+    </dependency>
 
     <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <version>${javax.annotation.version}</version>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>${jakarta.validation.version}</version>
     </dependency>
 
     <dependency>
@@ -117,11 +174,11 @@
       <version>${commons-lang3.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.zalando</groupId>
-      <artifactId>problem-spring-web</artifactId>
-      <version>${zalando.problem-spring-web.version}</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.zalando</groupId>-->
+<!--      <artifactId>problem-spring-web</artifactId>-->
+<!--      <version>${zalando.problem-spring-web.version}</version>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>tech.jhipster</groupId>
@@ -150,8 +207,18 @@
 
     <dependency>
       <groupId>com.owse</groupId>
-      <artifactId>search-framework-server-side</artifactId>
-      <version>1.2.8</version>
+      <artifactId>search-framework-server-side-jdk17</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.persistence</groupId>
+          <artifactId>javax.persistence-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.groovy</groupId>
+          <artifactId>groovy-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
   </dependencies>
@@ -162,12 +229,12 @@
       <id>kip4you-nexus-maven-release</id>
       <name>Nexus Release KIP4You</name>
 <!--      <url>https://pkgs.dev.azure.com/kip4you/kip4you-repository/_packaging/kip4you-repository/maven/v1</url>-->
-      <url>http://192.168.3.3:8787/repository/kip4you-maven-releases/</url>
+      <url>https://nexus.owse.com.br/repository/kip4you-maven-releases/</url>
     </repository>
     <snapshotRepository>
-      <id>kip4you-nexus-maven-snapshot</id>
+      <id>owse-nexus-snapshot</id>
       <name>Nexus Snapshot KIP4You</name>
-      <url>http://192.168.3.3:8787/repository/kip4you-maven-snapshots/</url>
+      <url>https://nexus.owse.com.br/repository/kip4you-maven-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -186,24 +253,24 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>${maven-compiler-plugin.version}</version>
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
             <compilerId>groovy-eclipse-compiler</compilerId>
-            <compilerVersion>3.3.0-01</compilerVersion>
+            <compilerVersion>3.9.0</compilerVersion>
 <!--            <verbose>true</verbose>-->
           </configuration>
           <dependencies>
             <dependency>
               <groupId>org.codehaus.groovy</groupId>
               <artifactId>groovy-eclipse-compiler</artifactId>
-              <version>3.7.0</version>
+              <version>3.9.0</version>
             </dependency>
             <dependency>
               <groupId>org.codehaus.groovy</groupId>
               <artifactId>groovy-eclipse-batch</artifactId>
-              <version>3.0.8-01</version>
+              <version>4.0.22-03</version>
             </dependency>
             <dependency>
               <groupId>org.mapstruct</groupId>

@@ -22,14 +22,17 @@ public class AkipConfigureAnonymousTaskDelegate implements JavaDelegate {
 
     private final ProcessInstanceRepository processInstanceRepository;
 
+    private final ChangeExpressionToGetVariableWarningDelegate changeExpressionToGetVariableWarningDelegate;
+
     private MD5SumUtil md5SumUtil = new MD5SumUtil();
 
     private Random random = new Random();
 
     private Expression tokenDuration;
 
-    public AkipConfigureAnonymousTaskDelegate(ProcessInstanceRepository processInstanceRepository) {
+    public AkipConfigureAnonymousTaskDelegate(ProcessInstanceRepository processInstanceRepository, ChangeExpressionToGetVariableWarningDelegate changeExpressionToGetVariableWarningDelegate) {
         this.processInstanceRepository = processInstanceRepository;
+        this.changeExpressionToGetVariableWarningDelegate = changeExpressionToGetVariableWarningDelegate;
     }
 
     @Override
@@ -51,11 +54,16 @@ public class AkipConfigureAnonymousTaskDelegate implements JavaDelegate {
     }
 
     private long getTokenExpirationDuration(DelegateExecution delegateExecution) {
-        if (tokenDuration == null) {
-            return DEFAULT_TOKEN_EXPIRATION_DURATION;
-        }
 
-        return Long.parseLong( (String) tokenDuration.getValue(delegateExecution));
+        // TODO: This code will be updated in six months 56:62
+        if (delegateExecution.getVariable("tokenDuration") != null) {
+            return Long.parseLong((String) delegateExecution.getVariable("tokenDuration"));
+        }
+        if (tokenDuration != null) {
+            changeExpressionToGetVariableWarningDelegate.castWarning();
+            return Long.parseLong((String) tokenDuration.getValue(delegateExecution));
+        }
+        return DEFAULT_TOKEN_EXPIRATION_DURATION;
     }
 
     private String buildAccessTokenNumber(Long id) {

@@ -58,7 +58,7 @@ public class ProcessMemberController {
     }
 
     @PutMapping("/process-definition/{processDefinitionId}/members")
-    public ResponseEntity<ProcessMemberDTO> updateProcessMember(@PathVariable Long processDefinitionId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
+    public ResponseEntity<ProcessMemberDTO> updateProcessMember(@PathVariable("processDefinitionId") Long processDefinitionId, @RequestBody ProcessMemberDTO processMember) throws URISyntaxException {
         log.debug("REST request to save ProcessMember : {}", processMember.getUsername());
         ProcessMemberDTO result = processMemberService.save(processDefinitionId, processMember);
         return ResponseEntity

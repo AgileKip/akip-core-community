@@ -1,7 +1,7 @@
 package org.akip.service.dto;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;

@@ -44,6 +44,7 @@
     <include file="config/liquibase/changelog/00000000000036_added_entity_ProcessMemberProcessRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000037_added_entity_TenantMemberTenantRole.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/00000000000038_alter_entity_ProcessDeployment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000039_alter_entity_TaskInstance.xml" relativeToChangelogFile="false"/>
 
 
     <!-- Include constraints here -->

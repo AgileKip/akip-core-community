@@ -2,7 +2,7 @@ package org.akip.dao.filter;
 
 import com.owse.searchFramework.ListFilter;
 
-import javax.persistence.Query;
+import jakarta.persistence.Query;
 
 public class AssigneeAndCandidateGroupFilter extends ListFilter {
 
@@ -13,17 +13,28 @@ public class AssigneeAndCandidateGroupFilter extends ListFilter {
 	@Override
 	public String buildCriteria(String searchField) {
 		StringBuilder hql = new StringBuilder();
-		hql.append("  ( ");
-		hql.append("    entity.assignee = :assignee ");
-		hql.append("    or ");
-		hql.append("    entity.assignee is null ");
-		hql.append("  ) ");
-		hql.append(" and ");
-		hql.append("  ( ");
-		hql.append("    entity.computedCandidateGroups is null ");
-		for (Object authority:getValues()) {
-			hql.append(" or trim(lower( entity.computedCandidateGroups )) like '%," + authority.toString().toLowerCase() + ",%' ");
+		hql.append(" ( ");
+		hql.append(" entity.assignee = :assignee ");
+		hql.append(" or ");
+		hql.append(" ( ");
+		for (int i = 0; i < getValues().size(); i++) {
+			Object authority = getValues().get(i);
+			hql.append(" trim(lower(entity.computedCandidateGroups)) like '%," + authority.toString().toLowerCase() + ",%'");
+			if (i < getValues().size() - 1) {
+				hql.append(" or ");
+			}
 		}
+		hql.append(" and ");
+		hql.append(" trim(lower(entity.computedCandidateGroups)) like '%," + getValues().get(getValues().size() - 1).toString().toLowerCase() + ",%'");
+		hql.append(" and ");
+		hql.append(" entity.candidateUsers is null");
+		hql.append("  ) ");
+		hql.append(" or ");
+		hql.append(" ( ");
+		hql.append(" trim(lower( entity.candidateUsers )) like '%," + assignee.toLowerCase() + ",%'");
+		hql.append(" and ");
+		hql.append(" entity.candidateGroups is null");
+		hql.append("  ) ");
         hql.append("  ) ");
 		return hql.toString();
 	}

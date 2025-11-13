@@ -24,7 +24,7 @@ public class CamundaForm7Controller {
     }
 
     @GetMapping("/camunda-form-7/form-definition/{formDefinitionId}")
-    public List<CamundaForm7FieldDef> getCamundaForm7(@PathVariable Long formDefinitionId) throws JsonProcessingException {
+    public List<CamundaForm7FieldDef> getCamundaForm7(@PathVariable("formDefinitionId") Long formDefinitionId) throws JsonProcessingException {
         log.debug("REST request CamundaForm7 with id : {} ", formDefinitionId);
         return camundaForm7Service.getCamundaForm7(formDefinitionId);
     }
