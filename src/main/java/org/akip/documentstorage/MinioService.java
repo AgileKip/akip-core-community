@@ -1,4 +1,4 @@
-package org.akip.minio;
+package org.akip.documentstorage;
 
 import io.minio.*;
 import io.minio.errors.*;
@@ -95,7 +95,7 @@ public class MinioService implements IDocumentStorageService {
             return IOUtils.toByteArray(is);
         } catch (ErrorResponseException e) {
             log.error("Error getting object {}: {}", key, e);
-            throw new BadRequestErrorException("error.minio." + e.errorResponse().errorCode().code(), key );
+            throw new BadRequestErrorException("error.minio." + e.errorResponse().code(), key );
         } catch (IOException e) {
             log.error("Error getting object {}: {}", key, e);
             throw new BadRequestErrorException("error.minio.ioException", this.endpoint );
@@ -120,7 +120,7 @@ public class MinioService implements IDocumentStorageService {
             minioClient.removeObject(removeObjectArgs);
         } catch (ErrorResponseException e) {
             log.error("Error getting object {}: {}", key, e);
-            throw new BadRequestErrorException("error.minio." + e.errorResponse().errorCode(), key );
+            throw new BadRequestErrorException("error.minio." + e.errorResponse().code(), key );
         } catch (IOException e) {
             log.error("Error getting object {}: {}", key, e);
             throw new BadRequestErrorException("error.minio.ioException", this.endpoint );

@@ -6,7 +6,7 @@
 
   <groupId>org.akip</groupId>
   <artifactId>akip-core</artifactId>
-  <version>1.11.0</version>
+  <version>1.13.0-SNAPSHOT</version>
   <name>akip-core</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
@@ -28,7 +28,8 @@
     <jhipster.version>7.0.1</jhipster.version>
     <jhipster-dependencies.version>7.0.1</jhipster-dependencies.version>
     <liquibase.version>4.3.2</liquibase.version>
-    <minio.version>7.1.4</minio.version>
+    <minio.version>8.5.17</minio.version>
+    <okhttp.version>4.12.0</okhttp.version>
   </properties>
 
   <dependencyManagement>
@@ -143,6 +144,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>${okhttp.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <version>${commons-compress.version}</version>
@@ -151,7 +158,7 @@
     <dependency>
       <groupId>com.owse</groupId>
       <artifactId>search-framework-server-side</artifactId>
-      <version>1.2.8</version>
+      <version>1.2.12-SNAPSHOT</version>
     </dependency>
 
   </dependencies>
@@ -162,12 +169,12 @@
       <id>kip4you-nexus-maven-release</id>
       <name>Nexus Release KIP4You</name>
 <!--      <url>https://pkgs.dev.azure.com/kip4you/kip4you-repository/_packaging/kip4you-repository/maven/v1</url>-->
-      <url>http://192.168.3.3:8787/repository/kip4you-maven-releases/</url>
+      <url>https://nexus.owse.com.br/repository/kip4you-maven-releases/</url>
     </repository>
     <snapshotRepository>
       <id>kip4you-nexus-maven-snapshot</id>
       <name>Nexus Snapshot KIP4You</name>
-      <url>http://192.168.3.3:8787/repository/kip4you-maven-snapshots/</url>
+      <url>https://nexus.owse.com.br/repository/kip4you-maven-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 

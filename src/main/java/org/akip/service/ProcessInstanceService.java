@@ -3,6 +3,7 @@ package org.akip.service;
 
 import org.akip.camunda.CamundaConstants;
 import org.akip.domain.*;
+import org.akip.domain.enumeration.ActiveInactiveStatus;
 import org.akip.domain.enumeration.StatusProcessInstance;
 import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.repository.*;
@@ -51,19 +52,22 @@ public class ProcessInstanceService {
 
     private final TemporaryProcessInstanceRepository temporaryProcessInstanceRepository;
 
+    private final ProcessInstanceSubscriptionService processInstanceSubscriptionService;
+
+
     public ProcessInstanceService(
-        ProcessDeploymentService processDeploymentService,
-        TaskInstanceService taskInstanceService,
-        ProcessDefinitionRepository processDefinitionRepository,
-        ProcessDeploymentRepository processDeploymentRepository,
-        ProcessInstanceRepository processInstanceRepository,
-        ProcessInstanceMapper processInstanceMapper,
-        RuntimeService runtimeService,
-        AttachmentEntityRepository attachmentEntityRepository,
-        AttachmentRepository attachmentRepository,
-        NoteRepository noteRepository,
-        NoteEntityRepository noteEntityRepository,
-        TemporaryProcessInstanceRepository temporaryProcessInstanceRepository) {
+            ProcessDeploymentService processDeploymentService,
+            TaskInstanceService taskInstanceService,
+            ProcessDefinitionRepository processDefinitionRepository,
+            ProcessDeploymentRepository processDeploymentRepository,
+            ProcessInstanceRepository processInstanceRepository,
+            ProcessInstanceMapper processInstanceMapper,
+            RuntimeService runtimeService,
+            AttachmentEntityRepository attachmentEntityRepository,
+            AttachmentRepository attachmentRepository,
+            NoteRepository noteRepository,
+            NoteEntityRepository noteEntityRepository,
+            TemporaryProcessInstanceRepository temporaryProcessInstanceRepository, ProcessInstanceSubscriptionService processInstanceSubscriptionService) {
         this.processDeploymentService = processDeploymentService;
         this.taskInstanceService = taskInstanceService;
         this.processDefinitionRepository = processDefinitionRepository;
@@ -76,26 +80,19 @@ public class ProcessInstanceService {
         this.noteRepository = noteRepository;
         this.noteEntityRepository = noteEntityRepository;
         this.temporaryProcessInstanceRepository = temporaryProcessInstanceRepository;
+        this.processInstanceSubscriptionService = processInstanceSubscriptionService;
     }
 
     public ProcessInstanceDTO create(ProcessInstanceDTO processInstanceDTO) {
         log.debug("Request to create processInstance : {}", processInstanceDTO);
         if (processInstanceDTO.getTenant() == null) {
-            return createWithoutTenant(processInstanceDTO);
+            ProcessInstanceDTO processInstance = createWithoutTenant(processInstanceDTO);
+            processInstanceSubscriptionService.createSubscription(processInstance);
+            return processInstance;
         }
-        return createWithTenant(processInstanceDTO);
-    }
-
-    public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity) {
-        return create(bpmnProcessDefinitionId, businessKey, processEntity, null);
-    }
-
-    public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity, Tenant tenant) {
-        if (tenant == null) {
-            return createWithoutTenant(bpmnProcessDefinitionId, businessKey, processEntity);
-        }
-
-        return createWithTenant(bpmnProcessDefinitionId, businessKey, processEntity, tenant);
+        ProcessInstanceDTO processInstance = createWithTenant(processInstanceDTO);
+        processInstanceSubscriptionService.createSubscription(processInstance);
+        return processInstance;
     }
 
     private ProcessInstanceDTO createWithTenant(ProcessInstanceDTO processInstanceDTO) {
@@ -164,7 +161,6 @@ public class ProcessInstanceService {
                 .setVariables(params)
                 .execute();
 
-
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
         ProcessInstanceDTO processInstanceSaved = processInstanceMapper.toDto(processInstanceRepository.save(processInstance));
         synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processInstanceDTO.getTemporaryProcessInstance(), processInstanceSaved);
@@ -172,12 +168,31 @@ public class ProcessInstanceService {
         return processInstanceSaved;
     }
 
+    public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity) {
+        return create(bpmnProcessDefinitionId, businessKey, processEntity, null);
+    }
+
+    public ProcessInstance create(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity, Tenant tenant) {
+        if (tenant == null) {
+            ProcessInstance processInstance = createWithoutTenant(bpmnProcessDefinitionId, businessKey, processEntity);
+            processInstanceSubscriptionService.createSubscription(processInstanceMapper.toDto(processInstance));
+            return processInstance;
+        }
+        ProcessInstance processInstance = createWithTenant(bpmnProcessDefinitionId, businessKey, processEntity, tenant);
+        processInstanceSubscriptionService.createSubscription(processInstanceMapper.toDto(processInstance));
+        return processInstance;
+    }
+
     private ProcessInstance createWithoutTenant(String bpmnProcessDefinitionId, String businessKey, IProcessEntity processEntity) {
         log.debug("Request to create a processInstance by bpmnProcessDefinitionId: {}", bpmnProcessDefinitionId);
+
+        //TODO: These methods (create) should be refactored: 1. different return types, handling domain and DTO,
+        TemporaryProcessInstanceDTO temporaryProcessInstance = processEntity.getProcessInstance().getTemporaryProcessInstance();
 
         ProcessDefinition processDefinition = processDefinitionRepository
                 .findByBpmnProcessDefinitionId(bpmnProcessDefinitionId)
                 .orElseThrow();
+
         ProcessDeployment processDeployment = processDeploymentRepository
                 .findByProcessDefinitionIdAndStatusIsActiveAndTenantIsNull(processDefinition.getId())
                 .orElseThrow();
@@ -206,7 +221,7 @@ public class ProcessInstanceService {
         processInstance.setCamundaProcessInstanceId(camundaProcessInstance.getProcessInstanceId());
 
         ProcessInstance processInstanceSaved = processInstanceRepository.save(processInstance);
-        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(processEntity.getProcessInstance().getTemporaryProcessInstance(), processInstanceMapper.toDto(processInstanceSaved));
+        synchronizeAttachmentsAndNotesAndUpdateTemporaryProcessInstance(temporaryProcessInstance, processInstanceMapper.toDto(processInstanceSaved));
 
         return processInstanceSaved;
     }
@@ -352,6 +367,14 @@ public class ProcessInstanceService {
                     noteEntityProcessInstance.setEntityName(ProcessInstance.class.getSimpleName());
                     noteEntityProcessInstance.setEntityId(processInstanceId);
                     noteEntityRepository.save(noteEntityProcessInstance);
+                }
+        );
+
+        //Closing Notes
+        notes.forEach(
+                note -> {
+                    note.setStatus("CLOSED");
+                    noteRepository.save(note);
                 }
         );
     }

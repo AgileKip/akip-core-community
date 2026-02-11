@@ -11,6 +11,7 @@ import org.akip.domain.enumeration.StatusTaskInstance;
 import org.akip.domain.enumeration.TypeTaskInstance;
 import org.akip.exception.BadRequestErrorException;
 import org.akip.groovy.BindingBuilder;
+import org.akip.publisher.ProcessInstanceEventPublisher;
 import org.akip.repository.ProcessInstanceRepository;
 import org.akip.repository.TaskInstanceRepository;
 import org.akip.security.SecurityUtils;
@@ -65,14 +66,19 @@ public class TaskInstanceService {
 
     private final RuntimeService runtimeService;
 
+    private final ProcessInstanceEventPublisher processInstanceEventPublisher;
+
     private static final String ANONYMOUS_USER = "anonymousUser";
 
     public TaskInstanceService(
             ProcessInstanceRepository processInstanceRepository, ProcessInstanceMapper processInstanceMapper, ProcessMemberService processMemberService, TenantMemberService tenantMemberService, TaskInstanceRepository taskInstanceRepository,
             TaskInstanceMapper taskInstanceMapper,
             TaskService taskService,
-            NoteService noteService, EntityManager entityManager,
-            BeanFactory beanFactory, BindingBuilder bindingBuilder, RuntimeService runtimeService) {
+            NoteService noteService,
+            EntityManager entityManager,
+            BeanFactory beanFactory,
+            BindingBuilder bindingBuilder,
+            RuntimeService runtimeService, ProcessInstanceEventPublisher processInstanceEventPublisher) {
         this.processInstanceRepository = processInstanceRepository;
         this.processInstanceMapper = processInstanceMapper;
         this.processMemberService = processMemberService;
@@ -85,6 +91,7 @@ public class TaskInstanceService {
         this.beanFactory = beanFactory;
         this.bindingBuilder = bindingBuilder;
         this.runtimeService = runtimeService;
+        this.processInstanceEventPublisher = processInstanceEventPublisher;
     }
 
     /**
@@ -124,6 +131,10 @@ public class TaskInstanceService {
     }
 
     public String executeDocumentationExpression(TaskInstance taskInstance) {
+
+        if (StringUtils.isEmpty(taskInstance.getTaskDefinition().getDocumentation())) {
+            return "";
+        }
 
         Object processEntity = runtimeService.getVariable(taskInstance.getProcessInstance().getCamundaProcessInstanceId(), CamundaConstants.PROCESS_ENTITY);
 
@@ -243,6 +254,8 @@ public class TaskInstanceService {
         params.put(CamundaConstants.PROCESS_INSTANCE, processInstance);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().get());
         taskService.complete(taskInstance.getTaskId(), params);
+        TaskInstanceDTO taskInstanceSaved = taskInstanceMapper.toDto(taskInstanceRepository.findById(taskInstance.getId()).get());
+        processInstanceEventPublisher.publishEventCompleteTask(taskInstanceSaved);
         noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }
 
@@ -253,6 +266,8 @@ public class TaskInstanceService {
         params.put(CamundaConstants.PROCESS_ENTITY, processEntity);
         taskService.claim(taskInstance.getTaskId(), SecurityUtils.getCurrentUserLogin().orElseThrow());
         taskService.complete(taskInstance.getTaskId(), params);
+        TaskInstanceDTO taskInstanceSaved = taskInstanceMapper.toDto(taskInstanceRepository.findById(taskInstance.getId()).get());
+        processInstanceEventPublisher.publishEventCompleteTask(taskInstanceSaved);
         noteService.closeNotesAssociatedToEntity(TaskInstance.class.getSimpleName(), taskInstance.getId());
     }
 
